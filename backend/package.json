@@ -1,0 +1,19 @@
+{
+  "name": "crealink",
+  "version": "1.0.0",
+  "description": "CreaLink API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CreaLink-SEPM/crealink.git"
+  },
+  "author": "Quang, Khang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CreaLink-SEPM/crealink/issues"
+  },
+  "homepage": "https://github.com/CreaLink-SEPM/crealink#readme"
+}
