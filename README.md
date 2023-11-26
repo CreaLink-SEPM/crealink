@@ -1,6 +1,7 @@
 
   ----------------------------  @ CREALINK - TRAVEL REVIEW SOCIAL MEDIA WEBSITE @  -------------------------
 
+![Travel Image](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC1ttYsyHzNC64urxZNgCW3SrKRaWKTa7ybA&usqp=CAU)
   
  - In contrast to the high demand for digital tourism, there is a lack of online sources that collect data for travel reviews, leading to erroneous decisions. The need for a travel online reviews platform is crucial since individuals may share their travel experiences and insights with the public. With the lack of a travel review platform, travelers may struggle to find reliable information for informed decision-making. On the other hand, tourism businesses could base on online reviews to improve service quality and enhance customer experience.
 
