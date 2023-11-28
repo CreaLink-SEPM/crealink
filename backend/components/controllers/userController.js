@@ -2,18 +2,20 @@ const User = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// Function to create a new user
 const registerUser = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-    const isEmailValid = emailRegex.test(email);
 
     if (!email || !password || !username) {
       return res.status(400).json({
         status: "error",
         message: "Username, email, and password are required fields",
       });
-    } else if (!isEmailValid) {
+    }
+
+    const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+    if (!emailRegex.test(email)) {
       return res.status(400).json({
         status: "error",
         message: "Invalid email format",
@@ -36,12 +38,8 @@ const registerUser = async (req, res, next) => {
       });
     }
 
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const createdUser = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdUser = await User.create({ username, email, password: hashedPassword });
 
     if (createdUser) {
       return res.status(201).json({
@@ -58,6 +56,7 @@ const registerUser = async (req, res, next) => {
   }
 };
 
+// Function to log in a user
 const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -71,42 +70,17 @@ const loginUser = async (req, res, next) => {
 
     const user = await User.findOne({ username });
 
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "The user does not exist",
-      });
-    }
-
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
-
-    if (!isPasswordValid) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
         status: "error",
-        message: "Incorrect password",
+        message: "Invalid username or password",
       });
     }
 
-    const accessToken = jwt.sign(
-      {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "5m" }
-    );
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-    const refreshToken = jwt.sign(
-      {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-      process.env.REFRESH_TOKEN_SECRET
-    );
-
-    refreshTokens.push(refreshToken);
+    storeRefreshToken(refreshToken);
 
     return res.status(200).json({
       status: "success",
@@ -122,8 +96,39 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+// Function to generate access token
+const generateAccessToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "30s" }
+  );
+};
+
+// Function to generate refresh token
+const generateRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+    process.env.REFRESH_TOKEN_SECRET
+  );
+};
+
 let refreshTokens = [];
 
+// Function to store refresh token
+const storeRefreshToken = (token) => {
+  refreshTokens.push(token);
+};
+
+// Function to refresh user's access token
 const refreshTokenUser = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
@@ -132,17 +137,7 @@ const refreshTokenUser = async (req, res, next) => {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
       if (err) return res.sendStatus(403);
 
-      const accessToken = jwt.sign(
-        {
-          _id: data._id,
-          username: data.username,
-          email: data.email,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "5m",
-        }
-      );
+      const accessToken = generateAccessToken(data);
 
       res.status(200).json({ status: "success", accessToken });
     });
@@ -151,6 +146,7 @@ const refreshTokenUser = async (req, res, next) => {
   }
 };
 
+// Function to log out a user
 const logoutUser = async (req, res, next) => {
   try {
     refreshTokens = [];
