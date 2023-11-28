@@ -59,21 +59,21 @@ const registerUser = async (req, res, next) => {
 // Function to log in a user
 const loginUser = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!password || !username) {
+    if (!password || !email) {
       return res.status(400).json({
         status: "error",
-        message: "Both username and password are required fields",
+        message: "Both email and password are required fields",
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email});
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
         status: "error",
-        message: "Invalid username or password",
+        message: "Invalid email or password",
       });
     }
 
