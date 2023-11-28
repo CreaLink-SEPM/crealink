@@ -1,29 +1,25 @@
-const express = require('express');
-const path = require('path');
-const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const routes = require("./components/routes/router.js");
 
-
-
-// Load environment variables from a .env file
 dotenv.config();
 
-const port = process.env.PORT || 6969;
-
-
-const app = express();
-
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
-
-// Connect to MongoDB
-const connectDB = require('./components/configs/db.js');
+const connectDB = require("./components/configs/db.js");
 connectDB();
 
-// Serve static files from the 'public' directory (if needed)
-app.use(express.static(path.join(__dirname, 'public')));
+const port = process.env.PORT || 5000;
+const app = express();
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server listening on port: ${port}`);
-});
+app.use(cors());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
+app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.json());
+
+routes(app);
+
+app.listen(port, () => console.log(`Server started on port ${port}`));
