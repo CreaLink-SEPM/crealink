@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+
 
 
 // Load environment variables from a .env file
