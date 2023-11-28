@@ -69,7 +69,7 @@ are the theme mode.
 
 
  + NextJS
-    Version: 13.0.5
+    Version: 13.5.6
  
 
 
