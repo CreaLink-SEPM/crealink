@@ -1,75 +1,48 @@
+# CREALINK - TRAVEL REVIEW SOCIAL MEDIA WEBSITE
 
-  ----------------------------  @ CREALINK - TRAVEL REVIEW SOCIAL MEDIA WEBSITE @  -------------------------
+## Introduction
 
-  
- - In contrast to the high demand for digital tourism, there is a lack of online sources that collect data for travel reviews, leading to erroneous decisions. The need for a travel online reviews platform is crucial since individuals may share their travel experiences and insights with the public. With the lack of a travel review platform, travelers may struggle to find reliable information for informed decision-making. On the other hand, tourism businesses could base on online reviews to improve service quality and enhance customer experience.
+In the realm of digital tourism, the absence of comprehensive online platforms for travel reviews results in erroneous decision-making. Establishing a travel review platform is crucial, enabling individuals to share their travel experiences and insights. Without such a platform, travelers struggle to access reliable information, impacting their decision-making. Simultaneously, tourism businesses lack substantial online reviews to enhance service quality and customer experiences.
 
+## Team Information
 
- - GROUP : TEAM 2
- 
- - MEMBERS: 
- 
- + Pham Ngoc Huy (S3926681)
- + Nguyen Trong Khang (S3929994)
- + Nguyen Huynh Quang (S3927039)
- + Dinh Le Hong Tin (S3932134)
+- **Group:** Team 2
+- **Members:**
+  - Pham Ngoc Huy (S3926681)
+  - Nguyen Trong Khang (S3929994)
+  - Nguyen Huynh Quang (S3927039)
+  - Dinh Le Hong Tin (S3932134)
 
+## Features
 
+### Running on Localhost
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++
+### Website Run on Server
 
-- RUNNING ON LOCALHOST:
+### Scope & Function
 
-
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-- WEBSITE RUN ON SERVER:
-
-
-
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-### SCOPE & FUNCTION :
-
--Login and Registration, Email verification.
-- User Profile, edit account, change password.
-- Add friends and view details of others' accounts.
-- Explore Page to view the most popular posts, as well as a search tool.
+The platform includes the following functionalities:
+- Login, Registration, and Email verification.
+- User Profile management (edit account, change password).
+- Add friends and view others' account details.
+- Explore Page to view popular posts and a search tool.
 - View, Create, Delete, Update, and Interact with posts.
-- Responsive design for mobile, and desktop UI view.
-- Choose between the English and Vietnamese languages. Both light and dark
-are the theme mode.
+- Responsive design for mobile and desktop UI.
+- Language selection (English and Vietnamese) and light/dark themes.
 - Save liked content.
-- Implement a message system that allows users to communicate directly with one another.
-- Integrate AI tools to suggest users when posting.
- 
-++++++++++++++++++++++++++++++++++++++++++++++++++++
+- Direct messaging between users.
+- Integration of AI tools for post suggestions.
 
-- TECHNOLOGIES :
+## Technologies
 
-+ React, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel. 
+- React, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
 
+## Contribution
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++
+- Pham Ngoc Huy (%)
+- Nguyen Trong Khang (%)
+- Nguyen Huynh Quang (%)
+- Dinh Le Hong Tin (%)
 
-- CONTRIBUTION :
-
- + Pham Ngoc Huy (%)
- + Nguyen Trong Khang (%)
- + Nguyen Huynh Quang (%)
- + Dinh Le Hong Tin (%)
-
-
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
- + NextJS
-    Version: 13.0.5
- 
-
-
+### NextJS
+- Version: 13.0.5
