@@ -17,7 +17,11 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
 
 ### Running on Localhost
 
+To be added...
+
 ### Website Run on Server
+
+To be added...
 
 ### Scope & Function
 
