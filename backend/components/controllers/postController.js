@@ -30,11 +30,11 @@ exports.createPost = async (req, res, next) => {
         });
         const result = await post.save();
         const creator = user;
-        creator.posts.push(post);
+        user.posts.push(post);
         await user.save();
         res.status(201).json({
             message: 'Post created successfully',
-            post: post,
+            posts: post,
             creator: {_id: creator._id, name: creator.username}
         })
     }
