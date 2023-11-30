@@ -3,7 +3,7 @@ const PostRouter = require("./postRoutes.js");
 
 const routes = (app) => {
   app.use("/api/user", UserRouter);
-  // app.use("/api/feed", PostRouter); 
+  app.use("/api/feed", PostRouter); 
 };
 
 
