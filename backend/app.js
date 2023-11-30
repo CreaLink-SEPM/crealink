@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const routes = require("./components/routes/router.js");
 const multer = require("multer");
+const path = require("path");
 
 dotenv.config();
 
@@ -13,7 +14,6 @@ connectDB();
 
 const port = process.env.PORT || 5000;
 const app = express();
-routes(app);
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -34,11 +34,11 @@ const fileFilter = (req, file, cb) => {
 
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true}));
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, "public")));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
+app.use('/components/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.json());
-
-
+routes(app);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

@@ -7,6 +7,7 @@ const userAuthenToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
     if (err) return res.sendStatus(403);
+    req.userId = data._id;
     next();
   });
 };

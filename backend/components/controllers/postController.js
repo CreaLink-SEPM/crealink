@@ -15,16 +15,22 @@ exports.createPost = async (req, res, next) => {
         const title = req.body.title;
         const content = req.body.content;
         const imageUrl = req.file.path;
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(401).json({
+                message: 'User not found',
+                status: 'error'
+            })
+        }
         const post = new Post({
             title: title,
             content: content,
             imageUrl: imageUrl,
-            creator: req.user._id
+            creator: req.userId
         });
         const result = await post.save();
-        const user = await User.findById(req.user._id);
         const creator = user;
-        user.posts.push(post);
+        creator.posts.push(post);
         await user.save();
         res.status(201).json({
             message: 'Post created successfully',
@@ -33,6 +39,7 @@ exports.createPost = async (req, res, next) => {
         })
     }
     catch (err) {
+        console.log(err);
         if (!err.statusCode) {
             err.statusCode = 500
         }
