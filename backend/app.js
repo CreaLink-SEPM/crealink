@@ -13,6 +13,7 @@ connectDB();
 
 const port = process.env.PORT || 5000;
 const app = express();
+routes(app);
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -32,8 +33,8 @@ const fileFilter = (req, file, cb) => {
 
 
 app.use(cors());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
