@@ -5,10 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # waiting for status check to play well with path filters
-  # https://github.community/t/status-check-with-path-filter/18049/2
   pre_job:
-    # continue-on-error: true # Uncomment once integration is finished
     runs-on: ubuntu-latest
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -33,23 +30,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'yarn'
-          cache-dependency-path: 'client'
+          cache: 'npm'
+          cache-dependency-path: 'client/package-lock.json'
       - name: lint with reporting
         run: |
-          yarn install
-          yarn lint:report
+          npm install
+          npm run lint:report
         continue-on-error: true
-      #      - name: Annotate Code Linting Results
-      #        uses: ataylorme/eslint-annotate-action@1.2.0
-      #        with:
-      #          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-      #          report-json: "client/eslint_report.json"
       - name: Upload ESLint report
         uses: actions/upload-artifact@v2
         with:
           name: eslint_report.json
           path: client/eslint_report.json
+
   compile:
     needs: pre_job
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
@@ -62,8 +55,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'yarn'
-          cache-dependency-path: 'client'
-      - run: yarn install
+          cache: 'npm'
+          cache-dependency-path: 'client/package-lock.json'
+      - run: npm install
       - run: npm install -g typescript
-      - run: npm check
+      - run: npm run check
