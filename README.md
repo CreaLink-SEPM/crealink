@@ -20,7 +20,7 @@
 
 - RUNNING ON LOCALHOST:
 
-  + http://localhost:3000/
+  + http://localhost:3000/  => ( Run npm run dev )  
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
