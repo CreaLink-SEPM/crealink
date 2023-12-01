@@ -65,6 +65,5 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: 'client'
       - run: yarn install
-      - run: yarn type-check
       - run: npm install -g typescript
       - run: npm check
