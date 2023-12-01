@@ -20,12 +20,14 @@
 
 - RUNNING ON LOCALHOST:
 
+  + http://localhost:3000/  => ( Run npm run dev )  
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 - WEBSITE RUN ON SERVER:
 
+ + Front-End : https://client-crealink.vercel.app/
 
 
 
@@ -69,7 +71,7 @@ are the theme mode.
 
 
  + NextJS
-    Version: 13.0.5
+    Version: 13.5.6
  
 
 
