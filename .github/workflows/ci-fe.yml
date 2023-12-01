@@ -33,12 +33,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'yarn'
+          cache: 'npm'
           cache-dependency-path: 'client'
       - name: lint with reporting
         run: |
-          yarn install
-          yarn lint:report
+          npm install
+          npm lint:report
         continue-on-error: true
       #      - name: Annotate Code Linting Results
       #        uses: ataylorme/eslint-annotate-action@1.2.0
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'yarn'
+          cache: 'npm'
           cache-dependency-path: 'client'
-      - run: yarn install
-      - run: yarn type-check
+      - run: npm install
+      - run: npm type-check
