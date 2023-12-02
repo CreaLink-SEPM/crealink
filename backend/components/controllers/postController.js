@@ -107,7 +107,6 @@ exports.updatePost = async (req, res, next) => {
             throw error;
         }
 
-        // Update image only if a new image is provided
         if (imageUrl && imageUrl !== post.imageUrl) {
             // Delete old image
             clearImage(post.imageUrl);
@@ -120,7 +119,6 @@ exports.updatePost = async (req, res, next) => {
             throw error;
         }
 
-        // Update other attributes
         post.title = title;
         post.content = content;
 
