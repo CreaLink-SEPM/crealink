@@ -12,6 +12,12 @@ router.post('/post', AuthMiddleware.userAuthenToken,
  ], 
  postController.createPost);
  router.get('/posts', AuthMiddleware.userAuthenToken, postController.getPosts);
+ router.put('/posts/:postId', AuthMiddleware.userAuthenToken, 
+ [
+   body('title').trim().isLength({min: 1}),
+   body('content').trim().isLength({min: 1})
+ ]
+ ,postController.updatePost);
  module.exports = router;
  
 
