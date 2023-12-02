@@ -13,23 +13,32 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
   - Nguyen Huynh Quang (S3927039)
   - Dinh Le Hong Tin (S3932134)
 
-## Features
-
 ### Running on Localhost
 
 To be added...
 
 ### Website Run on Server
 
-To be added...
 
-### Scope & Function
+  + http://localhost:3000/  => ( Run npm run dev )  
 
-The platform includes the following functionalities:
-- Login, Registration, and Email verification.
-- User Profile management (edit account, change password).
-- Add friends and view others' account details.
-- Explore Page to view popular posts and a search tool.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- WEBSITE RUN ON SERVER:
+
+ + Front-End : https://client-crealink.vercel.app/
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+### SCOPE & FUNCTION :
+
+-Login and Registration, Email verification.
+- User Profile, edit account, change password.
+- Add friends and view details of others' accounts.
+- Explore Page to view the most popular posts, as well as a search tool.
 - View, Create, Delete, Update, and Interact with posts.
 - Responsive design for mobile and desktop UI.
 - Language selection (English and Vietnamese) and light/dark themes.
@@ -41,12 +50,13 @@ The platform includes the following functionalities:
 
 - React, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
 
-## Contribution
+ 
+## Contributions: 
 
 - Pham Ngoc Huy (%)
 - Nguyen Trong Khang (%)
 - Nguyen Huynh Quang (%)
 - Dinh Le Hong Tin (%)
 
-### NextJS
+
 - Version: 13.0.5
