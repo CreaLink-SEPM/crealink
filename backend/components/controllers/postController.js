@@ -62,3 +62,14 @@ exports.getPosts = async (req, res, next) => {
     }
 
 }
+exports.updatePosts = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+    }
+    catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500
+        }
+        next(err);
+    }
+}
