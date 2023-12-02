@@ -62,6 +62,26 @@ exports.getPosts = async (req, res, next) => {
     }
 
 }
+exports.getPost = async (req, res, next) => {
+    const postId = req.params.postId;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 403;
+            throw error;
+        }
+        res.status(200).json({
+            message: 'Post fetched successfully',
+            post: post
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
 exports.updatePost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
@@ -116,6 +136,38 @@ exports.updatePost = async (req, res, next) => {
         next(err);
     }
 };
+exports.deletePost = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        }
+        if (post.creator.toString() !== req.userId) {
+            const error = new Error('Not authorized');
+            error.statusCode = 403;
+            throw error;
+        }
+        if (post.imageUrl) {
+            await clearImage(post.imageUrl);
+        }
+        await Post.findByIdAndDelete(postId);
+        const user = await User.findById(req.userId);
+        user.posts.pull(postId);
+        await user.save();
+        res.status(200).json({
+            message: 'Delete post successfully'
+        })
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
 
 const clearImage = filePath => {
     filePath = path.join(__dirname, '..', filePath);
