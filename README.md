@@ -1,5 +1,5 @@
-# CREALINK - TRAVEL REVIEW SOCIAL MEDIA WEBSITE
-
+  ![banner3](https://github.com/CreaLink-SEPM/crealink/assets/102708893/ed15d9c7-ea19-4675-8f58-4bae6afe7ef5)
+  
 ## Introduction
 
 In the realm of digital tourism, the absence of comprehensive online platforms for travel reviews results in erroneous decision-making. Establishing a travel review platform is crucial, enabling individuals to share their travel experiences and insights. Without such a platform, travelers struggle to access reliable information, impacting their decision-making. Simultaneously, tourism businesses lack substantial online reviews to enhance service quality and customer experiences.
@@ -27,7 +27,7 @@ To be added...
 
 - WEBSITE RUN ON SERVER:
 
- + Front-End : https://client-crealink.vercel.app/
+ + Front-End (Production) : https://client-crealink.vercel.app/
 
 
 
