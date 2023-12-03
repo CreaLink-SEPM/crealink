@@ -26,7 +26,7 @@ export default function Home() {
       </div>
       <Image src="/assets/icons/icon.svg" className="mx-[450px] py-32" alt="logo" width={500} height={400} />
       <p className="text-center text-3xl"> CreaLink now is still developing, please comback next time !, thank you :3 </p>
-      <div className="mt-10">Postcript : N.Huy</div>
+      <div className="mt-5">Postcript : N.Huy</div>
     </div>
   );
 }
