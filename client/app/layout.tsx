@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 
 
@@ -17,7 +18,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/assets/icons/icon.svg" type="image/png" sizes="32x32" />
       </head>
       <body className={inter.className}>   
-          {children}
+            {children}
+            <Toaster />
       </body>
     </html>
   );
