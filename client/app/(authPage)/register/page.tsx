@@ -5,6 +5,12 @@ import { Label } from '@radix-ui/react-label';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+
+
 
 function Register() {
   const [authState, setAuthState] = useState<AuthStateType>({
@@ -14,9 +20,38 @@ function Register() {
     password: '',
     password_confirmation: '',
   });
-  
-  const submit = () => {
-    console.log('submit');
+
+  const [errors, setErrors] = useState<AuthErrorType>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const {toast} = useToast();
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    // API FOR  REGISTER
+    axios
+      .post('/api/register/', authState)
+      .then(res => {
+        setLoading(false);
+        const response = res.data;            // Options for API***
+
+        if (response.status === 'success' || 200) {
+          router.push(`/?message=${response.message}`);    
+        } else if (response.status === 'failed' || 400) {
+          setErrors(response.error);
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem with your request.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   return (
@@ -36,7 +71,7 @@ function Register() {
           <form onSubmit={submit}>
             <div className="mt-5">
               <div className="flex justify-between items-center">
-                <div className='text-center'>
+                <div className="text-center">
                   <h1 className="text-xl font-bold ml-4">Hola! Join our community for more creative!</h1>
                 </div>
               </div>
@@ -49,7 +84,7 @@ function Register() {
                   placeholder="Type your name.."
                   onChange={event => setAuthState({ ...authState, name: event.target.value })}
                 />
-                <span className="text-red-400 font-bold"></span>
+                <span className="text-red-400 font-bold">{errors?.name}</span>
               </div>
               <div className="mt-5">
                 <Label htmlFor="username">Username</Label>
@@ -59,7 +94,7 @@ function Register() {
                   placeholder="Type your unique username"
                   onChange={event => setAuthState({ ...authState, username: event.target.value })}
                 />
-                <span className="text-red-400 font-bold"></span>
+                <span className="text-red-400 font-bold">{errors?.username}</span>
               </div>
               <div className="mt-5">
                 <Label htmlFor="email">Email</Label>
@@ -69,17 +104,18 @@ function Register() {
                   placeholder="Type your email.."
                   onChange={event => setAuthState({ ...authState, email: event.target.value })}
                 />
-                <span className="text-red-400 font-bold">{}</span>
+                <span className="text-red-400 font-bold">{errors?.email}</span>
               </div>
               <div className="mt-5">
                 <Label htmlFor="password">Password</Label>
                 <Input
+                  autoComplete='password'
                   type="password"
                   id="password"
                   placeholder="Type your password.."
                   onChange={event => setAuthState({ ...authState, password: event.target.value })}
                 />
-                <span className="text-red-400 font-bold"></span>
+                <span className="text-red-400 font-bold">{errors?.password}</span>
               </div>
               <div className="mt-5">
                 <Label htmlFor="cpassword">Confirm Password</Label>
@@ -96,7 +132,9 @@ function Register() {
                 />
               </div>
               <div className="mt-5">
-                <Button className="w-full bg-red-800">Sign Up</Button>
+                <Button className="w-full bg-red-800" disabled={loading}>
+                  {loading ? 'Loading...' : 'Register'}
+                </Button>
               </div>
               <div className="mt-5 text-center">
                 <span>Already Have an account ? </span>
