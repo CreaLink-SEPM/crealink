@@ -45,9 +45,7 @@ const items: TabsProps['items'] = [
 
 
 const Navbar: React.FC = () => <Tabs defaultActiveKey="1" items={items} tabBarGutter={69}
-                                     centered={false}
-                                     
-                                     inkBarColor="#A20103"/>;
+                                     centered={false}/>;
 
 
 export { Navbar };
