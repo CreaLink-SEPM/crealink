@@ -38,6 +38,9 @@ export default function Home() {
                   </div>
                   <Image src="assets/icons/Right Infos.svg" alt='setting' width={30} height={30}/>
               </div>
+
+
+
           </div>
       </>
   );
