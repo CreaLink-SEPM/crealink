@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const routes = require("./components/routes/router.js");
 const multer = require("multer");
 const path = require("path");
+const {init: initSocket} = require("./socket");
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ connectDB();
 
 const port = process.env.PORT || 5000;
 const app = express();
+
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -41,4 +43,10 @@ app.use('/components/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.json());
 routes(app);
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+const server = app.listen(port, () => console.log(`Server started on port ${port}`));
+
+const io = initSocket(server);
+io.on('connection', socket => {
+    console.log('Connection established')
+})
+

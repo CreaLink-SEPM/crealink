@@ -47,8 +47,15 @@ exports.createPost = async (req, res, next) => {
     }
 }
 exports.getPosts = async (req, res, next) => {
+    const currentPage = req.query.page || 1;
+    const perPage = 10;
     try {
-        const posts = await Post.find();
+        const totalItems = await Post.find().countDocuments();
+        const posts = await Post.find()
+            .populate('creator', 'username')
+            .sort({createdAt: -1})
+            .skip((currentPage - 1) * perPage)
+            .limit(perPage);
         res.status(200).json({
             message: 'Fetched post successfully',
             posts: posts
