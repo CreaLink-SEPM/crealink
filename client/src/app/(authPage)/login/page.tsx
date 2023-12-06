@@ -2,15 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import '../../globals.css';
 import Image from 'next/image';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Label } from '@/src/components/ui/label';
+import { Input } from '@/src/components/ui/input';
+import { Button } from '@/src/components/ui/button';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/use-toast';
-import { ToastAction } from '@/components/ui/toast';
+import { useToast } from '@/src/components/ui/use-toast';
+import { ToastAction } from '@/src/components/ui/toast';
 import { storeTokens } from '@/src/utils/auth';
 
 function Login() {
@@ -40,7 +40,7 @@ function Login() {
            // Store the token in local storage
           // window.localStorage.setItem('token', response.token);
           storeTokens(response);
-          router.push(`/home?message=${response.message}`);
+          router.push(`/front?message=${response.message}`);
         } else if (response.status === 'failed' || 400) {
           setErrors(response.error);
           toast({
