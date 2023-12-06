@@ -7,12 +7,13 @@ import heartIcon from "@/public/assets/icons/Heart Icon.svg";
 import messageIcon from "@/public/assets/icons/Message Icon.svg";
 import userIcon from "@/public/assets/icons/User Icon.svg";
 import Loading from '../common/loading';
+import SearchBar from '../explore/SearchBar';
 import Image from 'next/image';
 
 
 function Navbar () {
   const icons = [homeIcon, searchIcon, heartIcon, messageIcon, userIcon];
-  const pages = [Loading, Loading, Loading, Loading, Loading];
+  const pages = [Loading, SearchBar , Loading, Loading, Loading];
 
   const tabs = icons.map((icon, index) => {
     const id = String(index + 1);
@@ -27,8 +28,8 @@ function Navbar () {
   });
 
   return (
-    <div className='w-[450px]'>
-        <Tabs defaultActiveKey="1" items={tabs} tabBarGutter={70}/>
+    <div className='w-[600px] ml-[8%]'>
+        <Tabs defaultActiveKey="1" items={tabs} tabBarGutter={110}/>
     </div>
   )
 }
