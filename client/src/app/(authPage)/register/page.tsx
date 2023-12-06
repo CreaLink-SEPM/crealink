@@ -1,14 +1,14 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useToast } from "@/components/ui/use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/src/components/ui/use-toast"
+import { ToastAction } from "@/src/components/ui/toast"
 
 
 
