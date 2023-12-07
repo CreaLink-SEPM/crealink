@@ -1,8 +1,10 @@
-  ![banner3](https://github.com/CreaLink-SEPM/crealink/assets/102708893/ed15d9c7-ea19-4675-8f58-4bae6afe7ef5)
-  
+# Project: CreaLink - Digital Tourism Platform
+
+![CreaLink Banner](https://github.com/CreaLink-SEPM/crealink/assets/102708893/ed15d9c7-ea19-4675-8f58-4bae6afe7ef5)
+
 ## Introduction
 
-In the realm of digital tourism, the absence of comprehensive online platforms for travel reviews results in erroneous decision-making. Establishing a travel review platform is crucial, enabling individuals to share their travel experiences and insights. Without such a platform, travelers struggle to access reliable information, impacting their decision-making. Simultaneously, tourism businesses lack substantial online reviews to enhance service quality and customer experiences.
+In the domain of digital tourism, the absence of comprehensive online platforms for travel reviews often leads to erroneous decision-making. Establishing a robust travel review platform is imperative, facilitating individuals to share their travel experiences and insights. Without such a platform, travelers encounter difficulties accessing reliable information, impacting their decision-making. Concurrently, tourism businesses lack substantial online reviews to augment service quality and customer experiences.
 
 ## Team Information
 
@@ -13,50 +15,46 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
   - Nguyen Huynh Quang (S3927039)
   - Dinh Le Hong Tin (S3932134)
 
-### Running on Localhost
+### Running Locally
 
-To be added...
+Details coming soon...
 
-### Website Run on Server
+### Website Running on Server
 
+- [Localhost](http://localhost:3000/) => (Run `npm run dev`)
 
-  + http://localhost:3000/  => ( Run npm run dev )  
+**Website Running on Server:**
 
+- Front-End (Production): [CreaLink on Vercel](https://client-crealink.vercel.app/)
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
+### Scope & Functionality
 
-- WEBSITE RUN ON SERVER:
+- Authentication: Login, Registration, Email Verification.
+- User Profile Management: Edit account, Change password.
+- Social Interaction: Add friends, View others' accounts.
+- Exploration: Discover popular posts, Search tool.
+- Content Operations: View, Create, Delete, Update posts.
+- Responsive UI: Mobile and Desktop designs.
+- Personalization: Language selection (English, Vietnamese), Light/Dark themes.
+- Bookmarks: Save preferred content.
+- Communication: Direct messaging between users.
+- AI Integration: Post suggestions through AI tools.
 
- + Front-End (Production) : https://client-crealink.vercel.app/
+## Technologies Used
 
+- Front-End: React, Next.js, TailwindCSS
+- Back-End: Node.js, Express.js, MongoDB, Appwrite
+- Design: Figma
+- Deployment: AWS, Vercel
+- Project Management: Jira
+- CI/CD: Github Actions
+- Version Control: Github
 
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-### SCOPE & FUNCTION :
-
--Login and Registration, Email verification.
-- User Profile, edit account, change password.
-- Add friends and view details of others' accounts.
-- Explore Page to view the most popular posts, as well as a search tool.
-- View, Create, Delete, Update, and Interact with posts.
-- Responsive design for mobile and desktop UI.
-- Language selection (English and Vietnamese) and light/dark themes.
-- Save liked content.
-- Direct messaging between users.
-- Integration of AI tools for post suggestions.
-
-## Technologies
-
-- React, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
-
- 
-## Contributions: 
+## Contributions
 
 - Pham Ngoc Huy (%)
 - Nguyen Trong Khang (%)
 - Nguyen Huynh Quang (%)
 - Dinh Le Hong Tin (%)
-
 
 - Version: 13.0.5
