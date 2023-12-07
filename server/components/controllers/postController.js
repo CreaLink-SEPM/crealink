@@ -179,7 +179,44 @@ exports.deletePost = async (req, res, next) => {
         }
         next(err);
     }
-}
+};
+    exports.toggleLike = async (req, res, next) => {
+        try {
+            const postId = req.params.postId;
+            const post = await Post.findById(postId);
+            if (!post) {
+                const error = new Error('Could not find post');
+                error.statusCode = 404;
+                throw error;
+            }
+            const currentUserId =  req.userId;
+            if (!currentUserId) {
+                return res.status(401).json({
+                    message: 'User not found',
+                    status: 'error'
+                });
+            };
+            if (post.likes.includes(currentUserId)) {
+                post.likes = post.likes.filter((id) => id !== currentUserId);
+                await post.save();
+                return res.status(200).json({
+                    message: 'Successullu unliked the post'
+                })
+            } else {
+                await post.likes.push(currentUserId);
+                await post.save();
+                return res.status(200).json({
+                    message: 'Successfully liked the post'
+                })
+            }
+
+        } catch (err) {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        }
+    }
 
 const clearImage = filePath => {
     filePath = path.join(__dirname, '..', filePath);
