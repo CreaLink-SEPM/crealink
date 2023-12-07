@@ -8,10 +8,7 @@ router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
 router.post("/logout", UserController.logoutUser);
 router.post("/refresh-token", UserController.refreshTokenUser);
-router.get(
-  "/get-all-user",
-  AuthMiddleware.userAuthenToken,
-  UserController.getAllUser
-);
+router.get("/get-user/:username", UserController.getUser);
+router.get("/get-all-users", UserController.getAllUsers);
 
 module.exports = router;

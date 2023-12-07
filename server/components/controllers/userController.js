@@ -155,7 +155,7 @@ const refreshTokenUser = async (req, res) => {
       const accessToken = generateAccessToken(data);
 
       // Remove old access token from header
-      res.setHeader('accessToken', accessToken);
+      res.setHeader("accessToken", accessToken);
 
       res.status(200).json({ status: "success", accessToken });
     });
@@ -169,8 +169,8 @@ const logoutUser = async (req, res) => {
   try {
     refreshTokens = [];
     // Clear tokens from headers
-    res.setHeader('accessToken', '');
-    res.setHeader('refreshToken', '');
+    res.setHeader("accessToken", "");
+    res.setHeader("refreshToken", "");
     return res
       .status(200)
       .json({ status: "OK", message: "User logged out successfully" });
@@ -183,10 +183,66 @@ const getAllUser = async (req, res, next) => {
   res.json({ status: "success", data: "YESSSSSSSSSSS" });
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const { username: requestedUsername } = req.params;
+
+    if (!requestedUsername) {
+      return res.status(400).json({
+        status: "error",
+        message: "Username is required",
+      });
+    }
+
+    const user = await User.findOne({ username: requestedUsername });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const { _id, name, email, username } = user;
+    return res.status(200).json({
+      status: "success",
+      data: {
+        _id,
+        name,
+        email,
+        username,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}, { password: 0 });
+
+    return res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getAllUser,
   logoutUser,
   refreshTokenUser,
+  getUser,
+  getAllUsers
 };
