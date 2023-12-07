@@ -13,6 +13,7 @@ router.post('/post', AuthMiddleware.userAuthenToken,
  postController.createPost);
  router.get('/posts', AuthMiddleware.userAuthenToken, postController.getPosts);
  router.get('/post/:postId', AuthMiddleware.userAuthenToken, postController.getPost);
+ router.get('/like/:postId', AuthMiddleware.userAuthenToken, postController.getLikes);
  router.put('/post/:postId', AuthMiddleware.userAuthenToken, 
  [
    body('title').trim().isLength({min: 1}),
@@ -22,6 +23,7 @@ router.post('/post', AuthMiddleware.userAuthenToken,
 router.put('/like/:postId', AuthMiddleware.userAuthenToken, postController.toggleLike);
 router.delete('/post/:postId', AuthMiddleware.userAuthenToken, postController.deletePost)
  module.exports = router;
+ 
  
 
 

@@ -9,4 +9,5 @@ router.post("/logout", UserController.logoutUser);
 router.post("/refresh-token", AuthMiddleware.userAuthenToken, UserController.refreshTokenUser);
 router.get("/get-all-user", AuthMiddleware.userAuthenToken, UserController.getAllUser);
 
+
 module.exports = router;

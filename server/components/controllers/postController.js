@@ -61,9 +61,17 @@ exports.getPosts = async (req, res, next) => {
             .sort({createdAt: -1})
             .skip((currentPage - 1) * perPage)
             .limit(perPage);
+        const postLikes = await Promise.all(posts.map(async (post) => {
+            const likesCount = post.likes.length;
+            const {likes, ...postWithoutLikes} = post.toObject();
+            return {
+                ...postWithoutLikes,
+                likesCount
+            }
+        }))
         res.status(200).json({
             message: 'Fetched post successfully',
-            posts: posts
+            posts: postLikes
         })
     }
     catch (err) {
@@ -83,10 +91,40 @@ exports.getPost = async (req, res, next) => {
             error.statusCode = 403;
             throw error;
         }
+        const likesCount = post.likes.length;
+        const {likes, ...postWithoutLikes} = post.toObject();
         res.status(200).json({
             message: 'Post fetched successfully',
-            post: post
+            post: {
+                ...postWithoutLikes,
+                likesCount
+            }
         })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+exports.getLikes = async (req, res, next) => {
+    const postId = req.params.postId;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        };
+        const likesArray = post.likes;
+        const likedUsers = await User.find({ _id: { $in: likesArray } }, 'username');
+        res.status(200).json({
+            message: 'Fetched liked users successfully',
+            post: {
+                likedUsers
+            }
+        })
+        
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
@@ -180,7 +218,7 @@ exports.deletePost = async (req, res, next) => {
         next(err);
     }
 };
-    exports.toggleLike = async (req, res, next) => {
+exports.toggleLike = async (req, res, next) => {
         try {
             const postId = req.params.postId;
             const post = await Post.findById(postId);
@@ -199,12 +237,14 @@ exports.deletePost = async (req, res, next) => {
             if (post.likes.includes(currentUserId)) {
                 post.likes = post.likes.filter((id) => id !== currentUserId);
                 await post.save();
+                io.getIO().emit(('posts', {action: 'unliked', user: currentUserId, post: post}))
                 return res.status(200).json({
-                    message: 'Successullu unliked the post'
+                    message: 'Successfully unliked the post'
                 })
             } else {
                 await post.likes.push(currentUserId);
                 await post.save();
+                io.getIO().emit('posts', {action: 'liked', user: currentUserId, post: post})
                 return res.status(200).json({
                     message: 'Successfully liked the post'
                 })
