@@ -18,6 +18,7 @@
     },
     "homepage": "https://github.com/CreaLink-SEPM/crealink#readme",
     "dependencies": {
+        "aws-sdk": "^2.1514.0",
         "bcrypt": "^5.1.0",
         "body-parser": "^1.20.2",
         "cookie-parser": "^1.4.6",

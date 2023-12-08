@@ -7,6 +7,7 @@ const routes = require("./components/routes/router.js");
 const multer = require("multer");
 const path = require("path");
 const {init: initSocket} = require("./socket");
+const AWS = require("aws-sdk");
 
 dotenv.config();
 
@@ -16,6 +17,11 @@ connectDB();
 const port = process.env.PORT || 5000;
 const app = express();
 
+AWS.config.update({
+    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY
+})
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
