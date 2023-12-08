@@ -7,6 +7,7 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
 ## Team Information
 
 - **Group:** Team 2
+
 - **Members:**
   - Pham Ngoc Huy (S3926681)
   - Nguyen Trong Khang (S3929994)
@@ -37,7 +38,7 @@ To be added...
 
 -Login and Registration, Email verification.
 - User Profile, edit account, change password.
-- Add friends and view details of others' accounts.
+- Follow friends and view details of others' accounts.
 - Explore Page to view the most popular posts, as well as a search tool.
 - View, Create, Delete, Update, and Interact with posts.
 - Responsive design for mobile and desktop UI.
