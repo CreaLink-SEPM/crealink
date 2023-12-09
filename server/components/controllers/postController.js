@@ -4,8 +4,8 @@ const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const io = require('../../socket');
 const {validationResult} = require('express-validator');
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
+const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3');
+const uuid = require('uuid');
 
 exports.createPost = async (req, res, next) => {
         try {
@@ -18,22 +18,18 @@ exports.createPost = async (req, res, next) => {
             const title = req.body.title;
             const content = req.body.content;
             const imageUrl = req.file.path;
-            const fileContent = req.file.buffer;
-            const S3FileName = `images/${new Date().toISOString()}-${Math.round(Math.random() * 1000)}${fileContent}`;
+            const client = new S3Client({region: 'ap-southeast-1'});
+            const stream = fs.createReadStream(imageUrl);
+            const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}`;
             const params = {
-                Bucket: process.env.BUCKET_NAME,
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
                 Key: S3FileName,
-                Body: fileContent,
-                ACL: 'public-read'
+                Body: stream,
+                ServerSideEncryption: "AES256"
             }
-            s3.putObject(params, function(perr, pres) {
-                if (perr) {
-                    console.log('Error uploading the data', perr)
-                } else {
-                    console.log('Successfully uploaded the data', pres)
-                }
-            })
-            fs.unlinkSync(imageUrl);
+            const uploadResult = await client.send(new PutObjectCommand(params));
+            const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${S3FileName}`;
+            await fs.unlinkSync(imageUrl);
             const user = await User.findById(req.userId);
             if (!user) {
                 return res.status(401).json({
@@ -44,7 +40,7 @@ exports.createPost = async (req, res, next) => {
             const post = new Post({
                 title: title,
                 content: content,
-                imageUrl: imageUrl,
+                imageUrl: s3ImageUrl,
                 creator: req.userId
             });
             const result = await post.save();
