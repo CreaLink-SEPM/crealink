@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Toaster } from '@/src/components/ui/toaster';
 import './globals.css';
 import StyledComponentsRegistry from '@/lib/AntRegistry';
 
@@ -19,7 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        <Toaster />
       </body>
     </html>
   );
