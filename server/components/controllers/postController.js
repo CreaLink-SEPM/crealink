@@ -19,13 +19,13 @@ exports.createPost = async (req, res, next) => {
             const title = req.body.title;
             const content = req.body.content;
             const imageUrl = req.file.path;
+            const fileExtension = path.extname(req.file.originalname);
             const stream = fs.createReadStream(imageUrl);
-            const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}`;
+            const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
             const params = {
                 Bucket: process.env.AWS_S3_BUCKET_NAME,
                 Key: S3FileName,
-                Body: stream,
-                ServerSideEncryption: "AES256"
+                Body: stream
             }
             const uploadResult = await client.send(new PutObjectCommand(params));
             const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${S3FileName}`;
