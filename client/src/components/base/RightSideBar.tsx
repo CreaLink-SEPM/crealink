@@ -14,14 +14,14 @@ function RightSideBar() {
       </div>
 
       {/* TRENDING TOPIC LIST  */}
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 20 }}>
+      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
         <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
           Design
         </p>
         <h5 className="text-base text-black font-bold font-[Inter] break-word leading-tight mb-1">Desktop</h5>
         <p className=" w-20 text-zinc-600 text-sm font-normal font-[Inter] leading-tight">123.9k posts</p>
       </Card>
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 20 }}>
+      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
         <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
           Movies and series
         </p>
@@ -30,7 +30,7 @@ function RightSideBar() {
         </h5>
         <p className=" w-20 text-zinc-600 text-sm font-normal font-[Inter] leading-tight">93.4k posts</p>
       </Card>
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 20 }}>
+      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
         <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
           Tech
         </p>
