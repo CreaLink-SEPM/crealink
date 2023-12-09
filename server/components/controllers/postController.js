@@ -4,8 +4,9 @@ const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const io = require('../../socket');
 const {validationResult} = require('express-validator');
-const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3');
+const {S3Client, PutObjectCommand, DeleteObjectCommand} = require('@aws-sdk/client-s3');
 const uuid = require('uuid');
+const client = new S3Client({region: process.env.AWS_REGION});
 
 exports.createPost = async (req, res, next) => {
         try {
@@ -18,7 +19,6 @@ exports.createPost = async (req, res, next) => {
             const title = req.body.title;
             const content = req.body.content;
             const imageUrl = req.file.path;
-            const client = new S3Client({region: 'ap-southeast-1'});
             const stream = fs.createReadStream(imageUrl);
             const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}`;
             const params = {
@@ -159,32 +159,38 @@ exports.updatePost = async (req, res, next) => {
         const title = req.body.title;
         const content = req.body.content;
         let imageUrl = req.body.image;
-
         if (req.file) {
             imageUrl = req.file.path;
         }
-
         const post = await Post.findById(postId);
         if (!post) {
             const error = new Error('Could not find post');
             error.statusCode = 404;
             throw error;
         }
-
-        if (imageUrl && imageUrl !== post.imageUrl) {
+        const oldImageUrl = post.imageUrl
+        if (imageUrl !== oldImageUrl) {
             // Delete old image
-            clearImage(post.imageUrl);
-            post.imageUrl = imageUrl;
+            await clearImageFromS3(post.imageUrl);
         }
-
+        const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}`;
+        const uploadParams = {
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: newS3FileName,
+            Body: fs.createReadStream(imageUrl),
+            ServerSideEncryption: "AES256"
+        }
+        const uploadResult = await client.send(new PutObjectCommand(uploadParams));
+        const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+        await fs.unlinkSync(imageUrl);
         if (post.creator.toString() !== req.userId) {
             const error = new Error('Not authorized');
             error.statusCode = 403;
             throw error;
         }
-
         post.title = title;
         post.content = content;
+        post.imageUrl = s3ImageUrl;
 
         const result = await post.save();
         io.getIO().emit('posts', {action: 'update', post: result});
@@ -214,7 +220,7 @@ exports.deletePost = async (req, res, next) => {
             throw error;
         }
         if (post.imageUrl) {
-            await clearImage(post.imageUrl);
+            await clearImageFromS3(post.imageUrl);
         }
         await Post.findByIdAndDelete(postId);
         const user = await User.findById(req.userId);
@@ -272,13 +278,16 @@ exports.toggleLike = async (req, res, next) => {
         }
     }
 
-const clearImage = filePath => {
-    filePath = path.join(__dirname, '..', filePath);
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            console.log('Error deleting image: ', err);
-        } else {
-            console.log('Image deleted successfully');
+const clearImageFromS3 = async (imageUrl) => {
+    const key = imageUrl.replace("https://crealink-images.s3.amazonaws.com/", "")
+    try {
+        const deleteParams = {
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: key
         }
-    })
+        const deleteResult = await client.send(new DeleteObjectCommand(deleteParams));
+        console.log('Old image deleted successfully: ', deleteResult)
+    } catch (err) {
+        console.log('Error deleting image from S3: ', err);
+    }
 }
