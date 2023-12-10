@@ -9,34 +9,28 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
 - **Group:** Team 2
 
 - **Members:**
-  - Pham Ngoc Huy (S3926681)
-  - Nguyen Trong Khang (S3929994)
-  - Nguyen Huynh Quang (S3927039)
-  - Dinh Le Hong Tin (S3932134)
+
+  - Pham Ngoc Huy (s3926681)
+  - Nguyen Trong Khang (s3929994)
+  - Nguyen Huynh Quang (s3927039)
+  - Dinh Le Hong Tin (s3932134)
 
 ### Running on Localhost
 
 To be added...
 
-### Website Run on Server
-
-
-  + http://localhost:3000/  => ( Run npm run dev )  
-
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-- WEBSITE RUN ON SERVER:
+### Website run on server :
 
  + Front-End (Production) : https://client-crealink.vercel.app/
 
-
-
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-### SCOPE & FUNCTION :
+### Scope & function :
 
--Login and Registration, Email verification.
+- Login and Registration, Email verification.
 - User Profile, edit account, change password.
 - Follow friends and view details of others' accounts.
 - Explore Page to view the most popular posts, as well as a search tool.
@@ -49,7 +43,7 @@ To be added...
 
 ## Technologies
 
-- React, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
+- ReactJS, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
 
  
 ## Contributions: 
