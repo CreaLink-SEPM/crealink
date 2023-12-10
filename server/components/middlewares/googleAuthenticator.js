@@ -1,8 +1,19 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 
 dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    // user: process.env.EMAIL_USER,
+    // pass: process.env.EMAIL_PASSWORD,
+    user: "kiaitosantori@gmail.com",
+    pass: "fshj cdgp iilj kvxg",
+  },
+});
 
 passport.use(
   new GoogleStrategy(
@@ -13,6 +24,22 @@ passport.use(
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
+      // Send email after successful authentication
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: profile.email,
+        subject: "Successful Login Notification",
+        text: "You have successfully logged in through Google authentication.",
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.error("Error sending email:", error);
+        } else {
+          console.log("Email sent:", info.response);
+        }
+      });
+
       return done(null, profile);
     }
   )
