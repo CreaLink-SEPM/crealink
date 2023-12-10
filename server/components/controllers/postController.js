@@ -173,12 +173,12 @@ exports.updatePost = async (req, res, next) => {
             // Delete old image
             await clearImageFromS3(post.imageUrl);
         }
-        const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}`;
+        const fileExtension = (req.file.originalname);
+        const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;;
         const uploadParams = {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: newS3FileName,
-            Body: fs.createReadStream(imageUrl),
-            ServerSideEncryption: "AES256"
+            Body: fs.createReadStream(imageUrl)
         }
         const uploadResult = await client.send(new PutObjectCommand(uploadParams));
         const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
