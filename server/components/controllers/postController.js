@@ -170,7 +170,7 @@ exports.updatePost = async (req, res, next) => {
         const content = req.body.content;
         let imageUrl = req.body.image;
         if (req.file) {
-            imageUrl = req.file.path;
+            const image = req.file.path;
             const oldImageUrl = post.imageUrl
             if (imageUrl !== oldImageUrl) {
                 // Delete old image
@@ -181,10 +181,11 @@ exports.updatePost = async (req, res, next) => {
             const uploadParams = {
                 Bucket: process.env.AWS_S3_BUCKET_NAME,
                 Key: newS3FileName,
-                Body: fs.createReadStream(imageUrl)
+                Body: fs.createReadStream(image)
             }
             const uploadResult = await client.send(new PutObjectCommand(uploadParams));
             imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+            await fs.unlinkSync(image)
         }
         
         if (post.creator.toString() !== req.userId) {
