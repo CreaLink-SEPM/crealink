@@ -5,19 +5,15 @@ import { User, LifeBuoy } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import SignOutBtn from './SignOutBtn';
+import EditProfile from '../user/EditProfile';
 
 function AvatarSetting() {
   return (
@@ -30,16 +26,17 @@ function AvatarSetting() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel className="text-center">Welcome back, Huy</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <div className="flex items-center justify-center p-1 hover:bg-slate-400 rounded-md cursor-pointer">
           <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-          <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-        </DropdownMenuItem>
+          <EditProfile> Edit Profile</EditProfile>
+          <DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut>
+        </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <div className='flex items-center justify-center p-1 hover:bg-slate-400 rounded-md'>
           <LifeBuoy className="mr-2 h-4 w-4" />
-          <span>Support</span>
-        </DropdownMenuItem>
+          <div className='cursor-pointer'>Support</div>
+          <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
+        </div>
         <DropdownMenuSeparator />
         <div className=" ml-[32%] my-1">
           <SignOutBtn />
