@@ -78,7 +78,7 @@ export default function SearchBar() {
             </div>
           </div>
           <div className="mx-5 rounded-lg justify-center items-center inline-flex">
-            <div className="">
+            <div className="text-black">
               <Button variant="outline" className="border-2 text-black w-[100px] rounded-xl font-bold text-lg'" asChild>
                 <Link href="/login">Follow</Link>
               </Button>
@@ -136,7 +136,7 @@ export default function SearchBar() {
             </div>
           </div>
           <div className="mx-5 rounded-lg justify-center items-center inline-flex">
-            <div className="">
+            <div className="text-black">
               <Button variant="outline" className="border-2 text-black w-[100px] rounded-xl font-bold text-lg'" asChild>
                 <Link href="/login">Follow</Link>
               </Button>
@@ -194,7 +194,7 @@ export default function SearchBar() {
             </div>
           </div>
           <div className="mx-5 rounded-lg justify-center items-center inline-flex">
-            <div className="">
+            <div className="text-black">
               <Button variant="outline" className="border-2 w-[100px] rounded-xl font-bold text-lg'" asChild>
                 <Link href="/login">Follow</Link>
               </Button>
@@ -252,7 +252,7 @@ export default function SearchBar() {
             </div>
           </div>
           <div className="mx-5 rounded-lg justify-center items-center inline-flex">
-            <div className="">
+            <div className="text-black">
               <Button variant="outline" className="border-2 w-[100px] rounded-xl font-bold text-lg'" asChild>
                 <Link href="/login">Follow</Link>
               </Button>

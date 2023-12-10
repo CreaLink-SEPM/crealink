@@ -4,18 +4,20 @@ import '../globals.css';
 import { Suspense } from 'react';
 import BaseComponent from '@/src/components/base/BaseComponent';
 import Loading from '@/src/components/common/Loading';
-import Navbar from '@/src/components/base/Navbar';
 import AvatarSetting from '@/src/components/common/AvatarSetting';
-import LeftSideBar from '@/src/components/base/LeftSideBar';
 import RightSideBar from '@/src/components/base/RightSideBar';
+import Navbar from '@/src/components/base/navbar';
+import Footer from '@/src/components/common/Footer';
+import LeftSideBar from '@/src/components/base/LeftSideBar';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className="flex flex-col w-full xl:container">
       <div className="flex justify-between items-baseline mt-4 mr-3">
-        <div className="px-3 my-2">
+        <Link href="/" className="px-3 my-2">
           <Image src="assets/icons/Logo Icon.svg" alt="homepage" width={50} height={50} />
-        </div>
+        </Link>
         <div className="flex-grow flex justify-center text-red-100">
           <Suspense fallback={<Loading />}>
             <Navbar />
@@ -32,6 +34,7 @@ export default function Home() {
         <BaseComponent activeTab="1" />
       </div>
       <RightSideBar />
+      <Footer />   
     </div>
   );
 }
