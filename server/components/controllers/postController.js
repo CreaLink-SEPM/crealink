@@ -18,18 +18,22 @@ exports.createPost = async (req, res, next) => {
             }
             const title = req.body.title;
             const content = req.body.content;
-            const imageUrl = req.file.path;
-            const fileExtension = path.extname(req.file.originalname);
-            const stream = fs.createReadStream(imageUrl);
-            const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
-            const params = {
-                Bucket: process.env.AWS_S3_BUCKET_NAME,
-                Key: S3FileName,
-                Body: stream
+            let imageUrl;
+            if (req.file) {
+                const image = req.file.path;
+                const fileExtension = path.extname(req.file.originalname);
+                const stream = fs.createReadStream(image);
+                const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+                const params = {
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: S3FileName,
+                    Body: stream
+                }
+                const uploadResult = await client.send(new PutObjectCommand(params));
+                imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${S3FileName}`;
+                await fs.unlinkSync(image);
             }
-            const uploadResult = await client.send(new PutObjectCommand(params));
-            const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${S3FileName}`;
-            await fs.unlinkSync(imageUrl);
+            
             const user = await User.findById(req.userId);
             if (!user) {
                 return res.status(401).json({
@@ -40,7 +44,7 @@ exports.createPost = async (req, res, next) => {
             const post = new Post({
                 title: title,
                 content: content,
-                imageUrl: s3ImageUrl,
+                imageUrl: imageUrl,
                 creator: req.userId
             });
             const result = await post.save();
@@ -149,6 +153,12 @@ exports.getLikes = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        }
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const error = new Error('Validation failed, entered data is not correct');
@@ -161,28 +171,22 @@ exports.updatePost = async (req, res, next) => {
         let imageUrl = req.body.image;
         if (req.file) {
             imageUrl = req.file.path;
+            const oldImageUrl = post.imageUrl
+            if (imageUrl !== oldImageUrl) {
+                // Delete old image
+                await clearImageFromS3(post.imageUrl);
+            }
+            const fileExtension = (req.file.originalname);
+            const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;;
+            const uploadParams = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: newS3FileName,
+                Body: fs.createReadStream(imageUrl)
+            }
+            const uploadResult = await client.send(new PutObjectCommand(uploadParams));
+            imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
         }
-        const post = await Post.findById(postId);
-        if (!post) {
-            const error = new Error('Could not find post');
-            error.statusCode = 404;
-            throw error;
-        }
-        const oldImageUrl = post.imageUrl
-        if (imageUrl !== oldImageUrl) {
-            // Delete old image
-            await clearImageFromS3(post.imageUrl);
-        }
-        const fileExtension = (req.file.originalname);
-        const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;;
-        const uploadParams = {
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: newS3FileName,
-            Body: fs.createReadStream(imageUrl)
-        }
-        const uploadResult = await client.send(new PutObjectCommand(uploadParams));
-        const s3ImageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
-        await fs.unlinkSync(imageUrl);
+        
         if (post.creator.toString() !== req.userId) {
             const error = new Error('Not authorized');
             error.statusCode = 403;
@@ -190,7 +194,7 @@ exports.updatePost = async (req, res, next) => {
         }
         post.title = title;
         post.content = content;
-        post.imageUrl = s3ImageUrl;
+        post.imageUrl = imageUrl;
 
         const result = await post.save();
         io.getIO().emit('posts', {action: 'update', post: result});
@@ -279,6 +283,10 @@ exports.toggleLike = async (req, res, next) => {
     }
 
 const clearImageFromS3 = async (imageUrl) => {
+     if (!imageUrl) {
+        console.log('No image URL provided');
+        return;
+    }
     const key = imageUrl.replace("https://crealink-images.s3.amazonaws.com/", "")
     try {
         const deleteParams = {
