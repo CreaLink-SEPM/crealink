@@ -9,48 +9,52 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 ## Team Information
 
 - **Group:** Team 2
+
 - **Members:**
-  - Pham Ngoc Huy (S3926681)
-  - Nguyen Trong Khang (S3929994)
-  - Nguyen Huynh Quang (S3927039)
-  - Dinh Le Hong Tin (S3932134)
 
-### Running Locally
+  - Pham Ngoc Huy (s3926681)
+  - Nguyen Trong Khang (s3929994)
+  - Nguyen Huynh Quang (s3927039)
+  - Dinh Le Hong Tin (s3932134)
 
-Details coming soon...
 
-### Website Running on Server
+### Running on Localhost
+
+To be added...
+
+
 
 - [Localhost](http://localhost:3000/) => (Run `npm run dev`)
 
-  + http://localhost:5000/  => ( Run npm start )  
+
+### Website run on server :
+
 
 - Front-End (Production): [CreaLink on Vercel](https://client-crealink.vercel.app/)
 
-### Scope & Functionality
 
-- Authentication: Login, Registration, Email Verification.
-- User Profile Management: Edit account, Change password.
-- Social Interaction: Add friends, View others' accounts.
-- Exploration: Discover popular posts, Search tool.
-- Content Operations: View, Create, Delete, Update posts.
-- Responsive UI: Mobile and Desktop designs.
-- Personalization: Language selection (English, Vietnamese), Light/Dark themes.
-- Bookmarks: Save preferred content.
-- Communication: Direct messaging between users.
-- AI Integration: Post suggestions through AI tools.
++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Technologies Used
+### Scope & function :
 
-- Front-End: React, Next.js, TailwindCSS
-- Back-End: Node.js, Express.js, MongoDB, Appwrite
-- Design: Figma
-- Deployment: AWS, Vercel
-- Project Management: Jira
-- CI/CD: Github Actions
-- Version Control: Github
+- Login and Registration, Email verification.
+- User Profile, edit account, change password.
+- Follow friends and view details of others' accounts.
+- Explore Page to view the most popular posts, as well as a search tool.
+- View, Create, Delete, Update, and Interact with posts.
+- Responsive design for mobile and desktop UI.
+- Language selection (English and Vietnamese) and light/dark themes.
+- Save liked content.
+- Direct messaging between users.
+- Integration of AI tools for post suggestions.
 
-## Contributions
+## Technologies
+
+- ReactJS, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
+
+ 
+## Contributions: 
+
 
 - Pham Ngoc Huy (%)
 - Nguyen Trong Khang (%)
