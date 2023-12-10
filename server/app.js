@@ -23,13 +23,14 @@ AWS.config.update({
 })
 
 const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './components/images')
-    },
-    filename: (req, file, cb) => {
-        cb(null, new Date().toISOString() + '-' + file.originalname) 
-    }
+  destination: (req, file, cb) => {
+    cb(null, "./components/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
 });
+
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/webp') {
         cb(null, true)
@@ -38,20 +39,22 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
-
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
-app.use('/components/images', express.static(path.join(__dirname, 'images')));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
+app.use("/components/images", express.static(path.join(__dirname, "images")));
 app.use(bodyParser.json());
 routes(app);
 
-const server = app.listen(port, () => console.log(`Server started on port ${port}`));
+const server = app.listen(port, () =>
+  console.log(`Server started on port ${port}`)
+);
 
 const io = initSocket(server);
-io.on('connection', socket => {
-    console.log('Connection established')
-})
-
+io.on("connection", (socket) => {
+  console.log("Connection established");
+});
