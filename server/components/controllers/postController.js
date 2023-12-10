@@ -98,8 +98,7 @@ exports.getPosts = async (req, res, next) => {
         }
         next(err);
     }
-
-}
+  };
 exports.getPost = async (req, res, next) => {
     const postId = req.params.postId;
     try {
@@ -197,18 +196,18 @@ exports.updatePost = async (req, res, next) => {
         post.content = content;
         post.imageUrl = imageUrl;
 
-        const result = await post.save();
-        io.getIO().emit('posts', {action: 'update', post: result});
-        res.status(200).json({
-            message: 'Post updated successfully',
-            post: result
-        });
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+    const result = await post.save();
+    io.getIO().emit("posts", { action: "update", post: result });
+    res.status(200).json({
+      message: "Post updated successfully",
+      post: result,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
     }
+    next(err);
+  }
 };
 exports.deletePost = async (req, res, next) => {
     try {
@@ -243,6 +242,28 @@ exports.deletePost = async (req, res, next) => {
         next(err);
     }
 };
+exports.sharePost = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 422;
+            throw error;
+        }
+        const shareableUrl = `${req.protocol}://${req.get('host')}/posts/${post._id}`;
+        res.status(200).json({
+            message: 'Share post URL successfully',
+            shareableUrl: shareableUrl
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 exports.toggleLike = async (req, res, next) => {
         try {
             const postId = req.params.postId;

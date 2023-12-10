@@ -1,9 +1,8 @@
-const express = require('express');
-const {body} = require('express-validator');
-const postController = require('../controllers/postController');
-const AuthMiddleware = require('../middlewares/authMiddleware');
+const express = require("express");
+const { body } = require("express-validator");
+const postController = require("../controllers/postController");
+const AuthMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
-
 
 router.post('/post', AuthMiddleware.userAuthenToken,
  [
@@ -20,10 +19,7 @@ router.post('/post', AuthMiddleware.userAuthenToken,
    body('content').trim().isLength({min: 1})
  ]
  ,postController.updatePost);
+ router.get('/share/:postId', AuthMiddleware.userAuthenToken, postController.sharePost);
 router.put('/like/:postId', AuthMiddleware.userAuthenToken, postController.toggleLike);
 router.delete('/post/:postId', AuthMiddleware.userAuthenToken, postController.deletePost)
  module.exports = router;
- 
- 
-
-
