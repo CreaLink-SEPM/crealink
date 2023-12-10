@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Card, Button } from 'antd';
+import { Card, Button, Row, Col } from 'antd';
 import Link from 'next/link';
 import DropDownMenu from '../common/DropDownMenu';
 
@@ -14,15 +14,17 @@ function RightSideBar() {
       </div>
 
       {/* TRENDING TOPIC LIST  */}
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
+      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+      <Col className="gutter-row" span={6}>
+      <Card style={{ width: '570%', textAlign: 'left', border: 'none', marginTop: 5 }}>
         <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
           Design
         </p>
         <h5 className="text-base text-black font-bold font-[Inter] break-word leading-tight mb-1">Desktop</h5>
         <p className=" w-20 text-zinc-600 text-sm font-normal font-[Inter] leading-tight">123.9k posts</p>
       </Card>
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
-        <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
+      <Card style={{ width: '570%', textAlign: 'left', border: 'none', marginTop: 5 }}>
+        <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral'570%0 text-base">
           Movies and series
         </p>
         <h5 className="text-base text-black font-bold font-[Inter] break-word leading-tight mb-1">
@@ -30,7 +32,7 @@ function RightSideBar() {
         </h5>
         <p className=" w-20 text-zinc-600 text-sm font-normal font-[Inter] leading-tight">93.4k posts</p>
       </Card>
-      <Card style={{ width: 340, textAlign: 'left', border: 'none', marginTop: 5 }}>
+      <Card style={{ width: '570%', textAlign: 'left', border: 'none', marginTop: 5 }}>
         <p className="leading-[19px] text-shadow font-normal font-[Inter] uppercase mb-1 tracking-wider text-neutral-400 text-base">
           Tech
         </p>
@@ -38,6 +40,8 @@ function RightSideBar() {
         <p className=" w-20 text-zinc-600 text-sm font-normal font-[Inter] leading-tight">86.2k posts</p>
       </Card>
 
+      </Col>
+      </Row>
       <Button style={{ background: '#A20103', color: 'white', marginTop: 20, borderRadius: 10 }}>
         <Link href="/" className="text-sm">
           See more{' '}
