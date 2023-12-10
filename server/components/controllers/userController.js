@@ -120,7 +120,7 @@ const generateAccessToken = (user) => {
       email: user.email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "30s" }
+    { expiresIn: "10h" }
   );
 };
 

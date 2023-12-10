@@ -6,7 +6,8 @@ const cookieParser = require("cookie-parser");
 const routes = require("./components/routes/router.js");
 const multer = require("multer");
 const path = require("path");
-const { init: initSocket } = require("./socket");
+const {init: initSocket} = require("./socket");
+const AWS = require("aws-sdk");
 
 dotenv.config();
 
@@ -16,6 +17,11 @@ connectDB();
 const port = process.env.PORT || 5000;
 const app = express();
 
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+})
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./components/images");
@@ -24,17 +30,14 @@ const fileStorage = multer.diskStorage({
     cb(null, new Date().toISOString() + "-" + file.originalname);
   },
 });
+
 const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg"
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/webp') {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+}
 
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
