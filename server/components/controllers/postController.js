@@ -4,53 +4,71 @@ const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const io = require('../../socket');
 const {validationResult} = require('express-validator');
+const {S3Client, PutObjectCommand, DeleteObjectCommand} = require('@aws-sdk/client-s3');
+const uuid = require('uuid');
+const client = new S3Client({region: process.env.AWS_REGION});
 
 exports.createPost = async (req, res, next) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const error = new Error('Validation failed, entered data is not correct');
-            error.statusCode = 422;
-            throw error;
-        }
-        const title = req.body.title;
-        const content = req.body.content;
-        const imageUrl = req.file.path;
-        const user = await User.findById(req.userId);
-        if (!user) {
-            return res.status(401).json({
-                message: 'User not found',
-                status: 'error'
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const error = new Error('Validation failed, entered data is not correct');
+                error.statusCode = 422;
+                throw error;
+            }
+            const title = req.body.title;
+            const content = req.body.content;
+            let imageUrl;
+            if (req.file) {
+                const image = req.file.path;
+                const fileExtension = path.extname(req.file.originalname);
+                const stream = fs.createReadStream(image);
+                const S3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+                const params = {
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: S3FileName,
+                    Body: stream
+                }
+                const uploadResult = await client.send(new PutObjectCommand(params));
+                imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${S3FileName}`;
+                await fs.unlinkSync(image);
+            }
+            
+            const user = await User.findById(req.userId);
+            if (!user) {
+                return res.status(401).json({
+                    message: 'User not found',
+                    status: 'error'
+                })
+            }
+            const post = new Post({
+                title: title,
+                content: content,
+                imageUrl: imageUrl,
+                creator: req.userId
+            });
+            const result = await post.save();
+            const creator = user;
+            user.posts.push(post);
+            await user.save();
+            io.getIO().emit('posts', {
+                action: 'create',
+                post: {...post, creator: {_id: req.userId, name: user.name}}
+            })
+            res.status(201).json({
+                message: 'Post created successfully',
+                posts: post,
+                creator: {_id: creator._id, name: creator.username}
             })
         }
-        const post = new Post({
-            title: title,
-            content: content,
-            imageUrl: imageUrl,
-            creator: req.userId
-        });
-        const result = await post.save();
-        const creator = user;
-        user.posts.push(post);
-        await user.save();
-        io.getIO().emit('posts', {
-            action: 'create',
-            post: {...post, creator: {_id: req.userId, name: user.name}}
-        })
-        res.status(201).json({
-            message: 'Post created successfully',
-            posts: post,
-            creator: {_id: creator._id, name: creator.username}
-        })
-    }
-    catch (err) {
-        console.log(err);
-        if (!err.statusCode) {
-            err.statusCode = 500
+        catch (err) {
+            console.log(err);
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err);
         }
-        next(err);
     }
-}
 exports.getPosts = async (req, res, next) => {
     const currentPage = req.query.page || 1;
     const perPage = 10;
@@ -61,9 +79,17 @@ exports.getPosts = async (req, res, next) => {
             .sort({createdAt: -1})
             .skip((currentPage - 1) * perPage)
             .limit(perPage);
+        const postLikes = await Promise.all(posts.map(async (post) => {
+            const likesCount = post.likes.length;
+            const {likes, ...postWithoutLikes} = post.toObject();
+            return {
+                ...postWithoutLikes,
+                likesCount
+            }
+        }))
         res.status(200).json({
             message: 'Fetched post successfully',
-            posts: posts
+            posts: postLikes
         })
     }
     catch (err) {
@@ -72,8 +98,7 @@ exports.getPosts = async (req, res, next) => {
         }
         next(err);
     }
-
-}
+  };
 exports.getPost = async (req, res, next) => {
     const postId = req.params.postId;
     try {
@@ -83,10 +108,40 @@ exports.getPost = async (req, res, next) => {
             error.statusCode = 403;
             throw error;
         }
+        const likesCount = post.likes.length;
+        const {likes, ...postWithoutLikes} = post.toObject();
         res.status(200).json({
             message: 'Post fetched successfully',
-            post: post
+            post: {
+                ...postWithoutLikes,
+                likesCount
+            }
         })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+exports.getLikes = async (req, res, next) => {
+    const postId = req.params.postId;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        };
+        const likesArray = post.likes;
+        const likedUsers = await User.find({ _id: { $in: likesArray } }, 'username');
+        res.status(200).json({
+            message: 'Fetched liked users successfully',
+            post: {
+                likedUsers
+            }
+        })
+        
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
@@ -97,6 +152,12 @@ exports.getPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        }
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const error = new Error('Validation failed, entered data is not correct');
@@ -107,45 +168,46 @@ exports.updatePost = async (req, res, next) => {
         const title = req.body.title;
         const content = req.body.content;
         let imageUrl = req.body.image;
-
         if (req.file) {
-            imageUrl = req.file.path;
+            const image = req.file.path;
+            const oldImageUrl = post.imageUrl
+            if (imageUrl !== oldImageUrl) {
+                // Delete old image
+                await clearImageFromS3(post.imageUrl);
+            }
+            const fileExtension = (req.file.originalname);
+            const newS3FileName = `images/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;;
+            const uploadParams = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: newS3FileName,
+                Body: fs.createReadStream(image)
+            }
+            const uploadResult = await client.send(new PutObjectCommand(uploadParams));
+            imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+            await fs.unlinkSync(image)
         }
-
-        const post = await Post.findById(postId);
-        if (!post) {
-            const error = new Error('Could not find post');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        if (imageUrl && imageUrl !== post.imageUrl) {
-            // Delete old image
-            clearImage(post.imageUrl);
-            post.imageUrl = imageUrl;
-        }
-
+        
         if (post.creator.toString() !== req.userId) {
             const error = new Error('Not authorized');
             error.statusCode = 403;
             throw error;
         }
-
         post.title = title;
         post.content = content;
+        post.imageUrl = imageUrl;
 
-        const result = await post.save();
-        io.getIO().emit('posts', {action: 'update', post: result});
-        res.status(200).json({
-            message: 'Post updated successfully',
-            post: result
-        });
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+    const result = await post.save();
+    io.getIO().emit("posts", { action: "update", post: result });
+    res.status(200).json({
+      message: "Post updated successfully",
+      post: result,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
     }
+    next(err);
+  }
 };
 exports.deletePost = async (req, res, next) => {
     try {
@@ -162,7 +224,7 @@ exports.deletePost = async (req, res, next) => {
             throw error;
         }
         if (post.imageUrl) {
-            await clearImage(post.imageUrl);
+            await clearImageFromS3(post.imageUrl);
         }
         await Post.findByIdAndDelete(postId);
         const user = await User.findById(req.userId);
@@ -179,15 +241,83 @@ exports.deletePost = async (req, res, next) => {
         }
         next(err);
     }
+};
+exports.sharePost = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 422;
+            throw error;
+        }
+        const shareableUrl = `${req.protocol}://${req.get('host')}/posts/${post._id}`;
+        res.status(200).json({
+            message: 'Share post URL successfully',
+            shareableUrl: shareableUrl
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
 }
 
-const clearImage = filePath => {
-    filePath = path.join(__dirname, '..', filePath);
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            console.log('Error deleting image: ', err);
-        } else {
-            console.log('Image deleted successfully');
+exports.toggleLike = async (req, res, next) => {
+        try {
+            const postId = req.params.postId;
+            const post = await Post.findById(postId);
+            if (!post) {
+                const error = new Error('Could not find post');
+                error.statusCode = 404;
+                throw error;
+            }
+            const currentUserId =  req.userId;
+            if (!currentUserId) {
+                return res.status(401).json({
+                    message: 'User not found',
+                    status: 'error'
+                });
+            };
+            if (post.likes.includes(currentUserId)) {
+                post.likes = post.likes.filter((id) => id !== currentUserId);
+                await post.save();
+                io.getIO().emit(('posts', {action: 'unliked', user: currentUserId, post: post}))
+                return res.status(200).json({
+                    message: 'Successfully unliked the post'
+                })
+            } else {
+                await post.likes.push(currentUserId);
+                await post.save();
+                io.getIO().emit('posts', {action: 'liked', user: currentUserId, post: post})
+                return res.status(200).json({
+                    message: 'Successfully liked the post'
+                })
+            }
+
+        } catch (err) {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         }
-    })
+    }
+
+const clearImageFromS3 = async (imageUrl) => {
+     if (!imageUrl) {
+        console.log('No image URL provided');
+        return;
+    }
+    const key = imageUrl.replace("https://crealink-images.s3.amazonaws.com/", "")
+    try {
+        const deleteParams = {
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: key
+        }
+        const deleteResult = await client.send(new DeleteObjectCommand(deleteParams));
+        console.log('Old image deleted successfully: ', deleteResult)
+    } catch (err) {
+        console.log('Error deleting image from S3: ', err);
+    }
 }

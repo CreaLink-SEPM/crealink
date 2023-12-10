@@ -1,8 +1,10 @@
-  ![banner3](https://github.com/CreaLink-SEPM/crealink/assets/102708893/ed15d9c7-ea19-4675-8f58-4bae6afe7ef5)
-  
+# Project: CreaLink - Digital Tourism Platform
+
+![CreaLink Banner](https://github.com/CreaLink-SEPM/crealink/assets/102708893/ed15d9c7-ea19-4675-8f58-4bae6afe7ef5)
+
 ## Introduction
 
-In the realm of digital tourism, the absence of comprehensive online platforms for travel reviews results in erroneous decision-making. Establishing a travel review platform is crucial, enabling individuals to share their travel experiences and insights. Without such a platform, travelers struggle to access reliable information, impacting their decision-making. Simultaneously, tourism businesses lack substantial online reviews to enhance service quality and customer experiences.
+In the domain of digital tourism, the absence of comprehensive online platforms for travel reviews often leads to erroneous decision-making. Establishing a robust travel review platform is imperative, facilitating individuals to share their travel experiences and insights. Without such a platform, travelers encounter difficulties accessing reliable information, impacting their decision-making. Concurrently, tourism businesses lack substantial online reviews to augment service quality and customer experiences.
 
 ## Team Information
 
@@ -15,16 +17,21 @@ In the realm of digital tourism, the absence of comprehensive online platforms f
   - Nguyen Huynh Quang (s3927039)
   - Dinh Le Hong Tin (s3932134)
 
+
 ### Running on Localhost
 
 To be added...
 
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+- [Localhost](http://localhost:3000/) => (Run `npm run dev`)
+
 
 ### Website run on server :
 
- + Front-End (Production) : https://client-crealink.vercel.app/
+
+- Front-End (Production): [CreaLink on Vercel](https://client-crealink.vercel.app/)
+
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -48,10 +55,10 @@ To be added...
  
 ## Contributions: 
 
+
 - Pham Ngoc Huy (%)
 - Nguyen Trong Khang (%)
 - Nguyen Huynh Quang (%)
 - Dinh Le Hong Tin (%)
-
 
 - Version: 13.0.5
