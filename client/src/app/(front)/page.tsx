@@ -34,7 +34,9 @@ export default function Home() {
         <BaseComponent activeTab="1" />
       </div>
       <RightSideBar />
-      <Footer />   
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import userIcon from '../../../public/assets/icons/User Icon.svg';
 import SearchBar from '../explore/SearchBar';
 import Image from 'next/image';
 import Loading from '../common/Loading';
+import ProfilePage from '../common/ProfilePage';
 
 
 function Navbar() {
@@ -29,7 +30,7 @@ function Navbar() {
       case '4':
         return <Loading />;
       case '5':
-        return <Loading />;
+        return <ProfilePage />;
 
       default:
         return null;
