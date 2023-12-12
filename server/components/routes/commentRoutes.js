@@ -1,8 +1,19 @@
 const express = require('express');
+const {body} = require('express-validator');
 const AuthMiddleware = require('../middlewares/authMiddleware');
 const commentController = require('../controllers/commentController');
 const router = express.Router();
 
-router.post('/:postId', AuthMiddleware.userAuthenToken, commentController.createComment );
+router.post('/:postId', AuthMiddleware.userAuthenToken, 
+[
+    body('commentText').trim().isLength({min: 1})
+]
+,commentController.createComment );
 router.get('/:postId', AuthMiddleware.userAuthenToken, commentController.getComments);
 module.exports = router;
+router.put('/comments/:commentId', AuthMiddleware.userAuthenToken, 
+[
+    body('commentText').trim().isLength({min: 1})
+],
+commentController.editComment);
+router.delete('/comments/:commentId', AuthMiddleware.userAuthenToken, commentController.deleteComment);
