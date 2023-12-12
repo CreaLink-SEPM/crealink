@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const CommentSchema = new mongoose.Schema({
-    post: {
+    postId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
         required: true
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -15,12 +15,9 @@ const CommentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    imageUrl: {
-        type: String
-    },
     likes: {
         type: [String],
         default: []
     }
-}, {timestamps: true})
-module.exports = mongoose.model('Comment',CommentSchema )
+}, {timestamps: true});
+module.exports = mongoose.model('Comment', CommentSchema )
