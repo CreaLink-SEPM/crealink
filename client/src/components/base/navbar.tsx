@@ -9,8 +9,6 @@ import userIcon from '@/public/assets/icons/User Icon.svg';
 import SearchBar from '../explore/SearchBar';
 import Image from 'next/image';
 import ProfilePage from '../common/ProfilePage';
-import Loading from '../common/Loading';
-
 
 function Navbar() {
   const icons = [homeIcon, searchIcon, heartIcon, messageIcon, userIcon];
@@ -22,13 +20,13 @@ function Navbar() {
   const renderTabContent = () => {
     switch (activeKey) {
       case '1':
-        return <Loading />;
+        return '';
       case '2':
         return <SearchBar />;
       case '3':
-        return <Loading />;
+        return '';
       case '4':
-        return <Loading />;
+        return '';
       case '5':
         return <ProfilePage />;
 
@@ -47,7 +45,6 @@ function Navbar() {
       icon: <Image src={icon} alt={`Tab ${id}`} style={{ width: '30px' }} />,
     };
   });
-
 
   return (
     <div className="w-[600px] h-[75px] ml-[25%]">
