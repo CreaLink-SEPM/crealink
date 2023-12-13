@@ -378,6 +378,70 @@ const unfollowUser = async (req, res) => {
   }
 };
 
+const getFollowers = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to fetch followers
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findById(user_id).populate('followers', 'username name');
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: user.followers,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const getFollowing = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to fetch followed users
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findById(user_id).populate('following', 'username name');
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: user.following,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -388,5 +452,7 @@ module.exports = {
   getAllUsers,
   searchUser,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getFollowers,
+  getFollowing,
 };
