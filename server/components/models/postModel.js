@@ -15,14 +15,16 @@ const postSchema = new Schema(
       required: true,
     },
     creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     likes: {
-        type: [String],
-        default: []
+      type: [String],
+      default: [],
     },
-},
-{timestamps: true});
-module.exports = mongoose.model('Post', postSchema);
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Post", postSchema);
