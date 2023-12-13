@@ -237,6 +237,43 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const searchUser = async (req, res) => {
+  try {
+    const { searchQuery } = req.params;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        status: "error",
+        message: "Search query is required",
+      });
+    }
+
+    const users = await User.find({
+      $or: [
+        { username: { $regex: searchQuery, $options: "i" } },
+        { name: { $regex: searchQuery, $options: "i" } },
+      ],
+    });
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No users found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -244,5 +281,6 @@ module.exports = {
   logoutUser,
   refreshTokenUser,
   getUser,
-  getAllUsers
+  getAllUsers,
+  searchUser
 };
