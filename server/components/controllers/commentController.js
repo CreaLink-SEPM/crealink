@@ -1,6 +1,7 @@
 const {validationResult} = require('express-validator');
 const Comment = require('../models/commentModel');
 const Post = require('../models/postModel');
+const io = require('../../socket')
 
 exports.createComment = async (req, res, next) =>  {
     try {
@@ -24,6 +25,10 @@ exports.createComment = async (req, res, next) =>  {
             commentText: commentText
         })
         await comment.save();
+        io.getIO().emit('comments', {
+            action: 'create',
+            comment: {...comment}
+        });
         res.status(200).json({
             message: 'Comments created successfully',
             comment: comment
@@ -41,6 +46,7 @@ exports.getComments = async (req, res, next) => {
         const postId = req.params.postId;
         const comments = await Comment.find({postId: postId})
             .select('userId commentText')
+            .populate("userId", "username")
             .exec();
         if (!comments) {
             const error = new Error ('Comments retreived failure');
@@ -74,6 +80,13 @@ exports.editComment = async (req, res, next) => {
             {commentText},
             {new: true}
         )
+        if (comment.userId.toString() !== req.userId) {
+            const error = new Error('Not authorized to edit this comment');
+            error.statusCode = 403;
+            throw error;
+        }
+        await comment.save();
+        io.getIO().emit('comments', {action: "update", comment});
         res.status(200).json({
             message: 'Comment updated successfully',
             comment
@@ -94,11 +107,56 @@ exports.deleteComment = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
+        if (comment.userId.toString() !== req.userId) {
+            const error = new Error('Not authorized to delete this comment');
+            error.statusCode = 403;
+            throw error;
+        }
         await Comment.findByIdAndDelete(commentId);
+        io.getIO().emit('comments', {action: 'delete', comment: commentId});
         res.status(200).json({
             message: 'Comment deleted successfully'
         })
 
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
+exports.toggleLike = async (req, res, next) => {
+    try {
+        const commentId = req.params.commentId;
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            const error = new Error('Comment retrieved failure');
+            error.statusCode = 404;
+            throw error;
+        }
+        const currentUserId = req.userId;
+        if (!currentUserId) {
+            return res.status(401).json({
+                message: 'User not found',
+                status: 'error'
+            });
+        };
+        if (comment.likes.includes(currentUserId)) {
+            comment.likes = comment.likes.filter((id) => id !== currentUserId);
+            await comment.save();
+            io.getIO().emit(('comments', {action: 'unliked', user: currentUserId, comment: comment}));
+            return res.status(200).json({
+                message: 'Successfully unliked the comment'
+            })
+        } else {
+            await post.likes.push(currentUserId);
+            await comment.save();   
+            o.getIO().emit(('comments', {action: 'liked', user: currentUserId, comment: comment}));
+            res.status(200).json({
+                message: 'Successfully liked the comment'
+            })
+        }
 
     } catch (err) {
         if (!err.statusCode) {

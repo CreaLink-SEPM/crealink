@@ -11,9 +11,10 @@ router.post('/:postId', AuthMiddleware.userAuthenToken,
 ,commentController.createComment );
 router.get('/:postId', AuthMiddleware.userAuthenToken, commentController.getComments);
 module.exports = router;
-router.put('/comments/:commentId', AuthMiddleware.userAuthenToken, 
+router.put('/:commentId', AuthMiddleware.userAuthenToken, 
 [
     body('commentText').trim().isLength({min: 1})
 ],
 commentController.editComment);
-router.delete('/comments/:commentId', AuthMiddleware.userAuthenToken, commentController.deleteComment);
+router.put('/like/:commentId', AuthMiddleware.userAuthenToken, commentController.toggleLike);
+router.delete('/:commentId', AuthMiddleware.userAuthenToken, commentController.deleteComment);
