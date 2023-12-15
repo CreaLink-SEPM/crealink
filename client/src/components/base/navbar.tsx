@@ -1,14 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs } from 'antd';
-import homeIcon from "@/public/assets/icons/Home Icon.svg";
-import searchIcon from "@/public/assets/icons/Search Icon.svg";
-import heartIcon from "@/public/assets/icons/Heart Icon.svg";
-import messageIcon from "@/public/assets/icons/Message Icon.svg";
-import userIcon from "@/public/assets/icons/User Icon.svg";
-import Loading from '../common/loading';
+import homeIcon from '../../../public/assets/icons/Home Icon.svg';
+import searchIcon from '../../../public/assets/icons/Search Icon.svg';
+import heartIcon from '../../../public/assets/icons/Heart Icon.svg';
+import messageIcon from '@../../../public/assets/icons/Message Icon.svg';
+import userIcon from '../../../public/assets/icons/User Icon.svg';
 import SearchBar from '../explore/SearchBar';
-import Image from 'next/image';
 import Link from "next/link";
 
 
@@ -28,7 +26,7 @@ function Navbar() {
             ))}
         </div>
     );
+
 }
 
 export default Navbar;
-
