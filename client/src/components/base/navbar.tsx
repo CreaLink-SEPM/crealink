@@ -9,29 +9,25 @@ import userIcon from "@/public/assets/icons/User Icon.svg";
 import Loading from '../common/loading';
 import SearchBar from '../explore/SearchBar';
 import Image from 'next/image';
+import Link from "next/link";
 
 
-function Navbar () {
-  const icons = [homeIcon, searchIcon, heartIcon, messageIcon, userIcon];
-  const pages = [Loading, SearchBar , Loading, Loading, Loading];
+function Navbar() {
+    const icons = [homeIcon, searchIcon, heartIcon, messageIcon, userIcon];
+    const hrefs = ['/home', '/search', '/favorites', '/messages', '/profile'];
 
-  const tabs = icons.map((icon, index) => {
-    const id = String(index + 1);
-    const PageComponent = pages[index];
+    return (
+        <div className='w-[600px] ml-[8%] flex justify-between'>
+            {icons.map((icon, index) => (
+                <Link key={index} href={hrefs[index]} passHref>
+                    <div className='flex flex-col items-center cursor-pointer'>
+                        <Image src={icon} alt={`Icon ${index + 1}`} width={30} height={30} />
 
-    return {
-      label:'',
-      key: id,
-      children: <PageComponent />,
-      icon: <Image src={icon} alt={`Tab ${id}`}  style={{ width: '30px' }}/>,
-    };
-  });
-
-  return (
-    <div className='w-[600px] ml-[8%]'>
-        <Tabs defaultActiveKey="1" items={tabs} tabBarGutter={110}/>
-    </div>
-  )
+                    </div>
+                </Link>
+            ))}
+        </div>
+    );
 }
 
 export default Navbar;
