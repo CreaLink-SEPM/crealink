@@ -91,6 +91,17 @@ const loginUser = async (req, res) => {
         message: "Invalid email or password",
       });
     }
+    if (user.isAdmin) {
+      const adminAccessToken = generateAdminAccessToken(user);
+      const adminRefreshToken = generateAdminRefreshToken(user);
+      storeRefreshToken(adminRefreshToken);
+      return res.status(200).json({
+        status: "success",
+        message: "Admin login successful",
+        accessToken: adminAccessToken,
+        refreshToken: adminRefreshToken, 
+      });
+    }
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -143,6 +154,31 @@ const storeRefreshToken = (token) => {
   refreshTokens.push(token);
 };
 
+// Function to generate admin access token
+const generateAdminAccessToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.JWT_SECRET,
+    {expiresIn: '10h'}
+  )
+}
+// Function to generate admin refresh token
+const generateAdminRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.REFRESH_TOKEN_SECRET
+  );
+};
 // Function to refresh user's access token
 const refreshTokenUser = async (req, res) => {
   try {
