@@ -237,6 +237,8 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+
+
 module.exports = {
   registerUser,
   loginUser,
@@ -244,5 +246,5 @@ module.exports = {
   logoutUser,
   refreshTokenUser,
   getUser,
-  getAllUsers
+  getAllUsers,
 };

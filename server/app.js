@@ -9,6 +9,7 @@ const path = require("path");
 const {init: initSocket} = require("./socket");
 const AWS = require("aws-sdk");
 
+
 dotenv.config();
 
 const connectDB = require("./components/configs/db.js");
@@ -16,6 +17,8 @@ connectDB();
 
 const port = process.env.PORT || 5000;
 const app = express();
+
+
 
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,

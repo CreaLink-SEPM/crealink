@@ -14,8 +14,9 @@ const userAuthenToken = (req, res, next) => {
       return res.sendStatus(403);
     }
     req.userId = data._id;
-    next();
+    next(); 
   });
 };
+
 
 module.exports = { userAuthenToken };
