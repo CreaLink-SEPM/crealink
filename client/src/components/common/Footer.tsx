@@ -3,7 +3,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <div className="w-full pr-[25%] py-10 flex items-center justify-center">
+    <div className="w-full pr-[25%] py-10 flex items-center justify-center mt-5">
       <div className="relative">
         <div className=" absolute left-0 top-[3.5px]">
           <div className="absolute left-0 top-0">
