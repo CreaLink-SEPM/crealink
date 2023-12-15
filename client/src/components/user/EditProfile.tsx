@@ -15,8 +15,7 @@ import { Button } from '../ui/button';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 
-
-function EditProfile({ children }: { children: string }) {
+function EditProfile() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -78,7 +77,7 @@ function EditProfile({ children }: { children: string }) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={submit} className='bg-red-800 hover:bg-red-900'>
+          <Button type="submit" onClick={submit} className="bg-red-800 hover:bg-red-900">
             Save
           </Button>
         </DialogFooter>

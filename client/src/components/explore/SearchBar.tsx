@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { Check, Mail } from 'lucide-react';
 
 export default function SearchBar() {
   const [query, setQuery] = useState<string>('');
@@ -16,11 +15,11 @@ export default function SearchBar() {
     router.replace(`/explore?query=${query}`);
   };
   return (
-    <div className="w-full container">
+    <div className="md:container">
       <form onSubmit={submit}>
         <input
           type="search"
-          className=" float-left w-full flex-1 rounded-2xl h-16 p-5 text-slate-500 bg-muted outline-none"
+          className="w-[94%] float-right ml-15 flex-1 rounded-2xl h-16 p-5 text-slate-500 bg-muted outline-none"
           placeholder=" 🔍   Search"
           value={query}
           onChange={e => setQuery(e.target.value)}
@@ -28,7 +27,7 @@ export default function SearchBar() {
       </form>
 
       {/* RESULT OF SEARCH  */}
-      <div className="w-full h-36 items-start pt-5">
+      <div className="w-full h-36 items-start mt-5">
         <div className="w-full flex items-center gap-5 justify-between mb-10">
           <div className="flex items-center">
             <Avatar>

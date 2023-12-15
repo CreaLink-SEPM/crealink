@@ -1,21 +1,19 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import Loading from '@/src/components/common/loading';
-import SearchBar from '@/src/components/explore/SearchBar';
+import ProfilePage from '@/src/components/common/ProfilePage';
 
 export const metadata: Metadata = {
-  title: 'CreaLink | Search Page',
+  title: 'CreaLink | Profile',
   description: 'Search users here and show there profile...',
 };
 
-async function ExplorePage() {
+export default function ProfilesPage() {
   return (
-    <div className="w-full container">
+    <div className="w-full md:container">
       <Suspense fallback={<Loading />}>
-        <SearchBar />
+        <ProfilePage />
       </Suspense>
     </div>
   );
 }
-
-export default ExplorePage;
