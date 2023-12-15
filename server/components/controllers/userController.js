@@ -237,6 +237,211 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const searchUser = async (req, res) => {
+  try {
+    const { searchQuery } = req.params;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        status: "error",
+        message: "Search query is required",
+      });
+    }
+
+    const users = await User.find({
+      $or: [
+        { username: { $regex: searchQuery, $options: "i" } },
+        { name: { $regex: searchQuery, $options: "i" } },
+      ],
+    });
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No users found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const followUser = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to follow
+    const { userId } = req.body; // User ID of the user initiating the follow action (Assuming this is extracted from the token)
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID to follow is required",
+      });
+    }
+
+    const userToFollow = await User.findById(user_id);
+    const user = await User.findById(userId);
+
+    if (!userToFollow || !user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    if (userToFollow.followers.includes(userId)) {
+      return res.status(400).json({
+        status: "error",
+        message: "You are already following this user",
+      });
+    }
+
+    // Update following for the user initiating the follow action
+    user.following.push(userToFollow._id);
+    await user.save();
+
+    // Update followers for the user being followed
+    userToFollow.followers.push(userId);
+    await userToFollow.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Successfully followed user",
+      data: {
+        userToFollow,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const unfollowUser = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to unfollow
+    const { userId } = req.body; // User ID of the user initiating the unfollow action (Assuming this is extracted from the token)
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID to unfollow is required",
+      });
+    }
+
+    const userToUnfollow = await User.findById(user_id);
+    const user = await User.findById(userId);
+
+    if (!userToUnfollow || !user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    if (!userToUnfollow.followers.includes(userId)) {
+      return res.status(400).json({
+        status: "error",
+        message: "You are not following this user",
+      });
+    }
+
+    // Remove userId from follows list of userToUnfollow
+    userToUnfollow.followers = userToUnfollow.followers.filter(followerId => followerId.toString() !== userId.toString());
+    await userToUnfollow.save();
+
+    // Remove userToUnfollow from following list of the user initiating the unfollow action
+    user.following = user.following.filter(followedUser => followedUser.toString() !== userToUnfollow._id.toString());
+    await user.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Successfully unfollowed user",
+      data: {
+        userToUnfollow,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const getFollowers = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to fetch followers
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findById(user_id).populate('followers', 'username name');
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: user.followers,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const getFollowing = async (req, res) => {
+  try {
+    const { user_id } = req.params; // User ID to fetch followed users
+
+    if (!user_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findById(user_id).populate('following', 'username name');
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: user.following,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -244,5 +449,10 @@ module.exports = {
   logoutUser,
   refreshTokenUser,
   getUser,
-  getAllUsers
+  getAllUsers,
+  searchUser,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
 };
