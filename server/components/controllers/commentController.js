@@ -45,7 +45,7 @@ exports.getComments = async (req, res, next) => {
     try {
         const postId = req.params.postId;
         const comments = await Comment.find({postId: postId})
-            .select('userId commentText')
+            .select('userId commentText likes')
             .populate("userId", "username")
             .exec();
         if (!comments) {
@@ -53,10 +53,16 @@ exports.getComments = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
+        const commentWithLikesCount = comments.map(comment => ({
+            _id: comment._id,
+            userId: comment.userId,
+            commentText: comment.commentText,
+            likesCount: comment.likes.length,
+        }));
 
         res.status(200).json({
             message: 'Comments retrieved successfully',
-            comment: comments
+            comments: commentWithLikesCount
         });
     } catch (err) {
         if (!err.statusCode) {
@@ -150,9 +156,9 @@ exports.toggleLike = async (req, res, next) => {
                 message: 'Successfully unliked the comment'
             })
         } else {
-            await post.likes.push(currentUserId);
+            await comment.likes.push(currentUserId);
             await comment.save();   
-            o.getIO().emit(('comments', {action: 'liked', user: currentUserId, comment: comment}));
+            io.getIO().emit(('comments', {action: 'liked', user: currentUserId, comment: comment}));
             res.status(200).json({
                 message: 'Successfully liked the comment'
             })
