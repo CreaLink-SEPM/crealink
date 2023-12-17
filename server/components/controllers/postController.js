@@ -107,9 +107,9 @@ exports.getPosts = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   const postId = req.params.postId;
-  try {
     const post = await Post.findById(postId)
             .populate("creator", "username");
+
     if (!post) {
       const error = new Error("Could not find post");
       error.statusCode = 403;
@@ -175,6 +175,7 @@ exports.updatePost = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
+
     if (post.creator.toString() !== req.userId) {
         const error = new Error("Not authorized");
         error.statusCode = 403;
@@ -204,6 +205,7 @@ exports.updatePost = async (req, res, next) => {
       imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
       await fs.unlinkSync(image);
     }
+
 
     if (post.creator.toString() !== req.userId) {
       const error = new Error("Not authorized");
@@ -245,6 +247,7 @@ exports.deletePost = async (req, res, next) => {
     if (post.imageUrl) {
       await clearImageFromS3(post.imageUrl);
     }
+
     await Post.findByIdAndDelete(postId);
     const user = await User.findById(req.userId);
     user.posts.pull(postId);
@@ -281,6 +284,7 @@ exports.sharePost = async (req, res, next) => {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
+
     next(err);
   }
 };
@@ -300,6 +304,7 @@ exports.toggleLike = async (req, res, next) => {
         message: "User not found",
         status: "error",
       });
+
     }
     if (post.likes.includes(currentUserId)) {
       post.likes = post.likes.filter((id) => id !== currentUserId);
@@ -326,6 +331,7 @@ exports.toggleLike = async (req, res, next) => {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
+
     next(err);
   }
 };
@@ -348,4 +354,6 @@ const clearImageFromS3 = async (imageUrl) => {
   } catch (err) {
     console.log("Error deleting image from S3: ", err);
   }
+
 };
+

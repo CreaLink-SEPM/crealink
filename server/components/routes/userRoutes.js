@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/userController.js");
-const AuthMiddleware = require("../middlewares/authMiddleware.js");
 
 // User routes
 router.post("/register", UserController.registerUser);
@@ -10,7 +9,11 @@ router.post("/logout", UserController.logoutUser);
 router.post("/refresh-token", UserController.refreshTokenUser);
 router.get("/get-user/:username", UserController.getUser);
 router.get("/get-all-users", UserController.getAllUsers);
-
+router.get("/search-user/:searchQuery", UserController.searchUser);
+router.get("/get-followers/:user_id", UserController.getFollowers);
+router.get("/get-following/:user_id", UserController.getFollowing);
+router.post("/follow-user/:user_id", UserController.followUser);
+router.post("/unfollow-user/:user_id", UserController.unfollowUser);
 
 
 module.exports = router;
