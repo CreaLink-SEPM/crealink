@@ -37,21 +37,6 @@ function Error() {
           <p className="font-bold text-4xl text-[#1a2e35] leading-1 mt-3">500 Error</p>
           <div className="text-4xl text-[#1a2e35] mt-3 text-center"> Server not found</div>
         </div>
-        <div className="w-[250px] h-[60px] p-4 hover:bg-[#a2383a] rounded-[15px] bg-[#a20103] text-white text-2xl font-semibold mt-10">
-          <Link href="/" className="flex items-center justify-center gap-10">
-            Go Back
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-7 h-6"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
-        </div>
       </div>
     </div>
   );
