@@ -52,6 +52,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      isAdmin: false
     });
 
     return res.status(201).json({
@@ -67,6 +68,86 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Function to register admin account
+const registerAdmin = async (req, res) => {
+  try {
+    const existingAdmin = await User.findOne({isAdmin: true});
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: "error",
+        message: "Admin account already exists. Only one admin account is allowed to be registered."
+      })
+    }
+    const {username, email, password} = req.body;
+
+    const existingUser = await User.findOne({email});
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'error',
+        message: "This email address cannot be used to register as an admin account"
+      })
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      isAdmin: true
+    });
+    res.status(201).json({
+      status: 'success',
+      message: "Admin account registered successfully",
+      data: newAdmin
+    })
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+// Function login as admin
+const loginAdmin = async (req, res) => {
+  try {
+    const {email, password} = req.body;
+    if (!password || !email) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Bpth username or password are required'
+      })
+    }
+    const user = await User.findOne({ email: email});
+    if (!user) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Admin account not found'
+      })
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid || !user.isAdmin) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'Not authorized to login as admin'
+        })
+    }
+    const adminAccessToken = generateAdminAccessToken(user);
+    const adminRefreshToken = generateAdminRefreshToken(user);
+    storeRefreshToken(adminRefreshToken);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Admin login successful',
+      accessToken: adminAccessToken,
+      refreshToken: adminRefreshToken
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    })
+  }
+};
 // Function to log in a user
 const loginUser = async (req, res) => {
   try {
@@ -143,6 +224,31 @@ const storeRefreshToken = (token) => {
   refreshTokens.push(token);
 };
 
+// Function to generate admin access token
+const generateAdminAccessToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.JWT_SECRET,
+    {expiresIn: '10h'}
+  )
+}
+// Function to generate admin refresh token
+const generateAdminRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.REFRESH_TOKEN_SECRET
+  );
+};
 // Function to refresh user's access token
 const refreshTokenUser = async (req, res) => {
   try {
@@ -236,6 +342,7 @@ const getAllUsers = async (req, res, next) => {
     });
   }
 };
+
 
 const searchUser = async (req, res) => {
   try {
@@ -442,8 +549,11 @@ const getFollowing = async (req, res) => {
   }
 };
 
+
 module.exports = {
   registerUser,
+  registerAdmin,
+  loginAdmin,
   loginUser,
   getAllUser,
   logoutUser,
@@ -455,4 +565,5 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
+
 };
