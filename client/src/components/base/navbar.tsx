@@ -1,57 +1,27 @@
 'use client';
-import React, { useState } from 'react';
-import { Tabs } from 'antd';
-import homeIcon from '../../../public/assets/icons/Home Icon.svg';
-import searchIcon from '../../../public/assets/icons/Search Icon.svg';
-import heartIcon from '../../../public/assets/icons/Heart Icon.svg';
-import messageIcon from '@../../../public/assets/icons/Message Icon.svg';
-import userIcon from '../../../public/assets/icons/User Icon.svg';
-import SearchBar from '../explore/SearchBar';
+import React from 'react';
+import homeIcon from '@/public/assets/icons/Home Icon.svg';
+import searchIcon from '@/public/assets/icons/Search Icon.svg';
+import heartIcon from '@/public/assets/icons/Heart Icon.svg';
+// import messageIcon from '@/public/assets/icons/Message Icon.svg';
+import notificationIcon from '@/public/assets/icons/Notification Icon.svg';
+import userIcon from '@/public/assets/icons/User Icon.svg';
+import Link from 'next/link';
 import Image from 'next/image';
-import Loading from '../common/Loading';
-
 
 function Navbar() {
-  const icons = [homeIcon, searchIcon, heartIcon, messageIcon, userIcon];
-  const [activeKey, setActiveKey] = useState('1');
-  const handleTabChange = (key: string) => {
-    setActiveKey(key);
-  };
-
-  const renderTabContent = () => {
-    switch (activeKey) {
-      case '1':
-        return <Loading />;
-      case '2':
-        return <SearchBar />;
-      case '3':
-        return <Loading />;
-      case '4':
-        return <Loading />;
-      case '5':
-        return <Loading />;
-
-      default:
-        return null;
-    }
-  };
-
-  const tabs = icons.map((icon, index) => {
-    const id = String(index + 1);
-
-    return {
-      label: '',
-      key: id,
-      children: '',
-      icon: <Image src={icon} alt={`Tab ${id}`} style={{ width: '30px' }} />,
-    };
-  });
-
+  const icons = [homeIcon, searchIcon, heartIcon, notificationIcon, userIcon];
+  const hrefs = ['/', '/search', '/favorites', '/notifications', '/profile'];
 
   return (
-    <div className="w-[600px] h-[75px] ml-[25%]">
-      <Tabs defaultActiveKey="1" items={tabs} tabBarGutter={110} onChange={handleTabChange} />
-      {renderTabContent()}
+    <div className="w-[600px] ml-[8%] flex justify-between">
+      {icons.map((icon, index) => (
+        <Link key={index} href={hrefs[index]} passHref>
+          <div className="flex flex-col items-center cursor-pointer">
+            <Image src={icon} alt={`Icon ${index + 1}`} width={30} height={30} />
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }
