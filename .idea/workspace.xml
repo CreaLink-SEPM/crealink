@@ -5,13 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="update some changes for transparent icon">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/public/assets/icons/Home Icon.svg" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/assets/icons/Home Icon.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/public/assets/icons/Message Icon.svg" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/assets/icons/Message Icon.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/yarn.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/(front)/home/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/common/HomePage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/base/BaseComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/base/BaseComponent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/base/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/base/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/ProfilePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/ProfilePage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +39,9 @@
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/client/package.json" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -62,7 +65,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Users/jamesdinh/Desktop/crealink/client/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/jamesdinh/Desktop/crealink2/client/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -99,6 +102,7 @@
       <workItem from="1702097094045" duration="69000" />
       <workItem from="1702097215159" duration="177000" />
       <workItem from="1702097413069" duration="3076000" />
+      <workItem from="1702715780386" duration="2772000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />
