@@ -52,6 +52,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      isAdmin: false
     });
 
     return res.status(201).json({
