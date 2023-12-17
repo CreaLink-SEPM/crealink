@@ -106,6 +106,7 @@ exports.getPosts = async (req, res, next) => {
 };
 
 exports.getPost = async (req, res, next) => {
+  try {
   const postId = req.params.postId;
     const post = await Post.findById(postId)
             .populate("creator", "username");
