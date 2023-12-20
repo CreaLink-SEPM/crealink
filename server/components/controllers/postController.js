@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const ReportedPost = require("../models/reportedPost");
 const io = require("../../socket");
 const { validationResult } = require("express-validator");
 const {
@@ -333,6 +334,32 @@ exports.toggleLike = async (req, res, next) => {
       err.statusCode = 500;
     }
 
+    next(err);
+  }
+};
+exports.reportPost = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    const {reason} = req.body;
+    if (!reason) {
+      const error = new Error("No report reason provided");
+      error.statusCode = 404;
+      throw error;
+    }
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    const reportedPost = new ReportedPost({
+      postId,
+      reporter: req.userId,
+      reportReason: reason
+    })
+    await reportedPost.save();
+    res.status(201).json({
+      message: 'Post have been reported',
+      reportedPost: reportedPost
+    })
     next(err);
   }
 };
