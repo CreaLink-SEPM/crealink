@@ -4,10 +4,10 @@ const { reportPost } = require("./postController");
 
 exports.adminDecision = async (req, res, next) => {
     try {
-        const postId = req.params.reportedPostId;
+        const id = req.params.id;
         const {decision} = req.body;
 
-        const reportedPost = await ReportedPost.findById(postId);
+        const reportedPost = await ReportedPost.findById(id);
         if (!reportedPost) {
             const error = new Error("Reported post not found");
             error.statusCode = 404;
@@ -15,13 +15,13 @@ exports.adminDecision = async (req, res, next) => {
         }
         reportedPost.adminDecision = decision;
         if (decision === 'delete') {
-            await ReportedPost.findByIdAndDelete(postId);
-            await Post.findByIdAndDelete(reportPost.postId);
+            await ReportedPost.findByIdAndDelete(id);
+            await Post.findByIdAndDelete(reportedPost.postId);
             res.status(201).json({
                 message: 'Reported post deleted'
             })
         } else if (decision === 'keep') {
-            await ReportedPost.findByIdAndDelete(postId);
+            await ReportedPost.findByIdAndDelete(id);
             res.status(201).json({
                 message: 'Report post kept'
             })
@@ -36,8 +36,8 @@ exports.adminDecision = async (req, res, next) => {
 }
 exports.getReportedPosts = async (req, res, next) => {
     try {
-        const reportedPosts  = await ReportedPost.findAll();
-        res.status(200).sjon({
+        const reportedPosts  = await ReportedPost.find();
+        res.status(200).json({
             message: 'Fetched reported posts successfully',
             reportedPosts: reportedPosts
         });

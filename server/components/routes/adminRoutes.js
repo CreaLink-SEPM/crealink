@@ -12,6 +12,6 @@ router.get("/admin-only", AuthMiddleware.userAuthenToken, AuthMiddleware.isAdmin
     res.json({ status: "success", message: "Admin-only route" });
   });
 router.get('/reported-posts', AuthMiddleware.userAuthenToken, AuthMiddleware.isAdmin, AdminController.getReportedPosts);
-router.put('/reported-post/:postId', AuthMiddleware.userAuthenToken, AuthMiddleware.isAdmin, AdminController.adminDecision);
+router.put('/reported-post/:id', AuthMiddleware.userAuthenToken, AuthMiddleware.isAdmin, AdminController.adminDecision);
 module.exports = router;
 

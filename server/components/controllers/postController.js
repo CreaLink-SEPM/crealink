@@ -337,32 +337,37 @@ exports.toggleLike = async (req, res, next) => {
     next(err);
   }
 };
+
+
 exports.reportPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const {reason} = req.body;
+    const { reason } = req.body;
     if (!reason) {
-      const error = new Error("No report reason provided");
-      error.statusCode = 404;
-      throw error;
-    }
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
+      return res.status(400).json({ message: "No report reason provided" });
     }
     const reportedPost = new ReportedPost({
       postId,
       reporter: req.userId,
       reportReason: reason
-    })
+    });
     await reportedPost.save();
+
+    io.getIO().emit('report', { action: "report", reportedPost: postId });
+
     res.status(201).json({
-      message: 'Post have been reported',
+      message: 'Post has been reported',
       reportedPost: reportedPost
-    })
-    next(err);
+    });
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err); 
   }
 };
+
 
 const clearImageFromS3 = async (imageUrl) => {
   if (!imageUrl) {
