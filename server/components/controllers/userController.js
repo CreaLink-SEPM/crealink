@@ -262,9 +262,21 @@ const searchUser = async (req, res) => {
       });
     }
 
+    // Map user data to include necessary information
+    const usersData = users.map(user => ({
+      _id: user._id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      followers: user.followers.length,
+      follower_image: user.followers.length > 0 ? user.followers[0].image : null,
+      is_verified: user.is_verified,
+    }));
+
     return res.status(200).json({
       status: "success",
-      data: users,
+      data: usersData,
     });
   } catch (err) {
     return res.status(500).json({
@@ -356,11 +368,16 @@ const unfollowUser = async (req, res) => {
     }
 
     // Remove userId from follows list of userToUnfollow
-    userToUnfollow.followers = userToUnfollow.followers.filter(followerId => followerId.toString() !== userId.toString());
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (followerId) => followerId.toString() !== userId.toString()
+    );
     await userToUnfollow.save();
 
     // Remove userToUnfollow from following list of the user initiating the unfollow action
-    user.following = user.following.filter(followedUser => followedUser.toString() !== userToUnfollow._id.toString());
+    user.following = user.following.filter(
+      (followedUser) =>
+        followedUser.toString() !== userToUnfollow._id.toString()
+    );
     await user.save();
 
     return res.status(200).json({
@@ -389,7 +406,10 @@ const getFollowers = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate('followers', 'username name');
+    const user = await User.findById(user_id).populate(
+      "followers",
+      "username name"
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -421,7 +441,10 @@ const getFollowing = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate('following', 'username name');
+    const user = await User.findById(user_id).populate(
+      "following",
+      "username name"
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -433,6 +456,51 @@ const getFollowing = async (req, res) => {
     return res.status(200).json({
       status: "success",
       data: user.following,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const profileUser = async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({
+        status: "error",
+        message: "Username is required",
+      });
+    }
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      followers: user.followers.length,
+      following: user.following.length,
+      is_verified: user.is_verified,
+      isAdmin: user.isAdmin,
+      posts: user.posts.length,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      data: userData,
     });
   } catch (err) {
     return res.status(500).json({
@@ -455,4 +523,5 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
+  profileUser
 };
