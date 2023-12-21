@@ -168,14 +168,14 @@ Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
 ## Toggle like for a post
 Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
 
-## Respone
+### Respone
 ```json
 {
     "message": "Successfully liked the post"
 }
 ```
 
-## Respone
+### Respone
 ```json
 {
     "message": "Successfully unliked the post"
@@ -193,4 +193,28 @@ Endpoint: `http:/localhost:[port]/api/feed/share/{postId}`
 }
 ```
 
+## Report violated post
+Endpoint: `http://localhost:[port]/api/feed/report/{postId}`
+
+### Request
+```json
+{
+  "reason": "Reported reason"
+}
+```
+
+### Response
+```json
+{
+    "message": "Post has been reported",
+    "reportedPost": {
+        "postId": "postId",
+        "reporter": "user._id",
+        "adminDecision": "pending",
+        "reportReason": "Reported reason",
+        "reportedAt": "2023-12-21T12:34:06.875Z",
+        "_id": "reportedPost._id",
+        "__v": 0
+    }
+}
 
