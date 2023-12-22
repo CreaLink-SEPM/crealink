@@ -9,6 +9,7 @@ const {
   DeleteObjectCommand
 } = require("@aws-sdk/client-s3")
 const uuid = require("uuid");
+const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({region: process.env.AWS_REGION})
 // Function to create a new user
 const registerUser = async (req, res) => {
@@ -593,7 +594,83 @@ const uploadAvatar = async (req, res, next) => {
     next(err);
   }
 };
+const updateAvatar = async (req, res, next) => {
+  let avatarUrl = req.body.user_image;
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 422;
+      throw error;
+    }
+    const image = req.file.path;
+    const oldAvatarUrl = user.user_image;
+    if (avatarUrl !== oldAvatarUrl) {
+      await clearImageFromS3(user.user_image);
+    }
+    const fileExtension = req.file.originalname;
+    const newS3FileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const uploadParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: newS3FileName,
+      Body: fs.createReadStream(image)
+    };
+    const uploadResult = await client.send(
+      new PutObjectCommand(uploadParams)
+    );
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+    await fs.unlinkSync(image);
+    res.status(200).json({
+      message: 'Avatar updated sucessfuly',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    } next(err);
+  }
+};
+const deleteAvatar = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      })
+    }
+    await clearImageFromS3(user.user_image);
+    user.user_image = 'https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg';
+    await user.save();
+    res.status(200).json({
+      message: 'Avatar delete sucessfully'
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err); 
+  }
+}
+const clearImageFromS3 = async (avatarUrl) => {
+  if (!avatarUrl) {
+    console.log("No image URL provided");
+    return;
+  }
+  const key = avatarUrl.replace("https://crealink-images.s3.amazonaws.com/", "");
+  try {
+    const deleteParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key,
+    };
+    const deleteResult = await client.send(
+      new DeleteObjectCommand(deleteParams)
+    );
+    console.log("Old avatar deleted successfully: ", deleteResult);
+  } catch (err) {
+    console.log("Error deleting image from S3: ", err);
+  }
 
+};
 
 
 module.exports = {
@@ -611,5 +688,7 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
-  uploadAvatar
+  uploadAvatar,
+  updateAvatar,
+  deleteAvatar
 };
