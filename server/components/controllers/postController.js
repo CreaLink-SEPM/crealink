@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const ReportedPost = require("../models/reportedPost");
 const io = require("../../socket");
 const { validationResult } = require("express-validator");
 const {
@@ -336,6 +337,37 @@ exports.toggleLike = async (req, res, next) => {
     next(err);
   }
 };
+
+
+exports.reportPost = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    const { reason } = req.body;
+    if (!reason) {
+      return res.status(400).json({ message: "No report reason provided" });
+    }
+    const reportedPost = new ReportedPost({
+      postId,
+      reporter: req.userId,
+      reportReason: reason
+    });
+    await reportedPost.save();
+
+    io.getIO().emit('report', { action: "report", reportedPost: postId });
+
+    res.status(201).json({
+      message: 'Post has been reported',
+      reportedPost: reportedPost
+    });
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err); 
+  }
+};
+
 
 const clearImageFromS3 = async (imageUrl) => {
   if (!imageUrl) {

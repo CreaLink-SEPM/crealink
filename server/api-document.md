@@ -252,6 +252,8 @@ Endpoint: `http:/localhost:[port]/api/user/unfollow-user/:user_id`
 }
 ```
 
-#
+
+
+
 
 This document outlines the endpoints available in the User API, their respective request and response formats based on the provided code snippets. Adjustments might be necessary to include specific details like headers or authentication tokens as required.
