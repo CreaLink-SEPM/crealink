@@ -15,7 +15,7 @@ export default function SearchBar() {
     router.replace(`/explore?query=${query}`);
   };
   return (
-    <div className="md:container">
+    <div className="md:container w-[90%] ml-[8%] h-auto mt-5">
       <form onSubmit={submit}>
         <input
           type="search"

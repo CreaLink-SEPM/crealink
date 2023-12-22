@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function ProfilesPage() {
   return (
-    <div className="w-full md:container">
+    <div className="w-full md:container pb-[22%]">
       <Suspense fallback={<Loading />}>
         <div className="w-full mt-[3%] p-1">
           <div className="flex items-start justify-between space-x-5 mb-3 w-full md:container">

@@ -7,7 +7,7 @@ function LeftSideBar() {
     <Link href="/help-center" className="w-[20%] text-center bottom-0 h-auto">
       <div className="w-35 h-14 justify-center items-center inline-flex">
         <div className="self-stretch justify-center items-center inline-flex">
-          <div className="absolute bottom-[50%] self-stretch pl-3 pr-3 py-5 bg-red-800 rounded-full shadow border border-black border-opacity-5 justify-center items-start inline-flex">
+          <div className="absolute  self-stretch pl-3 pr-3 py-5 bg-red-800 rounded-full shadow border border-black border-opacity-5 justify-center items-start inline-flex">
             <div className="self-stretch py-px justify-center items-center inline-flex">
               <div className="justify-center items-center inline-flex gap-4">
                 <div className="w-20 h-4 text-white text-center text-base font-semibold font-['Roboto'] leading-tight">

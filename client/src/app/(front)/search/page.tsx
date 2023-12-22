@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 async function ExplorePage() {
   return (
-    <div className="w-full container">
+    <div className="w-full md:container pb-[47%]">
       <Suspense fallback={<Loading />}>
         <SearchBar />
       </Suspense>
