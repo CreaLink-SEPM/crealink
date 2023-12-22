@@ -1,7 +1,15 @@
 const User = require("../models/userModel.js");
+const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand
+} = require("@aws-sdk/client-s3")
+const uuid = require("uuid");
+const client = new S3Client({region: process.env.AWS_REGION})
 // Function to create a new user
 const registerUser = async (req, res) => {
   try {
@@ -548,6 +556,44 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+const uploadAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(404).json({
+        message: "No file uploaded",
+      });
+    }
+    const image = req.file.path;
+    const fileExtension = path.extname(req.file.originalname);
+    const stream = fs.createReadStream(image);
+    const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: avatarFileName,
+      Body: stream
+    }
+    const uploadResult = await client.send(new PutObjectCommand(params));
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+    await User.findByIdAndUpdate(req.userId, {user_image: avatarUrl });
+    fs.unlinkSync(image, (err) => {
+      if (err) {
+        console.error("Error deleting local avatar image:", err);
+      } else {
+        console.log("Local avatar image deleted successfully.");
+      }
+    });
+    res.status(200).json({
+      message: 'Avatar uploaded successfully',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 
 
 module.exports = {
@@ -565,5 +611,5 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
-
+  uploadAvatar
 };
