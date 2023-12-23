@@ -262,17 +262,37 @@ const searchUser = async (req, res) => {
       });
     }
 
-    // Map user data to include necessary information
-    const usersData = users.map(user => ({
-      _id: user._id,
-      username: user.username,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      followers: user.followers.length,
-      follower_image: user.followers.length > 0 ? user.followers[0].image : null,
-      is_verified: user.is_verified,
-    }));
+    // Map user data to include necessary information including random follower images (up to 3)
+    const usersData = users.map(user => {
+      const followersCount = user.followers.length;
+      const followerImages = [];
+
+      // Select up to 3 random followers' images
+      if (followersCount > 0) {
+        const randomIndexes = Array.from(
+          { length: Math.min(followersCount, 3) },
+          () => Math.floor(Math.random() * followersCount)
+        );
+
+        randomIndexes.forEach(index => {
+          const follower = user.followers[index];
+          if (follower && follower.image) {
+            followerImages.push(follower.image);
+          }
+        });
+      }
+
+      return {
+        _id: user._id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        followers: followersCount,
+        follower_images: followerImages,
+        is_verified: user.is_verified,
+      };
+    });
 
     return res.status(200).json({
       status: "success",
@@ -476,7 +496,7 @@ const profileUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate("posts");
 
     if (!user) {
       return res.status(404).json({
@@ -495,7 +515,7 @@ const profileUser = async (req, res) => {
       following: user.following.length,
       is_verified: user.is_verified,
       isAdmin: user.isAdmin,
-      posts: user.posts.length,
+      posts: user.posts,
     };
 
     return res.status(200).json({
