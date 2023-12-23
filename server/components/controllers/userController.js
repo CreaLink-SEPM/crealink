@@ -1,7 +1,16 @@
 const User = require("../models/userModel.js");
+const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand
+} = require("@aws-sdk/client-s3")
+const uuid = require("uuid");
+const { CLIENT_RENEG_WINDOW } = require("tls");
+const client = new S3Client({region: process.env.AWS_REGION})
 // Function to create a new user
 const registerUser = async (req, res) => {
   try {
@@ -369,9 +378,41 @@ const searchUser = async (req, res) => {
       });
     }
 
+    // Map user data to include necessary information including random follower images (up to 3)
+    const usersData = users.map(user => {
+      const followersCount = user.followers.length;
+      const followerImages = [];
+
+      // Select up to 3 random followers' images
+      if (followersCount > 0) {
+        const randomIndexes = Array.from(
+          { length: Math.min(followersCount, 3) },
+          () => Math.floor(Math.random() * followersCount)
+        );
+
+        randomIndexes.forEach(index => {
+          const follower = user.followers[index];
+          if (follower && follower.image) {
+            followerImages.push(follower.image);
+          }
+        });
+      }
+
+      return {
+        _id: user._id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        followers: followersCount,
+        follower_images: followerImages,
+        is_verified: user.is_verified,
+      };
+    });
+
     return res.status(200).json({
       status: "success",
-      data: users,
+      data: usersData,
     });
   } catch (err) {
     return res.status(500).json({
@@ -463,11 +504,16 @@ const unfollowUser = async (req, res) => {
     }
 
     // Remove userId from follows list of userToUnfollow
-    userToUnfollow.followers = userToUnfollow.followers.filter(followerId => followerId.toString() !== userId.toString());
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (followerId) => followerId.toString() !== userId.toString()
+    );
     await userToUnfollow.save();
 
     // Remove userToUnfollow from following list of the user initiating the unfollow action
-    user.following = user.following.filter(followedUser => followedUser.toString() !== userToUnfollow._id.toString());
+    user.following = user.following.filter(
+      (followedUser) =>
+        followedUser.toString() !== userToUnfollow._id.toString()
+    );
     await user.save();
 
     return res.status(200).json({
@@ -496,7 +542,10 @@ const getFollowers = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate('followers', 'username name');
+    const user = await User.findById(user_id).populate(
+      "followers",
+      "username name"
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -528,7 +577,10 @@ const getFollowing = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate('following', 'username name');
+    const user = await User.findById(user_id).populate(
+      "following",
+      "username name"
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -548,7 +600,166 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+const uploadAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(404).json({
+        message: "No file uploaded",
+      });
+    }
+    const image = req.file.path;
+    const fileExtension = path.extname(req.file.originalname);
+    const stream = fs.createReadStream(image);
+    const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: avatarFileName,
+      Body: stream
+    }
+    const uploadResult = await client.send(new PutObjectCommand(params));
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+    await User.findByIdAndUpdate(req.userId, {user_image: avatarUrl });
+    fs.unlinkSync(image, (err) => {
+      if (err) {
+        console.error("Error deleting local avatar image:", err);
+      } else {
+        console.log("Local avatar image deleted successfully.");
+      }
+    });
+    res.status(200).json({
+      message: 'Avatar uploaded successfully',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+const updateAvatar = async (req, res, next) => {
+  let avatarUrl = req.body.user_image;
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 422;
+      throw error;
+    }
+    const image = req.file.path;
+    const oldAvatarUrl = user.user_image;
+    if (avatarUrl !== oldAvatarUrl) {
+      await clearImageFromS3(user.user_image);
+    }
+    const fileExtension = req.file.originalname;
+    const newS3FileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const uploadParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: newS3FileName,
+      Body: fs.createReadStream(image)
+    };
+    const uploadResult = await client.send(
+      new PutObjectCommand(uploadParams)
+    );
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+    await fs.unlinkSync(image);
+    res.status(200).json({
+      message: 'Avatar updated sucessfuly',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    } next(err);
+  }
+};
+const deleteAvatar = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      })
+    }
+    await clearImageFromS3(user.user_image);
+    user.user_image = 'https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg';
+    await user.save();
+    res.status(200).json({
+      message: 'Avatar delete sucessfully'
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err); 
+  }
+}
+const clearImageFromS3 = async (avatarUrl) => {
+  if (!avatarUrl) {
+    console.log("No image URL provided");
+    return;
+  }
+  const key = avatarUrl.replace("https://crealink-images.s3.amazonaws.com/", "");
+  try {
+    const deleteParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key,
+    };
+    const deleteResult = await client.send(
+      new DeleteObjectCommand(deleteParams)
+    );
+    console.log("Old avatar deleted successfully: ", deleteResult);
+  } catch (err) {
+    console.log("Error deleting image from S3: ", err);
+  }
 
+};
+
+
+const profileUser = async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({
+        status: "error",
+        message: "Username is required",
+      });
+    }
+
+    const user = await User.findOne({ username }).populate("posts");
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      followers: user.followers.length,
+      following: user.following.length,
+      is_verified: user.is_verified,
+      isAdmin: user.isAdmin,
+      posts: user.posts,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      data: userData,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -565,5 +776,8 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
-
+  profileUser,
+  uploadAvatar,
+  updateAvatar,
+  deleteAvatar
 };

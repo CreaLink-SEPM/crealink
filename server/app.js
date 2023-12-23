@@ -47,8 +47,9 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"),
 );
+
 app.use("/components/images", express.static(path.join(__dirname, "images")));
 app.use(bodyParser.json());
 routes(app);
