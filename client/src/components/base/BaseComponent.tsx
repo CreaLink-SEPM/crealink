@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import LeftSideBar from './LeftSideBar';
 import RightSideBar from './RightSideBar';
 import AvatarSetting from '@/src/components/common/AvatarSetting';
-import Navbar from '@/src/components/base/navbar';
+import Navbar from '@/src/components/base/Navbar';
 import Footer from '@/src/components/common/Footer';
 import Link from 'next/link';
 import Loading from '@/src/components/common/loading';

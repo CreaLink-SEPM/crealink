@@ -20,11 +20,10 @@ const postSchema = new Schema(
       required: true,
     },
     likes: {
-      type: [String],
-      default: [],
-    },
-  },
-  { timestamps: true }
-);
+        type: [String],
+        default: []
+    }
+},
+{timestamps: true});
+module.exports = mongoose.model('Post', postSchema);
 
-module.exports = mongoose.model("Post", postSchema);

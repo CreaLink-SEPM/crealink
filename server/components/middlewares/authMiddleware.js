@@ -14,8 +14,18 @@ const userAuthenToken = (req, res, next) => {
       return res.sendStatus(403);
     }
     req.userId = data._id;
-    next();
+    req.isAdmin =  data.isAdmin;
+    next(); 
   });
 };
 
-module.exports = { userAuthenToken };
+const isAdmin = (req, res, next) => {
+  if (req.isAdmin) {
+    next();
+  } else {
+    return res.sendStatus(403);
+  }
+}
+
+
+module.exports = { userAuthenToken, isAdmin };

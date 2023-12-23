@@ -11,10 +11,11 @@ import Image from 'next/image';
 
 function Navbar() {
   const icons = [homeIcon, searchIcon, heartIcon, notificationIcon, userIcon];
-  const hrefs = ['/', '/search', '/favorites', '/notifications', '/profile'];
+  const hrefs = ['/home', '/search', '/favorites', '/notifications', '/profile'];
+
 
   return (
-    <div className="w-[600px] ml-[8%] flex justify-between">
+    <div className="w-[600px] ml-[8%] flex justify-center space-x-20">
       {icons.map((icon, index) => (
         <Link key={index} href={hrefs[index]} passHref>
           <div className="flex flex-col items-center cursor-pointer">

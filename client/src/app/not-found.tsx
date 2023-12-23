@@ -1,10 +1,10 @@
 import { Button } from 'antd';
 import Link from 'next/link';
-import Navbar from '../components/base/navbar';
 import Image from 'next/image';
 import { Suspense } from 'react';
 import AvatarSetting from '../components/common/AvatarSetting';
 import Loading from '../components/common/loading';
+import Navbar from '../components/base/Navbar';
 
 export default function NotFound() {
   return (
