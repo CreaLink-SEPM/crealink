@@ -15,20 +15,39 @@ const client = new S3Client({region: process.env.AWS_REGION})
 const registerUser = async (req, res) => {
   try {
     const { email, username, password, name, confirmedPassword } = req.body;
+    const errors = {};
 
-    if (!email || !password || !username || !name || !confirmedPassword) {
-      return res.status(400).json({
-        status: "error",
-        message:
-          "All fields (username, email, name, password, confirmed password) are required.",
-      });
+    if (!email) {
+      errors.email = "The email is required";
+    } else {
+      const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+      if (!emailRegex.test(email)) {
+        errors.email = "Invalid email format";
+      }
     }
 
-    const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-    if (!emailRegex.test(email)) {
+    if (!password) {
+      errors.password = "The password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password should be at least 6 characters long";
+    }
+
+    if (!username) {
+      errors.username = "The username is required";
+    }
+
+    if (!name) {
+      errors.name = "The name is required";
+    }
+
+    if (!confirmedPassword) {
+      errors.confirmedPassword = "The confirmed password is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         status: "error",
-        message: "Invalid email format",
+        message: { error: errors },
       });
     }
 
@@ -36,7 +55,7 @@ const registerUser = async (req, res) => {
     if (existingEmail) {
       return res.status(400).json({
         status: "error",
-        message: "The email is already in use",
+        message: { error: { email: "The email is already in use" } },
       });
     }
 
@@ -44,14 +63,14 @@ const registerUser = async (req, res) => {
     if (existingUsername) {
       return res.status(400).json({
         status: "error",
-        message: "The username is already in use",
+        message: { error: { username: "The username is already in use" } },
       });
     }
 
     if (password !== confirmedPassword) {
       return res.status(400).json({
         status: "error",
-        message: "The confirmed password does not match the entered password",
+        message: { error: { confirmedPassword: "Passwords do not match" } },
       });
     }
 
