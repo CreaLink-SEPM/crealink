@@ -115,8 +115,8 @@ Endpoint: `http:/localhost:[port]/api/feed/post/{postId}`
     "content": "New content...",
     "creator": "user._id",
     "likes": [
-        "user1._id",
-        "user2._id"
+        "user1 Id",
+        "user2 Id"
     ],
     "createdAt": "2023-12-18T14:12:15.018Z",
     "updatedAt": "2023-12-18T14:43:08.846Z",
@@ -150,11 +150,11 @@ Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
   "post": {
     "likedUsers": [
       {
-        "id": "user1._id",
+        "id": "user1 Id",
         "username": "user1"
       },
       {
-        "id": "user2._id",
+        "id": "user2 Id",
         "username": "user2"
       }
       // ... other liked users
@@ -209,7 +209,7 @@ Endpoint: `http://localhost:[port]/api/feed/report/{postId}`
     "message": "Post has been reported",
     "reportedPost": {
         "postId": "postId",
-        "reporter": "user._id",
+        "reporter": "userId",
         "adminDecision": "pending",
         "reportReason": "Reported reason",
         "reportedAt": "2023-12-21T12:34:06.875Z",
