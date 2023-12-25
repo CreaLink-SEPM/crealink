@@ -14,11 +14,12 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
-function EditProfile({ children }: { children: React.ReactNode }) {
+ function EditProfile({ children }: { children: React.ReactNode }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+  const { data: session } = useSession();
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -45,7 +46,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
               height={200}
               style={{ width: '100%', height: '250px', borderRadius: '50%' }}
               alt="Profile"
-              src="/assets/images/Logo.png"
+              src={session?.user?.user_image || '/assets/images/Logo.png'}
             />
             <Input id="picture" type="file" lang="en" />
           </div>
@@ -53,13 +54,13 @@ function EditProfile({ children }: { children: React.ReactNode }) {
             <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id="username" defaultValue="peduarte" className="col-span-3" />
+            <Input id="username" defaultValue={session?.user?.username} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="email" className="text-right">
               Email
             </Label>
-            <Input id="email" type="email" defaultValue="bCqo0@example.com" className="col-span-3" />
+            <Input id="email" type="email" defaultValue={session?.user?.email} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="password" className="text-right">
