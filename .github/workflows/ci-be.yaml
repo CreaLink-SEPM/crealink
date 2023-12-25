@@ -1,0 +1,36 @@
+name: "💄 CI Backend"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'never'
+          skip_after_successful_duplicate: 'true'
+          paths: '["server/**"]'
+          do_not_skip: '["workflow_dispatch", "schedule"]'
+          
+  compile:
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server/
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "server/package-lock.json"
+      - run: npm install
+      - run: npm run server
