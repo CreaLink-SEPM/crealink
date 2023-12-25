@@ -9,7 +9,7 @@ const ProfilePage = () => {
   const router = useRouter();
 
   return (
-    <div className="w-[90%] ml-[8%] overflow-auto h-auto mt-5">
+    <div className="w-[75%] mr-[5%] overflow-auto h-auto mt-5 float-right">
       <div className="flex justify-between gap-5 items-start max-md:max-w-full max-md:flex-wrap">
         <div className="flex grow basis-[0%] flex-col items-stretch mt-5">
           <div className="justify-center text-black text-2xl font-bold leading-8 whitespace-nowrap">robert_Pahm</div>
@@ -66,7 +66,7 @@ const ProfilePage = () => {
               </CardHeader>
             </Card>
           </TabsContent>
-          <TabsContent value="password">
+          <TabsContent value="password" className="h-[500px] overflow-auto">
             <Card>
               <CardHeader className="text-center">
                 <CardTitle>Password</CardTitle>

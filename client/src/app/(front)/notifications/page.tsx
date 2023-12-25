@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 
 export default async function ProfilesPage() {
   return (
-    <div className="w-full md:container pb-[22%]">
+    <div className="w-full md:container mb-[47%]">
       <Suspense fallback={<Loading />}>
         <div className="w-full mt-[3%] p-1">
-          <div className="flex items-start justify-between space-x-5 mb-3 w-full md:container">
+          <div className="flex items-start justify-around space-x-5 mb-3 w-full md:container">
             <div className="flex items-center gap-3">
               <UserAvatar name={''} image="/assets/images/avatar.png" />
               <div className=" w-[90%]">
@@ -34,68 +34,6 @@ export default async function ProfilesPage() {
           </div>
         </div>
         <Separator className="w-[87%] ml-[10%] mt-5" />
-        
-        <div className="w-full mt-[3%] p-1">
-          <div className="flex items-start justify-between space-x-5 mb-3 w-full md:container">
-            <div className="flex items-center gap-3">
-              <UserAvatar name={''} image="/assets/images/avatar.png" />
-              <div className=" w-[90%]">
-                <div className="flex justify-between w-full items-center">
-                  <p className="font-bold text-xl">Caice</p>
-                  <span className="text-sm">3 minutes</span>
-                </div>
-                <p className="text-md">Commented on your post</p>
-              </div>
-            </div>
-            <div>
-              <Button className="w-[104px] h-[40px] hover:bg-[#a2383a] font-bold bg-slate-50 border border-black rounded-xl text-black">
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Separator className="w-[87%] ml-[10%] mt-5" />
-        <div className="w-full mt-[3%] p-1">
-          <div className="flex items-start justify-between space-x-5 mb-3 w-full md:container">
-            <div className="flex items-center gap-3">
-              <UserAvatar name={''} image="/assets/images/avatar.png" />
-              <div className=" w-[90%]">
-                <div className="flex justify-between w-full items-center">
-                  <p className="font-bold text-xl">Caice</p>
-                  <span className="text-sm">3 minutes</span>
-                </div>
-                <p className="text-md">Commented on your post</p>
-              </div>
-            </div>
-            <div>
-              <Button className="w-[104px] h-[40px] hover:bg-[#a2383a] font-bold bg-slate-50 border border-black rounded-xl text-black">
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Separator className="w-[87%] ml-[10%] mt-5" />
-        <div className="w-full mt-[3%] p-1">
-          <div className="flex items-start justify-between space-x-5 mb-3 w-full md:container">
-            <div className="flex items-center gap-3">
-              <UserAvatar name={''} image="/assets/images/avatar.png" />
-              <div className=" w-[90%]">
-                <div className="flex justify-between w-full items-center">
-                  <p className="font-bold text-xl">Caice</p>
-                  <span className="text-sm">3 minutes</span>
-                </div>
-                <p className="text-md">Commented on your post</p>
-              </div>
-            </div>
-            <div>
-              <Button className="w-[104px] h-[40px] hover:bg-[#a2383a] font-bold bg-slate-50 border border-black rounded-xl text-black">
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Separator className="w-[87%] ml-[10%] mt-5" />
-        
       </Suspense>
     </div>
   );

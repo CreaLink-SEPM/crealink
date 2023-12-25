@@ -4,7 +4,7 @@ import React from 'react';
 
 function LeftSideBar() {
   return (
-    <Link href="/help-center" className="w-[20%] text-center bottom-0 h-auto">
+    <Link href="/terms" className="w-[20%] text-center bottom-0 h-auto">
       <div className="w-35 h-14 justify-center items-center inline-flex">
         <div className="self-stretch justify-center items-center inline-flex">
           <div className="absolute  self-stretch pl-3 pr-3 py-5 bg-red-800 rounded-full shadow border border-black border-opacity-5 justify-center items-start inline-flex">

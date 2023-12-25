@@ -10,13 +10,11 @@ export default function FavoritePage() {
 
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mb-[12%]">
             <div className="w-full max-w-md">
                 <div className="text-center font-extrabold pl-20 text-2xl">Your Saved Post</div> {/* Adjust the text size as needed */}
-                <div className="mt-1">
+                <div className="mt-10">
                     <SocialMediaPost/>
-
-
                 </div>
             </div>
         </div>
