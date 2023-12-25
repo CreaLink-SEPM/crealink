@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import LeftSideBar from './LeftSideBar';
 import RightSideBar from './RightSideBar';
 import AvatarSetting from '@/src/components/common/AvatarSetting';
-import Navbar from '@/src/components/base/navbar';
+import Navbar from '@/src/components/base/Navbar';
 import Footer from '@/src/components/common/Footer';
 import Link from 'next/link';
 import Loading from '@/src/components/common/loading';
@@ -33,7 +33,7 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <LeftSideBar />
         {/* <ScrollArea className="h-screen w-full lg:w-2/4 md:w-3/4 lg:px-8 lg:py-4 xl:px-12  md:p-6">
           <MobileNavBar />

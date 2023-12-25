@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/userController.js");
+const AuthMiddleware = require("../middlewares/authMiddleware");
 
 // User routes
 router.post("/register", UserController.registerUser);
@@ -15,5 +16,8 @@ router.get("/get-following/:user_id", UserController.getFollowing);
 router.post("/follow-user/:user_id", UserController.followUser);
 router.post("/unfollow-user/:user_id", UserController.unfollowUser);
 router.get("/profile", UserController.profileUser);
+router.post('/avatar', AuthMiddleware.userAuthenToken, UserController.uploadAvatar);
+router.put('/avatar', AuthMiddleware.userAuthenToken, UserController.updateAvatar);
+router.delete('/avatar', AuthMiddleware.userAuthenToken, UserController.deleteAvatar);
 
 module.exports = router;

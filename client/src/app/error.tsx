@@ -3,10 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { Suspense } from 'react';
 import Loading from '../components/common/loading';
-import Navbar from '../components/base/navbar';
 import AvatarSetting from '../components/common/AvatarSetting';
 import { Button } from 'antd';
 import './globals.css';
+import Navbar from '../components/base/Navbar';
 
 function Error() {
   return (

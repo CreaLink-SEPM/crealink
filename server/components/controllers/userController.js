@@ -1,7 +1,16 @@
 const User = require("../models/userModel.js");
+const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand
+} = require("@aws-sdk/client-s3")
+const uuid = require("uuid");
+const { CLIENT_RENEG_WINDOW } = require("tls");
+const client = new S3Client({region: process.env.AWS_REGION})
 // Function to create a new user
 const registerUser = async (req, res) => {
   try {
@@ -52,6 +61,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      isAdmin: false
     });
 
     return res.status(201).json({
@@ -67,6 +77,86 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Function to register admin account
+const registerAdmin = async (req, res) => {
+  try {
+    const existingAdmin = await User.findOne({isAdmin: true});
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: "error",
+        message: "Admin account already exists. Only one admin account is allowed to be registered."
+      })
+    }
+    const {username, email, password} = req.body;
+
+    const existingUser = await User.findOne({email});
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'error',
+        message: "This email address cannot be used to register as an admin account"
+      })
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      isAdmin: true
+    });
+    res.status(201).json({
+      status: 'success',
+      message: "Admin account registered successfully",
+      data: newAdmin
+    })
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+// Function login as admin
+const loginAdmin = async (req, res) => {
+  try {
+    const {email, password} = req.body;
+    if (!password || !email) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Bpth username or password are required'
+      })
+    }
+    const user = await User.findOne({ email: email});
+    if (!user) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Admin account not found'
+      })
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid || !user.isAdmin) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'Not authorized to login as admin'
+        })
+    }
+    const adminAccessToken = generateAdminAccessToken(user);
+    const adminRefreshToken = generateAdminRefreshToken(user);
+    storeRefreshToken(adminRefreshToken);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Admin login successful',
+      accessToken: adminAccessToken,
+      refreshToken: adminRefreshToken
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    })
+  }
+};
 // Function to log in a user
 const loginUser = async (req, res) => {
   try {
@@ -143,6 +233,31 @@ const storeRefreshToken = (token) => {
   refreshTokens.push(token);
 };
 
+// Function to generate admin access token
+const generateAdminAccessToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.JWT_SECRET,
+    {expiresIn: '10h'}
+  )
+}
+// Function to generate admin refresh token
+const generateAdminRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: true
+    },
+    process.env.REFRESH_TOKEN_SECRET
+  );
+};
 // Function to refresh user's access token
 const refreshTokenUser = async (req, res) => {
   try {
@@ -236,6 +351,7 @@ const getAllUsers = async (req, res, next) => {
     });
   }
 };
+
 
 const searchUser = async (req, res) => {
   try {
@@ -484,6 +600,121 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+const uploadAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(404).json({
+        message: "No file uploaded",
+      });
+    }
+    const image = req.file.path;
+    const fileExtension = path.extname(req.file.originalname);
+    const stream = fs.createReadStream(image);
+    const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: avatarFileName,
+      Body: stream
+    }
+    const uploadResult = await client.send(new PutObjectCommand(params));
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+    await User.findByIdAndUpdate(req.userId, {user_image: avatarUrl });
+    fs.unlinkSync(image, (err) => {
+      if (err) {
+        console.error("Error deleting local avatar image:", err);
+      } else {
+        console.log("Local avatar image deleted successfully.");
+      }
+    });
+    res.status(200).json({
+      message: 'Avatar uploaded successfully',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+const updateAvatar = async (req, res, next) => {
+  let avatarUrl = req.body.user_image;
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 422;
+      throw error;
+    }
+    const image = req.file.path;
+    const oldAvatarUrl = user.user_image;
+    if (avatarUrl !== oldAvatarUrl) {
+      await clearImageFromS3(user.user_image);
+    }
+    const fileExtension = req.file.originalname;
+    const newS3FileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+    const uploadParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: newS3FileName,
+      Body: fs.createReadStream(image)
+    };
+    const uploadResult = await client.send(
+      new PutObjectCommand(uploadParams)
+    );
+    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
+    await fs.unlinkSync(image);
+    res.status(200).json({
+      message: 'Avatar updated sucessfuly',
+      user_image: avatarUrl
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    } next(err);
+  }
+};
+const deleteAvatar = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      })
+    }
+    await clearImageFromS3(user.user_image);
+    user.user_image = 'https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg';
+    await user.save();
+    res.status(200).json({
+      message: 'Avatar delete sucessfully'
+    })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err); 
+  }
+}
+const clearImageFromS3 = async (avatarUrl) => {
+  if (!avatarUrl) {
+    console.log("No image URL provided");
+    return;
+  }
+  const key = avatarUrl.replace("https://crealink-images.s3.amazonaws.com/", "");
+  try {
+    const deleteParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key,
+    };
+    const deleteResult = await client.send(
+      new DeleteObjectCommand(deleteParams)
+    );
+    console.log("Old avatar deleted successfully: ", deleteResult);
+  } catch (err) {
+    console.log("Error deleting image from S3: ", err);
+  }
+
+};
+
 
 const profileUser = async (req, res) => {
   try {
@@ -532,6 +763,8 @@ const profileUser = async (req, res) => {
 
 module.exports = {
   registerUser,
+  registerAdmin,
+  loginAdmin,
   loginUser,
   getAllUser,
   logoutUser,
@@ -543,5 +776,8 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
-  profileUser
+  profileUser,
+  uploadAvatar,
+  updateAvatar,
+  deleteAvatar
 };
