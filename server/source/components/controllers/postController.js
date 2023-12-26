@@ -108,9 +108,8 @@ exports.getPosts = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   try {
-  const postId = req.params.postId;
-    const post = await Post.findById(postId)
-            .populate("creator", "username");
+    const postId = req.params.postId;
+    const post = await Post.findById(postId).populate("creator", "username");
 
     if (!post) {
       const error = new Error("Could not find post");
@@ -179,10 +178,10 @@ exports.updatePost = async (req, res, next) => {
     }
 
     if (post.creator.toString() !== req.userId) {
-        const error = new Error("Not authorized");
-        error.statusCode = 403;
-        throw error;
-      }
+      const error = new Error("Not authorized");
+      error.statusCode = 403;
+      throw error;
+    }
 
     const title = req.body.title;
     const content = req.body.content;
@@ -207,7 +206,6 @@ exports.updatePost = async (req, res, next) => {
       imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
       await fs.unlinkSync(image);
     }
-
 
     if (post.creator.toString() !== req.userId) {
       const error = new Error("Not authorized");
@@ -306,7 +304,6 @@ exports.toggleLike = async (req, res, next) => {
         message: "User not found",
         status: "error",
       });
-
     }
     if (post.likes.includes(currentUserId)) {
       post.likes = post.likes.filter((id) => id !== currentUserId);
@@ -338,7 +335,6 @@ exports.toggleLike = async (req, res, next) => {
   }
 };
 
-
 exports.reportPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
@@ -349,25 +345,23 @@ exports.reportPost = async (req, res, next) => {
     const reportedPost = new ReportedPost({
       postId,
       reporter: req.userId,
-      reportReason: reason
+      reportReason: reason,
     });
     await reportedPost.save();
 
-    io.getIO().emit('report', { action: "report", reportedPost: postId });
+    io.getIO().emit("report", { action: "report", reportedPost: postId });
 
     res.status(201).json({
-      message: 'Post has been reported',
-      reportedPost: reportedPost
+      message: "Post has been reported",
+      reportedPost: reportedPost,
     });
-
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
-    next(err); 
+    next(err);
   }
 };
-
 
 const clearImageFromS3 = async (imageUrl) => {
   if (!imageUrl) {
@@ -387,6 +381,4 @@ const clearImageFromS3 = async (imageUrl) => {
   } catch (err) {
     console.log("Error deleting image from S3: ", err);
   }
-
 };
-

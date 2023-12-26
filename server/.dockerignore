@@ -1,0 +1,21 @@
+# Node
+## Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Dependency directories
+node_modules/
+
+# git
+.git
+.gitattributes
+.gitignore
+
+# Common
+README.md
+CHANGELOG.md
+docker-compose.yml
+Dockerfile

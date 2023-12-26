@@ -4,7 +4,7 @@
     "description": "CreaLink API",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js",
+        "start": "nodemon source/app.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
