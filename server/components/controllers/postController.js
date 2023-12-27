@@ -13,10 +13,17 @@ const {
 const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
+const {openai} = require('../configs/openai');
 
-
-
-
+const initializeAssistant = async (req, res, next) => {
+  try {
+    assistant = await openai.beta.assistant.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    console.log("OpenAI assistant initialized");
+  } catch (err) {
+    console.log("Error initializing assistant: " + err.message)
+  }
+}
+initializeAssistant();
 
 exports.createPost = async (req, res, next) => {
   try {
