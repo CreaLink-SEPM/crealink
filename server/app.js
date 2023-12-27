@@ -8,6 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const {init: initSocket} = require("./socket");
 const AWS = require("aws-sdk");
+const {OpenAI} = require("openai")
 
 
 dotenv.config();
@@ -18,8 +19,22 @@ connectDB();
 const port = process.env.PORT || 5000;
 const app = express();
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+})
 
-
+// Create new assistant
+// openai.beta.assistants.create({
+//   name: "Content creator assistant",
+//   instructions: "You support content creators",
+//   tools: [
+//     {
+//       type: "code_interpreter"
+//     }
+//   ],
+//   model: "gpt-3.5-turbo-1106"
+// })
+const assistant = openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY

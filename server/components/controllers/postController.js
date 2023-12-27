@@ -10,8 +10,13 @@ const {
   PutObjectCommand,
   DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
+const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
+
+
+
+
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -389,4 +394,5 @@ const clearImageFromS3 = async (imageUrl) => {
   }
 
 };
+
 
