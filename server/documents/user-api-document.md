@@ -50,60 +50,62 @@ The registerUser function serves the purpose of allowing new user registrations 
 
 - Invalid Email Format
 
-    ```json
-      {
-        "status": "error",
-        "message": {
-          "error": {
-            "email": "Invalid email format"
-          }
-        }
+  ```json
+  {
+    "status": "error",
+    "message": {
+      "error": {
+        "email": "Invalid email format"
       }
-    ```
+    }
+  }
+  ```
 
 - Existing Email or Username
-    ```json
-    {
-      "status": "error",
-      "message": {
-        "error": {
-          "email": "The email is already in use"
-          // OR
-          "username": "The username is already in use"
-        }
+
+  ```json
+  {
+    "status": "error",
+    "message": {
+      "error": {
+        "email": "The email is already in use"
+        // OR
+        "username": "The username is already in use"
       }
     }
-    ```
+  }
+  ```
 
 - Password Validation Error
-    ```json
-    {
-      "status": "error",
-      "message": {
-        "error": {
-          "password": "Password should be at least 6 characters long"
-          // OR
-          "confirmedPassword": "Passwords do not match"
-        }
+
+  ```json
+  {
+    "status": "error",
+    "message": {
+      "error": {
+        "password": "Password should be at least 6 characters long"
+        // OR
+        "confirmedPassword": "Passwords do not match"
       }
     }
-    ```
+  }
+  ```
 
 - Missing Required Fields
-    ```json
-    {
-      "status": "error",
-      "message": {
-        "error": {
-          "email": "The email is required",
-          "username": "The username is required",
-          "password": "The password is required",
-          "name": "The name is required",
-          "confirmedPassword": "The confirmed password is required"
-        }
+  ```json
+  {
+    "status": "error",
+    "message": {
+      "error": {
+        "email": "The email is required",
+        "username": "The username is required",
+        "password": "The password is required",
+        "name": "The name is required",
+        "confirmedPassword": "The confirmed password is required"
       }
     }
-    ```
+  }
+  ```
 
 ### Notes
 
@@ -152,20 +154,20 @@ The `loginUser` function serves the purpose of authenticating users for access w
 
 - Missing Email or Password
 
-    ```json
-    {
-      "status": "error",
-      "message": "Both email and password are required fields"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Both email and password are required fields"
+  }
+  ```
 
 - Invalid Email or Password
-    ```json
-    {
-      "status": "error",
-      "message": "Invalid email or password"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid email or password"
+  }
+  ```
 
 ### Notes
 
@@ -242,20 +244,20 @@ http:/localhost:[port]/api/user/get-user/example_username
 
 - Missing Username
 
-    ```json
-    {
-      "status": "error",
-      "message": "Username is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Username is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 ### Notes
 
@@ -297,7 +299,7 @@ The `getAllUsers` function retrieves all user information within an API system, 
       "email": "user2@example.com",
       "username": "user2"
       // Other user details (password excluded)
-    },
+    }
     // Other users...
   ]
 }
@@ -306,12 +308,12 @@ The `getAllUsers` function retrieves all user information within an API system, 
 ### Error Responses
 
 - Server Error
-    ```json
-    {
-      "status": "error",
-      "message": "Internal Server Error: Please try again later"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Internal Server Error: Please try again later"
+  }
+  ```
 
 ### Notes
 
@@ -367,7 +369,7 @@ http:/localhost:[port]/api/user/search-user?searchQuery=query_here
       "follower_images": ["follower3_image_url"],
       "is_verified": false
       // Other user details
-    },
+    }
     // Other users...
   ]
 }
@@ -377,20 +379,20 @@ http:/localhost:[port]/api/user/search-user?searchQuery=query_here
 
 - Missing Search Query
 
-    ```json
-    {
-      "status": "error",
-      "message": "Search query is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Search query is required"
+  }
+  ```
 
 - No Users Found
-    ```json
-    {
-      "status": "error",
-      "message": "No users found"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "No users found"
+  }
+  ```
 
 ### Notes
 
@@ -434,7 +436,7 @@ http:/localhost:[port]/api/user/get-followers/user_id_here
     {
       "username": "follower2_username",
       "name": "Follower 2's Name"
-    },
+    }
     // Other followers...
   ]
 }
@@ -444,20 +446,20 @@ http:/localhost:[port]/api/user/get-followers/user_id_here
 
 - Missing User ID
 
-    ```json
-    {
-      "status": "error",
-      "message": "User ID is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User ID is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 ### Notes
 
@@ -501,7 +503,7 @@ http:/localhost:[port]/api/user/get-following/user_id_here
     {
       "username": "following_user2_username",
       "name": "Following User 2's Name"
-    },
+    }
     // Other followed users...
   ]
 }
@@ -511,20 +513,20 @@ http:/localhost:[port]/api/user/get-following/user_id_here
 
 - Missing User ID
 
-    ```json
-    {
-      "status": "error",
-      "message": "User ID is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User ID is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 ### Notes
 
@@ -576,7 +578,7 @@ http:/localhost:[port]/api/user/follow-user/user_id_here
       // User details of the user being followed
       "_id": "user_id",
       "username": "username",
-      "name": "User's Name",
+      "name": "User's Name"
       // Other user details
     }
   }
@@ -587,28 +589,29 @@ http:/localhost:[port]/api/user/follow-user/user_id_here
 
 - Missing User ID to Follow
 
-    ```json
-    {
-      "status": "error",
-      "message": "User ID to follow is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User ID to follow is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 - Already Following
-    ```json
-    {
-      "status": "error",
-      "message": "You are already following this user"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "You are already following this user"
+  }
+  ```
 
 ### Notes
 
@@ -660,7 +663,7 @@ http:/localhost:[port]/api/user/unfollow-user/user_id_here
       // User details of the user who was unfollowed
       "_id": "user_id",
       "username": "username",
-      "name": "User's Name",
+      "name": "User's Name"
       // Other user details
     }
   }
@@ -671,28 +674,29 @@ http:/localhost:[port]/api/user/unfollow-user/user_id_here
 
 - Missing User ID to Unfollow
 
-    ```json
-    {
-      "status": "error",
-      "message": "User ID to unfollow is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User ID to unfollow is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 - Not Following
-    ```json
-    {
-      "status": "error",
-      "message": "You are not following this user"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "You are not following this user"
+  }
+  ```
 
 ### Notes
 
@@ -744,7 +748,7 @@ http:/localhost:[port]/api/user/profile?username=username_here
       },
       {
         // Another post details
-      },
+      }
       // Other posts...
     ]
   }
@@ -755,20 +759,20 @@ http:/localhost:[port]/api/user/profile?username=username_here
 
 - Missing Username
 
-    ```json
-    {
-      "status": "error",
-      "message": "Username is required"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "Username is required"
+  }
+  ```
 
 - User Not Found
-    ```json
-    {
-      "status": "error",
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
 
 ### Notes
 
@@ -806,18 +810,18 @@ Uploads a new avatar image for the user.
 
 - No File Uploaded
 
-    ```json
-    {
-      "message": "No file uploaded"
-    }
-    ```
+  ```json
+  {
+    "message": "No file uploaded"
+  }
+  ```
 
 - Internal Server Error
-    ```json
-    {
-      "message": "Internal server error message here"
-    }
-    ```
+  ```json
+  {
+    "message": "Internal server error message here"
+  }
+  ```
 
 ---
 
@@ -848,18 +852,18 @@ Updates the user's avatar image.
 
 - User Not Found
 
-    ```json
-    {
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
 
 - Internal Server Error
-    ```json
-    {
-      "message": "Internal server error message here"
-    }
-    ```
+  ```json
+  {
+    "message": "Internal server error message here"
+  }
+  ```
 
 ---
 
@@ -888,18 +892,18 @@ Deletes the user's avatar image.
 
 - User Not Found
 
-    ```json
-    {
-      "message": "User not found"
-    }
-    ```
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
 
 - Internal Server Error
-    ```json
-    {
-      "message": "Internal server error message here"
-    }
-    ```
+  ```json
+  {
+    "message": "Internal server error message here"
+  }
+  ```
 
 ---
 

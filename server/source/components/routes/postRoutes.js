@@ -48,6 +48,10 @@ router.delete(
   AuthMiddleware.userAuthenToken,
   PostController.deletePost
 );
-router.post('/report/:postId', AuthMiddleware.userAuthenToken, PostController.reportPost);
+router.post(
+  "/report/:postId",
+  AuthMiddleware.userAuthenToken,
+  PostController.reportPost
+);
 
 module.exports = router;
