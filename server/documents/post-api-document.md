@@ -1,220 +1,483 @@
-# Post API
+Absolutely, here's the API documentation for the Post-related endpoints:
 
-## Create post
+---
 
-Endpoint: `http://localhost:[port]/api/feed/post`
+## Create Post
+
+Endpoint: `http:/localhost:[port]/api/user/post` (POST)
+
+### Purpose:
+
+Creates a new post with a title, content, and an optional image.
 
 ### Request
 
-```json
-{
-    "title": "Example Post",
-    "content": "Lorem ipsum ...",
-    "image": "image_file"
-}
-```
+- Method: POST
+- Headers: `Authorization: Bearer [token]`
+- Body: Form-data with fields:
+  - `title` (string, required): Title of the post.
+  - `content` (string, required): Content of the post.
+  - `image` (file, optional): Image to be attached to the post.
 
-### Respone
+### Success Response
+
 ```json
 {
   "message": "Post created successfully",
   "posts": {
-    "title": "Example Title",
-     "imageUrl": "https://example.com/image.jpg",
-    "content": "Lorem ipsum...",
-    "creator": "user_id",
-    "likes": [],
-    "_id": "post._id",
-    "createdAt": "2023-12-14T03:27:36.695Z",
-    "updatedAt": "2023-12-14T03:27:36.695Z",
-    "__v": 0
+    "_id": "post_id",
+    "title": "Post Title",
+    "content": "Post Content",
+    "imageUrl": "image_url_here",
+    "creator": {
+      "_id": "user_id",
+      "name": "Username"
+    }
   },
   "creator": {
     "_id": "user_id",
-    "name": "username"
+    "name": "Username"
   }
 }
 ```
 
-### Get Posts
-Endpoint: `http://localhost:[port]/api/feed/posts`
+### Error Responses
 
-### Response
-```json 
+- Validation Failed
+
+    ```json
+    {
+      "message": "Validation failed, entered data is not correct"
+    }
+    ```
+
+- User Not Found
+
+    ```json
+    {
+      "message": "User not found",
+      "status": "error"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Get Posts
+
+Endpoint: `http:/localhost:[port]/api/user/posts` (GET)
+
+### Purpose:
+
+Retrieves a paginated list of posts.
+
+### Request
+
+- Method: GET
+- Headers: `Authorization: Bearer [token]`
+- Query Parameters:
+  - `page` (optional): Page number for pagination (default: 1)
+
+### Success Response
+
+```json
 {
-  "message": "Fetched post successfully",
+  "message": "Fetched posts successfully",
   "posts": [
     {
-        "id": "post._id",
-      "title": "Example Title",
-      "imageUrl": "https://example.com/image.jpg",
-      "content": "Lorem ipsum...",
+      "_id": "post_id",
+      "title": "Post Title",
+      "content": "Post Content",
+      "imageUrl": "image_url_here",
       "creator": {
-        "_id": "user_id",
-        "name": "username"
+        "username": "Creator_Username"
       },
-      "createdAt": "2023-12-14T03:27:36.695Z",
-      "updatedAt": "2023-12-14T03:27:36.695Z",
-      "__v": 0,
       "likesCount": 5
     },
-    // ... other posts
+    {
+      "_id": "post_id",
+      "title": "Post Title",
+      "content": "Post Content",
+      "imageUrl": "image_url_here",
+      "creator": {
+        "username": "Creator_Username"
+      },
+      "likesCount": 8
+    },
+    // Additional posts...
   ]
 }
 ```
 
-## Get a single post
+### Error Responses
 
-Endpoint: `http:/localhost:[port]/api/feed/post/{postId}`
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
 
-### Respone
+---
+
+## Get Post by ID
+
+Endpoint: `http:/localhost:[port]/api/user/post/:postId` (GET)
+
+### Purpose:
+
+Fetches a specific post by its unique identifier.
+
+### Request
+
+- Method: GET
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to retrieve
+
+### Success Response
+
 ```json
 {
   "message": "Post fetched successfully",
   "post": {
-    "_id": "postId",
-    "title": "Example Title",
-     "imageUrl": "https://example.com/image.jpg",
-    "content": "Lorem ipsum...",
+    "_id": "post_id",
+    "title": "Post Title",
+    "content": "Post Content",
+    "imageUrl": "image_url_here",
     "creator": {
-      "_id": "user_id",
-      "name": "username"
+      "username": "Creator_Username"
     },
-    "createdAt": "2023-12-14T03:27:36.695Z",
-    "updatedAt": "2023-12-14T03:27:36.695Z",
-    "__v": 0,
-    "likesCount": 5
+    "likesCount": 8
   }
 }
-
 ```
 
-## Update a post
-Endpoint: `http:/localhost:[port]/api/feed/post/{postId}`
+### Error Responses
 
-### Request 
-
-```json
-{
-  "title": "Updated Title",
-  "content": "New content...",
-  "image": "new_image_file"
-}
-```
-
-### Respone
-
-```json
-{
+- Post Not Found
+    ```json
     {
-  "message": "Post updated successfully",
-  "post": {
-    "_id": "postId",
-    "title": "Updated Title",
-     "imageUrl": "https://example.com/new_image.jpg",
-    "content": "New content...",
-    "creator": "user._id",
-    "likes": [
-        "user1._id",
-        "user2._id"
-    ],
-    "createdAt": "2023-12-18T14:12:15.018Z",
-    "updatedAt": "2023-12-18T14:43:08.846Z",
-    "__v": 1
-  }
-}
-}
-```
+      "message": "Could not find post"
+    }
+    ```
 
-## Delete a post
-Endpoint: `http:/localhost:[port]/api/feed/post/{postId}`
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
 
-### Respone
+---
+
+## Get Users Who Liked a Post
+
+Endpoint: `http:/localhost:[port]/api/user/like/:postId` (GET)
+
+### Purpose:
+
+Retrieves the list of users who liked a specific post identified by its unique ID.
+
+### Request
+
+- Method: GET
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to retrieve likes for
+
+### Success Response
 
 ```json
 {
-    "message": "Delete post successfully"
-}
-```
-
-## Get Liked Users for a Post
-
-Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
-
-### Response
-
-```json 
-{
-    {
   "message": "Fetched liked users successfully",
   "post": {
     "likedUsers": [
-      {
-        "id": "user1._id",
-        "username": "user1"
-      },
-      {
-        "id": "user2._id",
-        "username": "user2"
-      }
-      // ... other liked users
+      { "username": "user1" },
+      { "username": "user2" },
+      { "username": "user3" }
     ]
   }
 }
-
-}
 ```
 
-## Toggle like for a post
-Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
+### Error Responses
 
-### Respone
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Update Post
+
+Endpoint: `http:/localhost:[port]/api/user/post/:postId` (PUT)
+
+### Purpose:
+
+Updates the details of a specific post identified by its unique ID.
+
+### Request
+
+- Method: PUT
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to update
+- Body:
+  - `title` (string, required): Title of the post.
+  - `content` (string, required): Content of the post.
+  - `image` (string): Image URL for the post (optional).
+
+### Success Response
+
 ```json
 {
-    "message": "Successfully liked the post"
+  "message": "Post updated successfully",
+  "post": {
+    "_id": "post_id",
+    "title": "Updated Title",
+    "content": "Updated content",
+    "imageUrl": "https://updated-image-url.com",
+    // Other post details
+  }
 }
 ```
 
-### Respone
-```json
-{
-    "message": "Successfully unliked the post"
-}
-```
+### Error Responses
 
-## Share point
-Endpoint: `http:/localhost:[port]/api/feed/share/{postId}`
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
 
-### Respone
+- Validation Error
+    ```json
+    {
+      "message": "Validation failed, entered data is not correct"
+    }
+    ```
+
+- Not Authorized
+    ```json
+    {
+      "message": "Not authorized"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Share Post
+
+Endpoint: `http:/localhost:[port]/api/user/share/:postId` (GET)
+
+### Purpose:
+
+Generates a shareable URL for a specific post identified by its unique ID.
+
+### Request
+
+- Method: GET
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to share
+
+### Success Response
+
 ```json
 {
   "message": "Share post URL successfully",
-  "shareableUrl": "https://example.com/posts/{postId}"
+  "shareableUrl": "https://your-domain.com/posts/post_id"
 }
 ```
 
-## Report violated post
-Endpoint: `http://localhost:[port]/api/feed/report/{postId}`
+### Error Responses
+
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Toggle Like on Post
+
+Endpoint: `http:/localhost:[port]/api/user/like/:postId` (PUT)
+
+### Purpose:
+
+Enables a user to toggle their like status on a specific post identified by its unique ID.
 
 ### Request
+
+- Method: PUT
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to like/unlike
+
+### Success Response
+
+#### If Liked:
 ```json
 {
-  "reason": "Reported reason"
+  "message": "Successfully liked the post"
 }
 ```
 
-### Response
+#### If Unliked:
 ```json
 {
-    "message": "Post has been reported",
-    "reportedPost": {
-        "postId": "postId",
-        "reporter": "user._id",
-        "adminDecision": "pending",
-        "reportReason": "Reported reason",
-        "reportedAt": "2023-12-21T12:34:06.875Z",
-        "_id": "reportedPost._id",
-        "__v": 0
-    }
+  "message": "Successfully unliked the post"
 }
+```
 
+### Error Responses
+
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
+
+- User Not Found
+    ```json
+    {
+      "message": "User not found",
+      "status": "error"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Delete Post
+
+Endpoint: `http:/localhost:[port]/api/user/post/:postId` (DELETE)
+
+### Purpose:
+
+Allows an authenticated user to delete their own post by its unique ID.
+
+### Request
+
+- Method: DELETE
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the post to delete
+
+### Success Response
+
+```json
+{
+  "message": "Delete post successfully"
+}
+```
+
+### Error Responses
+
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
+
+- Not Authorized
+    ```json
+    {
+      "message": "Not authorized"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+## Report Post
+
+Endpoint: `http:/localhost:[port]/api/user/report/:postId` (POST)
+
+### Purpose:
+
+Enables users to report a post based on its unique ID.
+
+### Request
+
+- Method: POST
+- Headers: `Authorization: Bearer [token]`
+- URL Parameters:
+  - `postId` (required): Unique ID of the reported post
+
+### Success Response
+
+```json
+{
+  "message": "Post reported successfully"
+}
+```
+
+### Error Responses
+
+- Post Not Found
+    ```json
+    {
+      "message": "Could not find post"
+    }
+    ```
+
+- Internal Server Error
+    ```json
+    {
+      "message": "Internal server error message here"
+    }
+    ```
+
+---
+
+Modify placeholders like `[port]` and customize error messages or additional details as required before adding this template to your API documentation.
+This document outlines the endpoints available in the User API, their respective request and response formats based on the provided code snippets. Adjustments might be necessary to include specific details like headers or authentication tokens as required.
