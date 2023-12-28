@@ -17,14 +17,21 @@ const {openai} = require('../configs/openai');
 
 const initializeAssistant = async (req, res, next) => {
   try {
-    assistant = await openai.beta.assistant.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    const thread = await openai.beta.threads.create();
     console.log("OpenAI assistant initialized");
+    console.log(thread)
   } catch (err) {
     console.log("Error initializing assistant: " + err.message)
   }
 }
 initializeAssistant();
 
+
+// exports.startMessage = async (req, res, next) => {
+    // const thread = await openai.beta.threads.create();
+    // console.log(thread)
+// }
 exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
