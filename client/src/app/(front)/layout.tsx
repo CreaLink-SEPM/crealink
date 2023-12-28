@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <CustomProvider>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <BaseComponent>
+        <BaseComponent >
           {children}
         </BaseComponent>
       </ThemeProvider>

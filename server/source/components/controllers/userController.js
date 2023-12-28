@@ -6,29 +6,49 @@ const jwt = require("jsonwebtoken");
 const {
   S3Client,
   PutObjectCommand,
-  DeleteObjectCommand
-} = require("@aws-sdk/client-s3")
+  DeleteObjectCommand,
+} = require("@aws-sdk/client-s3");
 const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
-const client = new S3Client({region: process.env.AWS_REGION})
+const client = new S3Client({ region: process.env.AWS_REGION });
+
 // Function to create a new user
 const registerUser = async (req, res) => {
   try {
     const { email, username, password, name, confirmedPassword } = req.body;
+    const errors = {};
 
-    if (!email || !password || !username || !name || !confirmedPassword) {
-      return res.status(400).json({
-        status: "error",
-        message:
-          "All fields (username, email, name, password, confirmed password) are required.",
-      });
+    if (!email) {
+      errors.email = "The email is required";
+    } else {
+      const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+      if (!emailRegex.test(email)) {
+        errors.email = "Invalid email format";
+      }
     }
 
-    const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-    if (!emailRegex.test(email)) {
+    if (!password) {
+      errors.password = "The password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password should be at least 6 characters long";
+    }
+
+    if (!username) {
+      errors.username = "The username is required";
+    }
+
+    if (!name) {
+      errors.name = "The name is required";
+    }
+
+    if (!confirmedPassword) {
+      errors.confirmedPassword = "The confirmed password is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         status: "error",
-        message: "Invalid email format",
+        message: { error: errors },
       });
     }
 
@@ -36,7 +56,7 @@ const registerUser = async (req, res) => {
     if (existingEmail) {
       return res.status(400).json({
         status: "error",
-        message: "The email is already in use",
+        message: { error: { email: "The email is already in use" } },
       });
     }
 
@@ -44,14 +64,14 @@ const registerUser = async (req, res) => {
     if (existingUsername) {
       return res.status(400).json({
         status: "error",
-        message: "The username is already in use",
+        message: { error: { username: "The username is already in use" } },
       });
     }
 
     if (password !== confirmedPassword) {
       return res.status(400).json({
         status: "error",
-        message: "The confirmed password does not match the entered password",
+        message: { error: { confirmedPassword: "Passwords do not match" } },
       });
     }
 
@@ -61,7 +81,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      isAdmin: false
+      isAdmin: false,
     });
 
     return res.status(201).json({
@@ -80,38 +100,40 @@ const registerUser = async (req, res) => {
 // Function to register admin account
 const registerAdmin = async (req, res) => {
   try {
-    const existingAdmin = await User.findOne({isAdmin: true});
+    const existingAdmin = await User.findOne({ isAdmin: true });
     if (existingAdmin) {
       return res.status(400).json({
         status: "error",
-        message: "Admin account already exists. Only one admin account is allowed to be registered."
-      })
+        message:
+          "Admin account already exists. Only one admin account is allowed to be registered.",
+      });
     }
-    const {username, email, password} = req.body;
+    const { username, email, password } = req.body;
 
-    const existingUser = await User.findOne({email});
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
-        status: 'error',
-        message: "This email address cannot be used to register as an admin account"
-      })
+        status: "error",
+        message:
+          "This email address cannot be used to register as an admin account",
+      });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = await User.create({
       username,
       email,
       password: hashedPassword,
-      isAdmin: true
+      isAdmin: true,
     });
     res.status(201).json({
-      status: 'success',
+      status: "success",
       message: "Admin account registered successfully",
-      data: newAdmin
-    })
+      data: newAdmin,
+    });
   } catch (err) {
     res.status(500).json({
-      status: 'error',
-      message: err.message
+      status: "error",
+      message: err.message,
     });
   }
 };
@@ -119,42 +141,42 @@ const registerAdmin = async (req, res) => {
 // Function login as admin
 const loginAdmin = async (req, res) => {
   try {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
     if (!password || !email) {
       return res.status(400).json({
-        status: 'error',
-        message: 'Bpth username or password are required'
-      })
+        status: "error",
+        message: "Bpth username or password are required",
+      });
     }
-    const user = await User.findOne({ email: email});
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(401).json({
-        status: 'error',
-        message: 'Admin account not found'
-      })
+        status: "error",
+        message: "Admin account not found",
+      });
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid || !user.isAdmin) {
-        return res.status(401).json({
-          status: 'error',
-          message: 'Not authorized to login as admin'
-        })
+      return res.status(401).json({
+        status: "error",
+        message: "Not authorized to login as admin",
+      });
     }
     const adminAccessToken = generateAdminAccessToken(user);
     const adminRefreshToken = generateAdminRefreshToken(user);
     storeRefreshToken(adminRefreshToken);
     return res.status(200).json({
-      status: 'success',
-      message: 'Admin login successful',
+      status: "success",
+      message: "Admin login successful",
       accessToken: adminAccessToken,
-      refreshToken: adminRefreshToken
-    })
+      refreshToken: adminRefreshToken,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      status: 'error',
-      message: err.message
-    })
+      status: "error",
+      message: err.message,
+    });
   }
 };
 // Function to log in a user
@@ -210,7 +232,7 @@ const generateAccessToken = (user) => {
       email: user.email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "10h" }
+    { expiresIn: "10m" }
   );
 };
 
@@ -240,12 +262,12 @@ const generateAdminAccessToken = (user) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      isAdmin: true
+      isAdmin: true,
     },
     process.env.JWT_SECRET,
-    {expiresIn: '10h'}
-  )
-}
+    { expiresIn: "10m" }
+  );
+};
 // Function to generate admin refresh token
 const generateAdminRefreshToken = (user) => {
   return jwt.sign(
@@ -253,7 +275,7 @@ const generateAdminRefreshToken = (user) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      isAdmin: true
+      isAdmin: true,
     },
     process.env.REFRESH_TOKEN_SECRET
   );
@@ -352,10 +374,9 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-
 const searchUser = async (req, res) => {
   try {
-    const { searchQuery } = req.params;
+    const { searchQuery } = req.query;
 
     if (!searchQuery) {
       return res.status(400).json({
@@ -379,7 +400,7 @@ const searchUser = async (req, res) => {
     }
 
     // Map user data to include necessary information including random follower images (up to 3)
-    const usersData = users.map(user => {
+    const usersData = users.map((user) => {
       const followersCount = user.followers.length;
       const followerImages = [];
 
@@ -390,7 +411,7 @@ const searchUser = async (req, res) => {
           () => Math.floor(Math.random() * followersCount)
         );
 
-        randomIndexes.forEach(index => {
+        randomIndexes.forEach((index) => {
           const follower = user.followers[index];
           if (follower && follower.image) {
             followerImages.push(follower.image);
@@ -600,6 +621,7 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+
 const uploadAvatar = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -614,11 +636,11 @@ const uploadAvatar = async (req, res, next) => {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: avatarFileName,
-      Body: stream
-    }
+      Body: stream,
+    };
     const uploadResult = await client.send(new PutObjectCommand(params));
     avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
-    await User.findByIdAndUpdate(req.userId, {user_image: avatarUrl });
+    await User.findByIdAndUpdate(req.userId, { user_image: avatarUrl });
     fs.unlinkSync(image, (err) => {
       if (err) {
         console.error("Error deleting local avatar image:", err);
@@ -627,9 +649,9 @@ const uploadAvatar = async (req, res, next) => {
       }
     });
     res.status(200).json({
-      message: 'Avatar uploaded successfully',
-      user_image: avatarUrl
-    })
+      message: "Avatar uploaded successfully",
+      user_image: avatarUrl,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -642,7 +664,7 @@ const updateAvatar = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) {
-      const error = new Error('User not found');
+      const error = new Error("User not found");
       error.statusCode = 422;
       throw error;
     }
@@ -656,21 +678,20 @@ const updateAvatar = async (req, res, next) => {
     const uploadParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: newS3FileName,
-      Body: fs.createReadStream(image)
+      Body: fs.createReadStream(image),
     };
-    const uploadResult = await client.send(
-      new PutObjectCommand(uploadParams)
-    );
+    const uploadResult = await client.send(new PutObjectCommand(uploadParams));
     avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${newS3FileName}`;
     await fs.unlinkSync(image);
     res.status(200).json({
-      message: 'Avatar updated sucessfuly',
-      user_image: avatarUrl
-    })
+      message: "Avatar updated sucessfuly",
+      user_image: avatarUrl,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
-    } next(err);
+    }
+    next(err);
   }
 };
 const deleteAvatar = async (req, res, next) => {
@@ -678,28 +699,32 @@ const deleteAvatar = async (req, res, next) => {
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({
-        message: 'User not found'
-      })
+        message: "User not found",
+      });
     }
     await clearImageFromS3(user.user_image);
-    user.user_image = 'https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg';
+    user.user_image =
+      "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg";
     await user.save();
     res.status(200).json({
-      message: 'Avatar delete sucessfully'
-    })
+      message: "Avatar delete sucessfully",
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
-    next(err); 
+    next(err);
   }
-}
+};
 const clearImageFromS3 = async (avatarUrl) => {
   if (!avatarUrl) {
     console.log("No image URL provided");
     return;
   }
-  const key = avatarUrl.replace("https://crealink-images.s3.amazonaws.com/", "");
+  const key = avatarUrl.replace(
+    "https://crealink-images.s3.amazonaws.com/",
+    ""
+  );
   try {
     const deleteParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -712,9 +737,7 @@ const clearImageFromS3 = async (avatarUrl) => {
   } catch (err) {
     console.log("Error deleting image from S3: ", err);
   }
-
 };
-
 
 const profileUser = async (req, res) => {
   try {
@@ -779,5 +802,5 @@ module.exports = {
   profileUser,
   uploadAvatar,
   updateAvatar,
-  deleteAvatar
+  deleteAvatar,
 };

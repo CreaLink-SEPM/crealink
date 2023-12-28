@@ -10,13 +10,11 @@ export default function HomePage() {
 
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mb-[12%]">
             <div className="w-full max-w-md">
                 <CreatePost/>
                 <div className="mt-1">
                     <SocialMediaPost/>
-
-
                 </div>
             </div>
         </div>

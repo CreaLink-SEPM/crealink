@@ -6,10 +6,8 @@ const cookieParser = require("cookie-parser");
 const routes = require("./components/routes/router.js");
 const multer = require("multer");
 const path = require("path");
-const {init: initSocket} = require("./socket");
+const { init: initSocket } = require("./socket.js");
 const AWS = require("aws-sdk");
-
-
 
 dotenv.config();
 
@@ -35,9 +33,9 @@ const app = express();
 
 
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-})
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,19 +47,24 @@ const fileStorage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/webp') {
-        cb(null, true)
-    } else {
-        cb(null, false)
-    }
-}
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/webp"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"),
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
 app.use("/components/images", express.static(path.join(__dirname, "images")));
