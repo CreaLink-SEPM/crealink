@@ -621,6 +621,7 @@ const getFollowing = async (req, res) => {
     });
   }
 };
+
 const uploadAvatar = async (req, res, next) => {
   try {
     if (!req.file) {
