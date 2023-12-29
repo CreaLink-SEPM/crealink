@@ -28,7 +28,7 @@ const SocialMediaPost = () => {
                                         <div className="relative h-[21px]">
                                             <div
                                                 className="absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                                kiit.connnor
+                                                aman_tokyo
                                             </div>
                                         </div>
                                     </div>
@@ -46,6 +46,7 @@ const SocialMediaPost = () => {
                                 className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
                                 alt="Div margin"
                                 src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+
                             />
                         </div>
                     </div>

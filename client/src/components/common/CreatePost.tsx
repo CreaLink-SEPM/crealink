@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button} from "antd";
 
+import ModalPost from "@/src/components/common/ModalPost";
 
-const CreatePost = () => {
+const CreatePost: React.FC = () => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
     return (
         <div className="inline-flex flex-col items-start gap-[16px] relative">
             <div className="relative w-[572px] h-[68px]">
@@ -21,12 +24,13 @@ const CreatePost = () => {
 
                 {/*make a modal for this input section*/}
 
-                <div className="absolute w-[472px] h-[36px] top-[16px] left-[36px]">
+                <div className="absolute w-[472px] h-[36px] top-[16px] left-[36px]" onClick={() => setIsModalOpen(true)} >
                     <div className="relative w-[456px] h-[36px] left-[8px] rounded-[10px]">
                         <div className="relative w-[107px] h-[21px] top-[8px] left-[4px]">
                             <p className="absolute w-[211px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-normal
                             text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                Press ‘ctrl’ for AI suggestion
+                                Press ‘space’ for AI suggestion
+                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
                             </p>
                         </div>
                     </div>
@@ -35,7 +39,12 @@ const CreatePost = () => {
                 {/*this is a button to post, default button is disabled, users need to input something to be able to tap on this one*/}
 
                 <div className="absolute w-[64px] h-[36px] top-[16px] left-[508px]">
-                    <Button disabled style={{ background: "#a20103", color:"#fff", borderRadius:243, opacity:0.5 }} >Post</Button>
+                    <Button disabled style={{
+                        background: "#a20103",
+                        color: "#fff",
+                        borderRadius: 243,
+                        opacity: 0.5
+                    }}>Post</Button>
                 </div>
             </div>
         </div>
