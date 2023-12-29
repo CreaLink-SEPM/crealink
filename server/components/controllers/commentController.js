@@ -1,7 +1,7 @@
 const {validationResult} = require('express-validator');
 const Comment = require('../models/commentModel');
 const Post = require('../models/postModel');
-const io = require('../../socket')
+const io = require('../../socket');
 
 exports.createComment = async (req, res, next) =>  {
     try {
@@ -46,7 +46,7 @@ exports.getComments = async (req, res, next) => {
         const postId = req.params.postId;
         const comments = await Comment.find({postId: postId})
             .select('userId commentText likes')
-            .populate("userId", "username")
+            .populate("userId", "username user_image")
             .exec();
         if (!comments) {
             const error = new Error ('Comments retreived failure');
