@@ -232,7 +232,7 @@ const generateAccessToken = (user) => {
       email: user.email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "10m" }
+    { expiresIn: "10h" }
   );
 };
 
@@ -265,7 +265,7 @@ const generateAdminAccessToken = (user) => {
       isAdmin: true,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "10m" }
+    { expiresIn: "10h" }
   );
 };
 // Function to generate admin refresh token
