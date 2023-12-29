@@ -37,6 +37,7 @@ exports.createComment = async (req, res, next) => {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
+    console.log(err);
     next(err);
   }
 };
@@ -67,6 +68,7 @@ exports.getComments = async (req, res, next) => {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
+    console.log(err);
     next(err);
   }
 };

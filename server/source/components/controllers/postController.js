@@ -99,7 +99,7 @@ exports.getPosts = async (req, res, next) => {
   try {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
-      .populate("creator", "username")
+      .populate("creator", ["username", "user_image"])
       .sort({ createdAt: -1 })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
@@ -128,7 +128,7 @@ exports.getPosts = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId).populate("creator", "username");
+    const post = await Post.findById(postId).populate("creator", ["username", "user_image"]);
 
     if (!post) {
       const error = new Error("Could not find post");
@@ -164,7 +164,7 @@ exports.getLikes = async (req, res, next) => {
     const likesArray = post.likes;
     const likedUsers = await User.find(
       { _id: { $in: likesArray } },
-      "username"
+      ["username", "user_image"]
     );
     res.status(200).json({
       message: "Fetched liked users successfully",
