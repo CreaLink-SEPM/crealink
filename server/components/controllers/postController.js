@@ -122,11 +122,13 @@ exports.getPost = async (req, res, next) => {
     }
     const likesCount = post.likes.length;
     const { likes, ...postWithoutLikes } = post.toObject();
+    const commentCount = await Comment.countDocuments({ postId: post._id });
     res.status(200).json({
       message: "Post fetched successfully",
       post: {
         ...postWithoutLikes,
         likesCount,
+        commentCount
       },
     });
   } catch (err) {
