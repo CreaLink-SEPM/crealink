@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
@@ -8,20 +8,15 @@ const config: Config = {
   ],
   theme: {
     fontFamily: {
-      'title': ['Montserrat', 'sans-serif'],
-      'body': ['Montserrat', 'sans-serif'],
-      'heading': ['Montserrat', 'sans-serif'],
-
+      title: ['Montserrat', 'sans-serif'],
+      body: ['Montserrat', 'sans-serif'],
+      heading: ['Montserrat', 'sans-serif'],
     },
     extend: {
-
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
-
-
 
       colors: {
         gray: {
@@ -32,10 +27,14 @@ const config: Config = {
         },
         red: {
           100: '#A20103',
-        }
-      }
+        },
+      },
     },
   },
-  plugins: [],
-}
-export default config
+  plugins: [
+    require('tailwindcss-scoped-groups')({
+      groups: ['one', 'two'],
+    }),
+  ],
+};
+export default config;

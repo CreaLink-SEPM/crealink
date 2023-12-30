@@ -42,7 +42,7 @@ function RightSideBar() {
         </Col>
       </Row>
       <Button style={{ background: '#A20103', color: 'white', marginTop: 20, borderRadius: 10, marginLeft: 20 }}>
-        <Link href="/" className="text-sm">
+        <Link href="/favorites" className="text-sm">
           See more{' '}
         </Link>
       </Button>
