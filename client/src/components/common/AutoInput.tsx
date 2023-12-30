@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { AutoComplete, Input } from 'antd';
+import { AutoComplete } from 'antd';
 
 const renderTitle = (title: string) => (
     <span>
@@ -54,12 +54,13 @@ const App: React.FC = () => (
             />
             <AutoComplete
                 popupClassName="certain-category-search-dropdown"
-                popupMatchSelectWidth={410}
-                style={{ width: 410 }}
+                popupMatchSelectWidth={380}
+                style={{ width: 410, height: 40 }}
                 options={options}
-                size="large"
                 placeholder={'Ask AI to write anything...'}
                 defaultOpen={true}
+                bordered={false}
+                className="left-4"
             />
             <img
                 className="absolute w-[20px] h-[36px] top-0.5 left-[380px]"

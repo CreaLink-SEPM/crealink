@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="update new files for modal AI">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/globals.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/common/AutoInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/AutoInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/DropdownSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/DropdownSelect.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/Input.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/Post.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +106,7 @@
       <workItem from="1703298492959" duration="5904000" />
       <workItem from="1703341751742" duration="30531000" />
       <workItem from="1703903349353" duration="278000" />
-      <workItem from="1703903673721" duration="9795000" />
+      <workItem from="1703903673721" duration="13284000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />
