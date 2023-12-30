@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const Comment = require("../models/commentModel");
 const ReportedPost = require("../models/reportedPost");
 const io = require("../../socket");
 const { validationResult } = require("express-validator");
@@ -10,9 +11,28 @@ const {
   PutObjectCommand,
   DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
+const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
+const {openai} = require('../configs/openai');
 
+const initializeAssistant = async (req, res, next) => {
+  try {
+    assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    const thread = await openai.beta.threads.create();
+    console.log("OpenAI assistant initialized");
+    console.log(thread)
+  } catch (err) {
+    console.log("Error initializing assistant: " + err.message)
+  }
+}
+initializeAssistant();
+
+
+// exports.startMessage = async (req, res, next) => {
+    // const thread = await openai.beta.threads.create();
+    // console.log(thread)
+// }
 exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -80,17 +100,19 @@ exports.getPosts = async (req, res, next) => {
   try {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
-      .populate("creator", "username")
+      .populate("creator", ["username", "user_image"])
       .sort({ createdAt: -1 })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
     const postLikes = await Promise.all(
       posts.map(async (post) => {
         const likesCount = post.likes.length;
+        const commentsCount = await Comment.countDocuments({postId: post._id});
         const { likes, ...postWithoutLikes } = post.toObject();
         return {
           ...postWithoutLikes,
           likesCount,
+          commentsCount
         };
       })
     );
@@ -109,7 +131,7 @@ exports.getPosts = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId).populate("creator", "username");
+    const post = await Post.findById(postId).populate("creator", ["username", "user_image"]);
 
     if (!post) {
       const error = new Error("Could not find post");
@@ -118,11 +140,13 @@ exports.getPost = async (req, res, next) => {
     }
     const likesCount = post.likes.length;
     const { likes, ...postWithoutLikes } = post.toObject();
+    const commentCount = await Comment.countDocuments({ postId: post._id });
     res.status(200).json({
       message: "Post fetched successfully",
       post: {
         ...postWithoutLikes,
         likesCount,
+        commentCount
       },
     });
   } catch (err) {
@@ -145,7 +169,7 @@ exports.getLikes = async (req, res, next) => {
     const likesArray = post.likes;
     const likedUsers = await User.find(
       { _id: { $in: likesArray } },
-      "username"
+      ["username", "user_image"]
     );
     res.status(200).json({
       message: "Fetched liked users successfully",
@@ -382,3 +406,5 @@ const clearImageFromS3 = async (imageUrl) => {
     console.log("Error deleting image from S3: ", err);
   }
 };
+
+
