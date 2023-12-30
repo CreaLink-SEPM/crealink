@@ -6,11 +6,12 @@ import AutoInput from "@/src/components/common/AutoInput";
 import TextArea from "antd/es/input/TextArea";
 import "@/src/app/globals.css"
 const App = ({ isModalOpen, setIsModalOpen }) => {
+    const [autoInputValue, setAutoInputValue] = useState('');
+
     const [inputValue, setInputValue] = useState('');
     const [imageUploaded, setImageUploaded] = useState(false);
 
     const [showAutoInput, setShowAutoInput] = useState(false);
-    // const [inputValue, setInputValue] = useState('');
     const inputRef = useRef(null);
 
     const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
@@ -56,7 +57,6 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
                 <Modal open={isModalOpen} onOk={() => setIsModalOpen(false)}
                        onCancel={() => setIsModalOpen(false)} width={580} onClick={() => setIsModalOpen(true)}
                        closeIcon={null} footer={null} centered={true} keyboard={true}
-
                 >
                     <div className="flex flex-col justify-between bg-white w-[340px] h-[220px]">
                         <div>
@@ -98,8 +98,7 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
                                                        style={{ border: 'none', height: '70px', width: '420px' }}
                                                 />
                                             ) : (
-                                                <AutoInput/>
-                                            )}
+                                                <AutoInput autoInputValue={autoInputValue} setAutoInputValue={setAutoInputValue} />                                            )}
                                             {imagePreviewUrl && (
                                                 <img
                                                     src={imagePreviewUrl}
@@ -123,15 +122,16 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
                                             </div>
                                             <div>
                                                 <Button
-                                                    disabled={!inputValue && !imageUploaded}
+                                                    disabled={!inputValue && !autoInputValue && !imageUploaded}
                                                     style={{
                                                         background: "#a20103",
                                                         color: "#fff",
                                                         borderRadius: 243,
-                                                        opacity: (!inputValue && !imageUploaded) ? 0.5 : 1
+                                                        opacity: (!inputValue && !autoInputValue && !imageUploaded) ? 0.5 : 1
                                                     }}>
                                                     Post
                                                 </Button>
+
                                             </div>
                                         </div>
 
