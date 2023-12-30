@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const Comment = require("../models/commentModel");
 const ReportedPost = require("../models/reportedPost");
 const io = require("../../socket");
 const { validationResult } = require("express-validator");
@@ -106,10 +107,12 @@ exports.getPosts = async (req, res, next) => {
     const postLikes = await Promise.all(
       posts.map(async (post) => {
         const likesCount = post.likes.length;
+        const commentsCount = await Comment.countDocuments({postId: post._id});
         const { likes, ...postWithoutLikes } = post.toObject();
         return {
           ...postWithoutLikes,
           likesCount,
+          commentsCount
         };
       })
     );
@@ -137,11 +140,13 @@ exports.getPost = async (req, res, next) => {
     }
     const likesCount = post.likes.length;
     const { likes, ...postWithoutLikes } = post.toObject();
+    const commentCount = await Comment.countDocuments({ postId: post._id });
     res.status(200).json({
       message: "Post fetched successfully",
       post: {
         ...postWithoutLikes,
         likesCount,
+        commentCount
       },
     });
   } catch (err) {

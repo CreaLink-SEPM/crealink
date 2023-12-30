@@ -1,61 +1,52 @@
 const {validationResult} = require('express-validator');
 const Comment = require('../models/commentModel');
 const Post = require('../models/postModel');
-const io = require("../../socket");
+const io = require('../../socket');
 
 exports.createComment = async (req, res, next) =>  {
-  try {
-      const postId = req.params.postId;
-      const post = await Post.findById(postId);
-      
-      if (!post) {
-          const error = new Error('Could not find post');
-          error.statusCode = 404;
-          console.error('Post not found:', error.message); // Debug statement
-          throw error;
-      }
-
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-          const error = new Error('Validation failed, entered data is empty');
-          error.statusCode = 422;
-          console.error('Validation errors:', errors.array()); // Debug statement
-          throw error;
-      }
-
-      const commentText= req.body.commentText;
-      const comment = new Comment({
-          postId: postId,
-          userId: req.userId,
-          commentText: commentText
-      });
-      
-      await comment.save();
-      io.getIO().emit('comments', {
-          action: 'create',
-          comment: {...comment}
-      });
-      
-      res.status(200).json({
-          message: 'Comments created successfully',
-          comment: comment
-      });
-      
-  } catch (err) {
-      console.error('Error in createComment:', err.message); // Log the error to console
-      if (!err.statusCode) {
-          err.statusCode = 500;
-      }
-      next(err);
-  }
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const error = new Error('Validation failed, entered data is empty');
+            error.statusCode = 422;
+            throw error;
+        }
+        if (!post) {
+            const error = new Error('Could not find post');
+            error.statusCode = 404;
+            throw error;
+        }
+        const commentText= req.body.commentText;
+        const comment = new Comment({
+            postId: postId,
+            userId: req.userId,
+            commentText: commentText
+        })
+        await comment.save();
+        io.getIO().emit('comments', {
+            action: 'create',
+            comment: {...comment}
+        });
+        res.status(200).json({
+            message: 'Comments created successfully',
+            comment: comment
+        })
+        
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
 }
-
 exports.getComments = async (req, res, next) => {
     try {
         const postId = req.params.postId;
         const comments = await Comment.find({postId: postId})
             .select('userId commentText likes')
-            .populate("userId", "username")
+            .populate("userId", "username user_image")
             .exec();
         if (!comments) {
             const error = new Error ('Comments retreived failure');
@@ -74,7 +65,6 @@ exports.getComments = async (req, res, next) => {
             comments: commentWithLikesCount
         });
     } catch (err) {
-        console.error(err);
         if (!err.statusCode) {
             err.statusCode = 500;
         }

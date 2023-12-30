@@ -41,7 +41,8 @@ Endpoint: `http://localhost:[port]/api/comment/{postId}`
             "_id": "commentId",
             "userId": {
                 "_id": "userId",
-                "username": "testaccount"
+                "username": "testaccount",
+                "user_image": "user_image.jpg",
             },
             "commentText": "Text comment here",
             "likesCount": 0
