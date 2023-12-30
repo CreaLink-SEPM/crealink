@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Dropdown, Menu } from 'antd';
+
 
 const SocialMediaPost = () => {
+    const menu = (
+        <Menu>
+            <Menu.Item style={{ color: 'red', fontWeight: 'bold'}}>
+                Report</Menu.Item>
+        </Menu>
+    );
     return (
         <div className="relative w-[572px] h-[533.99px]">
             <hr/>
@@ -42,12 +50,15 @@ const SocialMediaPost = () => {
                                     12h
                                 </div>
                             </div>
-                            <img
-                                className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
-                                alt="Div margin"
-                                src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                            <Dropdown overlay={menu} placement="bottomRight">
+                                <img
+                                    className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
+                                    alt="Div margin"
+                                    src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                                />
+                            </Dropdown>
 
-                            />
+
                         </div>
                     </div>
                 </div>

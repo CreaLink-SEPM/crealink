@@ -47,11 +47,11 @@ const options = [
 const App: React.FC = () => (
     <>
         <div style={{ position: 'relative' }}>
-            {/*<img*/}
-            {/*    className="absolute w-[18px] h-[36px] top-0 left-0"*/}
-            {/*    alt="Div"*/}
-            {/*    src="https://c.animaapp.com/30zOW6yf/img/div-h2d-dac2a57b.svg"*/}
-            {/*/>*/}
+            <img
+                className="absolute w-[18px] h-[36px] top-0 left-0"
+                alt="Div"
+                src="https://c.animaapp.com/30zOW6yf/img/div-h2d-dac2a57b.svg"
+            />
             <AutoComplete
                 popupClassName="certain-category-search-dropdown"
                 popupMatchSelectWidth={410}

@@ -3,7 +3,8 @@ import {Button, Input, Modal} from 'antd';
 import DropdownSelect from "@/src/components/common/DropdownSelect";
 import UploadImage from "@/src/components/common/UploadImage";
 import AutoInput from "@/src/components/common/AutoInput";
-
+import TextArea from "antd/es/input/TextArea";
+import "@/src/app/globals.css"
 const App = ({ isModalOpen, setIsModalOpen }) => {
 
     const [showAutoInput, setShowAutoInput] = useState(false);
@@ -31,8 +32,8 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
     };
 
     const handleKeyPress = (event) => {
-        const cursorPosition = inputRef.current ? inputRef.current.input.selectionStart : 0;
-        if (event.key === ' ' && cursorPosition === 0) {
+        if (event.key === ' ' && inputValue === '') {
+            event.preventDefault(); // Prevent the space from being added
             setShowAutoInput(true);
         }
     };
@@ -40,12 +41,13 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
     return (
         <>
                 <Modal open={isModalOpen} onOk={() => setIsModalOpen(false)}
-                       onCancel={() => setIsModalOpen(false)} width={550} onClick={() => setIsModalOpen(true)}
-                       closeIcon={null} footer={null} centered={true} keyboard={true}>
-                    <div className="flex flex-col justify-between bg-white w-[300px] h-[350px]">
+                       onCancel={() => setIsModalOpen(false)} width={580} onClick={() => setIsModalOpen(true)}
+                       closeIcon={null} footer={null} centered={true} keyboard={true}     style={{ height: 'auto' }}
+                >
+                    <div className="flex flex-col justify-between bg-white w-[340px] h-[220px]">
                         <div>
-                            <div className="relative h-[560px]">
-                                <div className="absolute w-[319px] h-[153px] top-0 left-0">
+                            <div className="relative h-[510px]">
+                                <div className="absolute w-[319px] h-[153px] left-0">
                                     <div className="absolute w-[48px] h-[40px] top-[24px] left-[24px]">
                                         <div className="relative h-[36px] top-[4px]">
                                             <div className="w-[36px] h-[36px] bg-neutral-100 rounded-[18px]">
@@ -60,9 +62,9 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="absolute w-[523px] h-[21px] top-[2px] left-[30px]">
+                                    <div className="absolute w-[523px] left-[30px]">
                                         <div className="h-[21px]">
-                                            <div className="relative w-[523px] h-[21px]">
+                                            <div className="relative w-[523px]">
                                                 <div className="absolute w-[523px] h-[21px] top-[24px] left-[46px]">
                                                     jamesdinh
                                                 </div>
@@ -70,36 +72,35 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
                                         </div>
 
 
-                                        <div className="absolute top-[70px] left-[46px]">
+                                        <div className="absolute top-[55px] left-[46px]">
                                             {!showAutoInput ? (
-                                                <Input className="w-[410px]"
-                                                       placeholder="Press ‘space’ for AI suggestion"
+                                                <TextArea
+                                                    className="borderless-textarea"
+                                                    placeholder="Press ‘space’ for AI suggestion"
                                                        onKeyPress={handleKeyPress}
                                                        onChange={handleInputChange}
                                                        value={inputValue}
                                                        ref={inputRef}
+                                                       style={{ border: 'none', height: '70px', width: '420px' }}
                                                 />
                                             ) : (
                                                 <AutoInput/>
                                             )}
                                         </div>
-
                                     </div>
 
                                 </div>
-                                <div className="absolute w-[571px] h-[93px] top-[200px] left-[-20px] opacity-40">
+                                <div className="absolute w-[571px] h-[93px] top-[105px] left-[-20px] opacity-40">
                                     <UploadImage/>
                                 </div>
 
-                                <div
-                                    className="absolute w-[619px] h-[84px] top-[250px] left-0"> {/* Adjusted top value here */}
-                                    <div className="absolute w-[495px] h-[30px] top-[27px] left-[10px]">
-                                        <div
-                                            className="flex justify-between items-end w-full h-[84px] p-4"> {/* Added flexbox properties */}
-                                            <div>
+                                <div className="absolute w-[619px] top-[155px] left-0">
+                                    <div className="absolute w-[495px] left-[10px]">
+                                        <div className="flex justify-between items-end w-full h-[84px] p-4">
+                                            <div style={{marginRight: '20px'}}>
                                                 <DropdownSelect/>
                                             </div>
-                                            <div>
+                                            <div style={{marginLeft: 'auto'}}>
                                                 <Button
                                                     disabled
                                                     style={{
@@ -117,7 +118,6 @@ const App = ({ isModalOpen, setIsModalOpen }) => {
 
                             </div>
                         </div>
-
                     </div>
                 </Modal>
         </>
