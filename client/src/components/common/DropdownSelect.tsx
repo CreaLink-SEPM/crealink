@@ -16,6 +16,7 @@ export default function DropdownSelect() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full px-4 py-2 text-left text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
+                style={{ backgroundColor: 'white', color: '#999999', fontSize:'15px' }}
             >
                 {selectedOption+" can reply"}
             </button>
@@ -28,6 +29,7 @@ export default function DropdownSelect() {
                                 key={index}
                                 onClick={() => handleSelect(option)}
                                 className="block px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+                                style={{ color: 'black' }}
                             >
                                 {option}
                             </a>

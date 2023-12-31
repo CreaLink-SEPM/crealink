@@ -1,6 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { AutoComplete, Input } from 'antd';
+import { AutoComplete } from 'antd';
+
+
+interface AutoInputProps {
+    autoInputValue: string;
+    setAutoInputValue: (value: string) => void;
+}
 
 const renderTitle = (title: string) => (
     <span>
@@ -44,32 +50,36 @@ const options = [
 
 ];
 
-const App: React.FC = () => (
-    <>
-        <div style={{ position: 'relative' }}>
-            {/*<img*/}
-            {/*    className="absolute w-[18px] h-[36px] top-0 left-0"*/}
-            {/*    alt="Div"*/}
-            {/*    src="https://c.animaapp.com/30zOW6yf/img/div-h2d-dac2a57b.svg"*/}
-            {/*/>*/}
-            <AutoComplete
-                popupClassName="certain-category-search-dropdown"
-                popupMatchSelectWidth={410}
-                style={{ width: 410 }}
-                options={options}
-                size="large"
-                placeholder={'Ask AI to write anything...'}
-                defaultOpen={true}
-            />
-            <img
-                className="absolute w-[20px] h-[36px] top-0.5 left-[380px]"
-                alt="Div"
-                src="https://c.animaapp.com/30zOW6yf/img/div-h2d-e209d6c9.svg"
-            />
-        </div>
-    </>
+const App: React.FC<AutoInputProps> = ({ autoInputValue, setAutoInputValue }) => {
+    return (
+        <>
+            <div style={{ position: 'relative' }}>
+                <img
+                    className="absolute w-[18px] h-[36px] top-0 left-0"
+                    alt="Div"
+                    src="https://c.animaapp.com/30zOW6yf/img/div-h2d-dac2a57b.svg"
+                />
+                <AutoComplete
+                    popupClassName="certain-category-search-dropdown"
+                    popupMatchSelectWidth={380}
+                    style={{ width: 410, height: 40 }}
+                    options={options}
+                    placeholder={'Ask AI to write anything...'}
+                    defaultOpen={true}
+                    bordered={false}
+                    className="left-4"
+                    value={autoInputValue}
+                    onChange={setAutoInputValue}
+                />
+                <img
+                    className="absolute w-[20px] h-[36px] top-0.5 left-[380px]"
+                    alt="Div"
+                    src="https://c.animaapp.com/30zOW6yf/img/div-h2d-e209d6c9.svg"
+                />
+            </div>
+        </>
+    );
+};
 
-
-);
 
 export default App;
