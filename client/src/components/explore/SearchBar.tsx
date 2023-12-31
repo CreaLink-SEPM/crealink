@@ -9,10 +9,11 @@ import Link from 'next/link';
 export default function SearchBar() {
   const [query, setQuery] = useState<string>('');
   const router = useRouter();
+  
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    router.replace(`/explore?query=${query}`);
+    router.replace(`/search?query=${query}`);
   };
   return (
     <div className="md:container ml-[8%] h-auto mt-5">

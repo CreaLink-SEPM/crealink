@@ -3,7 +3,7 @@ type AuthStateType = {
   name?: string;
   username?: string;
   password?: string;
-  password_confirmation?: string;
+  confirmedPassword?: string;
 };
 
 type AuthErrorType = {
