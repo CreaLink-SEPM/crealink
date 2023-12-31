@@ -6,6 +6,9 @@ import ModalPost from "@/src/components/common/ModalPost";
 const CreatePost: React.FC = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+
     return (
         <div className="inline-flex flex-col items-start gap-[16px] relative">
             <div className="relative w-[572px] h-[68px]">
@@ -28,9 +31,9 @@ const CreatePost: React.FC = () => {
                     <div className="relative w-[456px] h-[36px] left-[8px] rounded-[10px]">
                         <div className="relative w-[107px] h-[21px] top-[8px] left-[4px]">
                             <p className="absolute w-[211px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-normal
-                            text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
+                            text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap" >
                                 Press ‘space’ for AI suggestion
-                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
                             </p>
                         </div>
                     </div>

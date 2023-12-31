@@ -15,12 +15,10 @@ export default function HomePage() {
                 <CreatePost/>
                 <div className="mt-1">
                     <SocialMediaPost/>
-
-
-
-
-
-
+                    <SocialMediaPost/>
+                    <SocialMediaPost/>
+                    <SocialMediaPost/>
+                    <SocialMediaPost/>
                 </div>
             </div>
         </div>

@@ -10,8 +10,7 @@ const SocialMediaPost = () => {
         </Menu>
     );
     return (
-        <div className="relative w-[572px] h-[533.99px]">
-            <hr/>
+        <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
             <div className="relative w-[572px] h-[533.99px] top-[20px]">
                 <div className="h-[40px] top-0 absolute w-[48px] left-0">
                     <div className="relative top-[4px] w-[36px] h-[36px] bg-[#efefef] rounded-[18px]">
