@@ -1,8 +1,12 @@
 'use client';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession } from "next-auth/react";
+
 
 function LeftSideBar() {
+  const { data } = useSession();
+  
   return (
     <Link href="/terms" className="w-[20%] text-center bottom-0 h-auto">
       <div className="w-35 h-14 justify-center items-center inline-flex">

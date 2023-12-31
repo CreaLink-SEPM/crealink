@@ -18,7 +18,7 @@ function Register() {
     username: '',
     email: '',
     password: '',
-    password_confirmation: '',
+    confirmedPassword: '',
   });
 
   const [errors, setErrors] = useState<AuthErrorType>({});
@@ -31,15 +31,15 @@ function Register() {
 
     // API FOR  REGISTER
     axios
-      .post('/api/register/', authState)
+      .post('http://54.169.199.32:5000/api/user/register', authState)
       .then(res => {
         setLoading(false);
         const response = res.data;            // Options for API***
 
         if (response.status === 'success' || 200) {
-          router.push(`/?message=${response.message}`);    
-        } else if (response.status === 'failed' || 400) {
-          setErrors(response.error);
+          router.push(`/login?message=${response.message}`);    
+        } else if (response.status === 'error' || 400) {
+          setErrors(response.message.error);
           toast({
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
@@ -121,12 +121,12 @@ function Register() {
                 <Label htmlFor="cpassword">Confirm Password</Label>
                 <Input
                   type="password"
-                  id="cpassword"
+                  id="password"
                   placeholder="Confirm password.."
                   onChange={event =>
                     setAuthState({
                       ...authState,
-                      password_confirmation: event.target.value,
+                      confirmedPassword: event.target.value,
                     })
                   }
                 />

@@ -9,8 +9,10 @@ export const metadata: Metadata = {
 
 export default function LoginLayout({
   children,
+  session
+  
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode, session: any
 }) {
-  return <CustomProvider>{children}</CustomProvider>;
+  return <CustomProvider session={session}>{children}</CustomProvider>;
 }
