@@ -14,19 +14,19 @@ const {
 const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
-const {openai} = require('../configs/openai');
+// const {openai} = require('../configs/openai');
 
-const initializeAssistant = async (req, res, next) => {
-  try {
-    assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
-    const thread = await openai.beta.threads.create();
-    console.log("OpenAI assistant initialized");
-    console.log(thread)
-  } catch (err) {
-    console.log("Error initializing assistant: " + err.message)
-  }
-}
-initializeAssistant();
+// const initializeAssistant = async (req, res, next) => {
+//   try {
+//     assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+//     const thread = await openai.beta.threads.create();
+//     console.log("OpenAI assistant initialized");
+//     console.log(thread)
+//   } catch (err) {
+//     console.log("Error initializing assistant: " + err.message)
+//   }
+// }
+// initializeAssistant();
 
 
 // exports.startMessage = async (req, res, next) => {

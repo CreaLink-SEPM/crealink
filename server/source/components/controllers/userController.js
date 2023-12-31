@@ -217,15 +217,13 @@ const loginUser = async (req, res) => {
       message: "Login successful",
       accessToken,
       refreshToken,
-      user: {
-        username,
-        name,
-        email: user.email,
-        isAdmin,
-        user_image,
-        image,
-        is_verified,
-      },
+      username,
+      name,
+      email: user.email,
+      isAdmin,
+      user_image,
+      image,
+      is_verified,
     });
   } catch (err) {
     return res.status(500).json({
