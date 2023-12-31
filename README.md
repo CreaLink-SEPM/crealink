@@ -37,20 +37,20 @@ To be added...
 
 ### Scope & function :
 
-- Login and Registration, Email verification.
+- Login and Registration an account.
 - User Profile, edit account, change password.
 - Follow friends and view details of others' accounts.
-- Explore Page to view the most popular posts, as well as a search tool.
+- Trending Topic page to view the most popular posts, as well as a search tool.
 - View, Create, Delete, Update, and Interact with posts.
 - Responsive design for mobile and desktop UI.
 - Language selection (English and Vietnamese) and light/dark themes.
-- Save liked content.
+- Notification events.
 - Direct messaging between users.
 - Integration of AI tools for post suggestions.
 
 ## Technologies
 
-- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
+- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Github Action CI/CD, Vercel, Shadcn/ui, Ant Design.
 
  
 ## Contributions: 
