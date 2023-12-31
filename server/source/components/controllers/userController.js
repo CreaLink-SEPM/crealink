@@ -209,11 +209,23 @@ const loginUser = async (req, res) => {
 
     storeRefreshToken(refreshToken);
 
+    // Include additional user attributes in the response
+    const { username, name, isAdmin, user_image, image, is_verified } = user;
+
     return res.status(200).json({
       status: "success",
       message: "Login successful",
       accessToken,
       refreshToken,
+      user: {
+        username,
+        name,
+        email: user.email,
+        isAdmin,
+        user_image,
+        image,
+        is_verified,
+      },
     });
   } catch (err) {
     return res.status(500).json({
