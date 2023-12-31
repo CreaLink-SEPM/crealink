@@ -50,7 +50,7 @@ To be added...
 
 ## Technologies
 
-- ReactJS, NextJS, NodeJS, ExpressJS, MongoDB, Appwrite, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
+- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Jira, Github CI/CD, Vercel.
 
  
 ## Contributions: 
