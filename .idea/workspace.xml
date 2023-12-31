@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="update new files for modal AI">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/AutoInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/AutoInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/HomePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/HomePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +42,7 @@
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2Z10pPxoq7kHY9tuVSVw81PteBc" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -104,8 +103,7 @@
       <workItem from="1702715780386" duration="2772000" />
       <workItem from="1703298492959" duration="5904000" />
       <workItem from="1703341751742" duration="30531000" />
-      <workItem from="1703903349353" duration="278000" />
-      <workItem from="1703903673721" duration="15323000" />
+      <workItem from="1703992765441" duration="686000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />
