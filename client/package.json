@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
-    "start": "next start",
+    "start": "NEXT_PUBLIC_BASE_PATH='/home' next start",
     "lint": "next lint",
     "check": "tsc --noEmit"
   },
