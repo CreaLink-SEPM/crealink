@@ -83,13 +83,13 @@ function Login() {
           />
         </div>
         <div className="w-full mx-2 md:w-1/3 md:mx-0 sm:w-2/4 bg-muted p-6 rounded-lg mb-20">
-          {params.get('message') ? (
+          {/* {params.get('message') ? (
             <div className="bg-green-300 p-5 rounded-lg font-bold my-4 text-black">
               <strong>Success!</strong> {params.get('message')}
             </div>
           ) : (
             <></>
-          )}
+          )} */}
           <form onSubmit={submit}>
             <div className="mt-5">
               <div className="flex justify-between items-center">
