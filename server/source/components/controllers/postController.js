@@ -15,11 +15,12 @@ const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
 const {openai} = require('../configs/openai');
+const { default: OpenAI } = require("openai");
+const { model } = require("mongoose");
 
 const initializeAssistant = async (req, res, next) => {
   try {
     assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
-    const thread = await openai.beta.threads.create();
     console.log("OpenAI assistant initialized");
   } catch (err) {
     console.log("Error initializing assistant: " + err.message)
@@ -31,14 +32,27 @@ initializeAssistant();
 exports.startMessage = async (req, res, next) => {
     try {
       const prompt = req.body.prompt;
-      const respone = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt
+      const thread = await openai.beta.threads.create();
+      const message = await openai.beta.threads.messages.create(thread.id, {
+        role: "user",
+        content: prompt
       });
-      const completion = respone.data.choices[0].text;
+      const run = await openai.beta.threads.runs.create(thread.id, {
+        assistant_id: assistant.id
+      });
+      const runStatus = await openai.beta.threads.runs.retrieve(
+        thread.id, run.id
+      );
+      const messages = await openai.beta.threads.messages.list(
+        thread.id
+      );
+      let respone;
+     messages.body.data.forEach((message) => {
+         respone = message.content;
+      });
       return res.status(200).json({
         success: true,
-        message: completion
+        message: respone
       })
     } catch (err) {
       console.log(err);
