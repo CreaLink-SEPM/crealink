@@ -21,7 +21,6 @@ const initializeAssistant = async (req, res, next) => {
     assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
     const thread = await openai.beta.threads.create();
     console.log("OpenAI assistant initialized");
-    console.log(thread)
   } catch (err) {
     console.log("Error initializing assistant: " + err.message)
   }
@@ -29,10 +28,27 @@ const initializeAssistant = async (req, res, next) => {
 initializeAssistant();
 
 
-// exports.startMessage = async (req, res, next) => {
-    // const thread = await openai.beta.threads.create();
-    // console.log(thread)
-// }
+exports.startMessage = async (req, res, next) => {
+    try {
+      const prompt = req.body.prompt;
+      const respone = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt
+      });
+      const completion = respone.data.choices[0].text;
+      return res.status(200).json({
+        success: true,
+        message: completion
+      })
+    } catch (err) {
+      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+  }
+    
+}
 exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
