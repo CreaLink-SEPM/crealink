@@ -17,6 +17,21 @@ connectDB();
 const port = process.env.PORT || 5000;
 const app = express();
 
+
+
+// Create new assistant
+// openai.beta.assistants.create({
+//   name: "Content creator assistant",
+//   instructions: "You support content creators",
+//   tools: [
+//     {
+//       type: "code_interpreter"
+//     }
+//   ],
+//   model: "gpt-3.5-turbo-1106"
+// })
+
+
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,

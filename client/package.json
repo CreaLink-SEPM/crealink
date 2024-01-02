@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
-    "start": "next start",
+    "start": "NEXT_PUBLIC_BASE_PATH='/home' next start",
     "lint": "next lint",
     "check": "tsc --noEmit"
   },
@@ -34,7 +34,8 @@
     "react-dom": "^18",
     "styled-components": "^6.1.1",
     "tailwind-merge": "^2.0.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-scoped-groups": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "20.10.6",

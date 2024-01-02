@@ -14,11 +14,10 @@ export default function HomePage() {
             <div className="w-full max-w-md">
                 <CreatePost/>
                 <div className="mt-1">
-                    <SocialMediaPost/>
-                    <SocialMediaPost/>
-                    <SocialMediaPost/>
-                    <SocialMediaPost/>
-                    <SocialMediaPost/>
+                    <SocialMediaPost/>    
+                    <SocialMediaPost/>    
+                    <SocialMediaPost/>    
+                    <SocialMediaPost/>    
                 </div>
             </div>
         </div>

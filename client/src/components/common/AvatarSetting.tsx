@@ -14,8 +14,11 @@ import {
 import Image from 'next/image';
 import SignOutBtn from './SignOutBtn';
 import EditProfile from '../user/EditProfile';
+import { useSession } from 'next-auth/react';
 
 function AvatarSetting() {
+  // const {data: session} = useSession();
+  // console.log({session});
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

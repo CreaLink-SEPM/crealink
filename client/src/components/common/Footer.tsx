@@ -12,17 +12,17 @@ function Footer() {
         </div>
         <div className=" h-[16.8px] absolute left-[55.68px] top-[3.5px]">
           <div className="h-[16.8px] absolute left-0 top-0">
-            <Link href="/" className="hover:underline h-3.5 w-[11rem] absolute left-0 top-px text-sm text-center text-[#999]">CreaLink Terms</Link>
+            <Link href="/terms" className="hover:underline h-3.5 w-[11rem] absolute left-0 top-px text-sm text-center text-[#999]">CreaLink Terms</Link>
           </div>
         </div>
         <div className="h-[16.8px] absolute left-[151.94px] top-[3.5px]">
           <div className="h-[16.8px] absolute left-0 top-0">
-            <Link href="/" className="hover:underline h-3.5 w-[13rem] absolute left-0 top-px text-sm text-center text-[#999]">Privacy Policy</Link>
+            <Link href="/privacy-policy" className="hover:underline h-3.5 w-[13rem] absolute left-0 top-px text-sm text-center text-[#999]">Privacy Policy</Link>
           </div>
         </div>
         <div className="h-[16.8px] absolute left-[242.36px] top-[3.5px]">
           <div className="h-[16.8px] absolute left-0 top-0">
-            <Link href="/" className="hover:underline h-3.5 w-[15rem] absolute left-0 top-px text-sm text-center text-[#999]">Cookies Policy</Link>
+            <Link href="/cookies-policy" className="hover:underline h-3.5 w-[15rem] absolute left-0 top-px text-sm text-center text-[#999]">Cookies Policy</Link>
           </div>
         </div>
       </div>
