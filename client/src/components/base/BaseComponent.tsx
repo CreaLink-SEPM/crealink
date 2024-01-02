@@ -46,7 +46,7 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
         </Suspense>
       </div>
       <div className=''>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );
