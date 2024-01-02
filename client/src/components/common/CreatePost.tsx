@@ -18,6 +18,9 @@ const CreatePost: React.FC = () => {
     const [showAutoInput, setShowAutoInput] = useState(false);
     const inputRef = useRef(null);
 
+
+
+
     const handleImageUpload = (file) => {
         const reader = new FileReader();
         reader.onloadend = () => {
