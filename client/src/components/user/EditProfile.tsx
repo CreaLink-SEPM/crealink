@@ -15,7 +15,7 @@ import { Button } from '../ui/button';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 
-function EditProfile() {
+function EditProfile({ children }: { children: React.ReactNode }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
