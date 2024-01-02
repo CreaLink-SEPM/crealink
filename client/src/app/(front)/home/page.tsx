@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function HomesPage() {
     return (
-        <div className="w-full md:container">
+        <div className="w-full md:container h-[100vh]">
             <Suspense fallback={<Loading />}>
                 <HomePage />
             </Suspense>

@@ -7,6 +7,7 @@ import DropDownMenu from '../common/DropDownMenu';
 function RightSideBar() {
   return (
     <div className="h-screen lg:w-1/3 lg:pt-5 lg:px-2 xl:p-5 hidden lg:block float-right">
+      <div className='fixed'>
       <hr className="border-collapse border-gray-300 h-[2px] mb-5" />
       <div className="flex justify-around items-center gap w-full">
         <h2 className="font-semibold text-xl"> Trending Topics</h2>
@@ -46,6 +47,8 @@ function RightSideBar() {
           See more{' '}
         </Link>
       </Button>
+
+      </div>
     </div>
   );
 }

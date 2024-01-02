@@ -35,9 +35,8 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center ">
         <LeftSideBar  />
-        <p>{session?.user?.email}</p>
         {/* <ScrollArea className="h-screen w-full lg:w-2/4 md:w-3/4 lg:px-8 lg:py-4 xl:px-12  md:p-6">
           <MobileNavBar />
         </ScrollArea> */}
