@@ -53,5 +53,10 @@ router.post(
   AuthMiddleware.userAuthenToken,
   PostController.reportPost
 );
+router.post(
+  "/generativeAI",
+  AuthMiddleware.userAuthenToken,
+  PostController.startMessage
+)
 
 module.exports = router;

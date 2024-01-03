@@ -14,25 +14,61 @@ const {
 const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
-// const {openai} = require('../configs/openai');
+const {openai} = require('../configs/openai');
+const { default: OpenAI } = require("openai");
+const { model } = require("mongoose");
 
-// const initializeAssistant = async (req, res, next) => {
-//   try {
-//     assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
-//     const thread = await openai.beta.threads.create();
-//     console.log("OpenAI assistant initialized");
-//     console.log(thread)
-//   } catch (err) {
-//     console.log("Error initializing assistant: " + err.message)
-//   }
-// }
-// initializeAssistant();
+const initializeAssistant = async (req, res, next) => {
+  try {
+    assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    console.log("OpenAI assistant initialized");
+  } catch (err) {
+    console.log("Error initializing assistant: " + err.message)
+  }
+}
+initializeAssistant();
 
 
-// exports.startMessage = async (req, res, next) => {
-    // const thread = await openai.beta.threads.create();
-    // console.log(thread)
-// }
+exports.startMessage = async (req, res, next) => {
+    try {
+      const prompt = req.body.prompt;
+      // const thread = await openai.beta.threads.create();
+      // const message = await openai.beta.threads.messages.create(thread.id, {
+      //   role: "user",
+      //   content: prompt
+      // });
+      // const run = await openai.beta.threads.runs.create(thread.id,{
+      //   assistant_id: assistant.id,
+      //   instructions: "Address assistant as CreaLink Bot"
+      // });
+      // const runStatus = await openai.beta.threads.runs.retrieve(
+      //   thread_id = thread.id,
+      //   run_id = run.id
+      // );
+      // const messages = await openai.beta.threads.messages.list(
+      //   thread.id
+      // );
+      // await messages.body.data.forEach((message) => {
+      //   console.log(message.content)
+      // })
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "gpt-3.5-turbo",
+      });
+      const respone = await completion.choices[0].message.content;
+      return res.status(200).json({
+        success: true,
+        message: respone
+      })
+    } catch (err) {
+      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+  }
+    
+}
 exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
