@@ -38,6 +38,7 @@
         "passport": "^0.7.0",
         "passport-google-oauth2": "^0.2.0",
         "socket.io": "^4.7.2",
+        "socket.io-client": "^4.7.2",
         "textcortex-hemingwai-js": "^1.1.1",
         "uuid": "^9.0.1"
     },
