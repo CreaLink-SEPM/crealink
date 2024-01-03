@@ -11,6 +11,7 @@ const {
 const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({ region: process.env.AWS_REGION });
+const { enqueueNotification } = require("../../socket.js");
 
 // Function to create a new user
 const registerUser = async (req, res) => {
@@ -84,6 +85,8 @@ const registerUser = async (req, res) => {
       isAdmin: false,
     });
 
+    enqueueNotification("New user registered!");
+
     return res.status(201).json({
       status: "success",
       message: "User successfully created",
@@ -125,6 +128,7 @@ const registerAdmin = async (req, res) => {
       password: hashedPassword,
       isAdmin: true,
     });
+    enqueueNotification("New admin registered!");
     res.status(201).json({
       status: "success",
       message: "Admin account registered successfully",
@@ -209,11 +213,22 @@ const loginUser = async (req, res) => {
 
     storeRefreshToken(refreshToken);
 
+    // Include additional user attributes in the response
+    const { username, name, isAdmin, user_image, image, is_verified } = user;
+    enqueueNotification("User " + username + " has logged in!");
+
     return res.status(200).json({
       status: "success",
       message: "Login successful",
       accessToken,
       refreshToken,
+      username,
+      name,
+      email: user.email,
+      isAdmin,
+      user_image,
+      image,
+      is_verified,
     });
   } catch (err) {
     return res.status(500).json({

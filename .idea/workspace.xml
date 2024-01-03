@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="update some changes for transparent icon">
-      <change afterPath="$PROJECT_DIR$/client/src/app/(front)/home/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/common/HomePage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/base/BaseComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/base/BaseComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/base/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/base/Navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/ProfilePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/ProfilePage.tsx" afterDir="false" />
+    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="test">
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +42,7 @@
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2Z10pPxoq7kHY9tuVSVw81PteBc" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -55,17 +51,19 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Notification.DisplayName-DoNotAsk-Dependencies from package.json": "Dependencies from package.json available",
+    "Notification.DoNotAsk-Dependencies from package.json": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "fe/homepage",
+    "git-widget-placeholder": "modalAI",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Users/jamesdinh/Desktop/crealink2/client/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/jamesdinh/Desktop/crealink/client/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -76,11 +74,13 @@
         <entry key="com.haulmont.rcb.reactInspector" value="false" />
         <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
         <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
+        <entry key="com.intellij.reactbuddy.storybook" value="false" />
       </map>
     </option>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/client/public/assets/images" />
       <recent name="$PROJECT_DIR$/client/public/assets/icons" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -103,6 +103,9 @@
       <workItem from="1702097215159" duration="177000" />
       <workItem from="1702097413069" duration="3076000" />
       <workItem from="1702715780386" duration="2772000" />
+      <workItem from="1703298492959" duration="5904000" />
+      <workItem from="1703341751742" duration="30531000" />
+      <workItem from="1703992765441" duration="23007000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />
@@ -152,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701750711087</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="test">
+      <option name="closed" value="true" />
+      <created>1703993485082</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1703993485082</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -168,6 +179,8 @@
     <MESSAGE value="add navabar.txs" />
     <MESSAGE value="update some changes" />
     <MESSAGE value="update some changes for transparent icon" />
-    <option name="LAST_COMMIT_MESSAGE" value="update some changes for transparent icon" />
+    <MESSAGE value="update new files for modal AI" />
+    <MESSAGE value="test" />
+    <option name="LAST_COMMIT_MESSAGE" value="test" />
   </component>
 </project>

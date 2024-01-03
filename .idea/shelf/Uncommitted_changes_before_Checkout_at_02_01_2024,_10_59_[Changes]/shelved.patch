@@ -1,0 +1,249 @@
+Index: client/src/components/common/HomePage.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>'use client';\nimport React, { useState } from 'react';\nimport { useRouter } from 'next/navigation';\nimport CreatePost from \"@/src/components/common/CreatePost\";\nimport SocialMediaPost from \"@/src/components/common/Post\";\n\nexport default function HomePage() {\n    const [query, setQuery] = useState<string>('');\n    const router = useRouter();\n\n\n    return (\n        <div className=\"flex items-center justify-center mb-[12%]\">\n            <div className=\"w-full max-w-md\">\n                <CreatePost/>\n                <div className=\"mt-1\">\n                    <SocialMediaPost/>\n\n\n\n\n\n\n                </div>\n            </div>\n        </div>\n\n\n    );\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/common/HomePage.tsx b/client/src/components/common/HomePage.tsx
+--- a/client/src/components/common/HomePage.tsx	(revision 7be4296c4eaea812b5931d2447906c46c477a0df)
++++ b/client/src/components/common/HomePage.tsx	(date 1704167279188)
+@@ -15,16 +15,14 @@
+                 <CreatePost/>
+                 <div className="mt-1">
+                     <SocialMediaPost/>
+-
+-
+-
+-
+-
+-
++                    <SocialMediaPost/>
++                    <SocialMediaPost/>
++                    <SocialMediaPost/>
++                    <SocialMediaPost/>
+                 </div>
+             </div>
+         </div>
+ 
+ 
+     );
+-}
++}
+\ No newline at end of file
+Index: client/src/components/common/ModalPost.tsx
+===================================================================
+diff --git a/client/src/components/common/ModalPost.tsx b/client/src/components/common/ModalPost.tsx
+deleted file mode 100644
+--- a/client/src/components/common/ModalPost.tsx	(revision 7be4296c4eaea812b5931d2447906c46c477a0df)
++++ /dev/null	(revision 7be4296c4eaea812b5931d2447906c46c477a0df)
+@@ -1,149 +0,0 @@
+-import React, {useEffect, useRef, useState} from 'react';
+-import {Button, Input, Modal} from 'antd';
+-import DropdownSelect from "@/src/components/common/DropdownSelect";
+-import UploadImage from "@/src/components/common/UploadImage";
+-import AutoInput from "@/src/components/common/AutoInput";
+-import TextArea from "antd/es/input/TextArea";
+-import "@/src/app/globals.css"
+-const App = ({ isModalOpen, setIsModalOpen }) => {
+-    const [autoInputValue, setAutoInputValue] = useState('');
+-
+-    const [inputValue, setInputValue] = useState('');
+-    const [imageUploaded, setImageUploaded] = useState(false);
+-
+-    const [showAutoInput, setShowAutoInput] = useState(false);
+-    const inputRef = useRef(null);
+-
+-    const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+-
+-    const handleImageUpload = (file) => {
+-        const reader = new FileReader();
+-        reader.onloadend = () => {
+-            setImagePreviewUrl(reader.result);
+-            setImageUploaded(true);
+-        };
+-        reader.readAsDataURL(file);
+-    };
+-
+-    useEffect(() => {
+-        const handleKeyDown = (event) => {
+-            if (event.key === 'Backspace' && inputValue === '') {
+-                setShowAutoInput(false);
+-            }
+-        };
+-
+-        if (showAutoInput) {
+-            window.addEventListener('keydown', handleKeyDown);
+-        }
+-
+-        return () => {
+-            window.removeEventListener('keydown', handleKeyDown);
+-        };
+-    }, [showAutoInput, inputValue]);
+-
+-    const handleInputChange = (event) => {
+-        setInputValue(event.target.value);
+-    };
+-
+-    const handleKeyPress = (event) => {
+-        if (event.key === ' ' && inputValue === '') {
+-            event.preventDefault(); // Prevent the space from being added
+-            setShowAutoInput(true);
+-        }
+-    };
+-
+-    return (
+-        <>
+-                <Modal open={isModalOpen} onOk={() => setIsModalOpen(false)}
+-                       onCancel={() => setIsModalOpen(false)} width={580} onClick={() => setIsModalOpen(true)}
+-                       closeIcon={null} footer={null} centered={true} keyboard={true}
+-                >
+-                    <div className="flex flex-col justify-between bg-white w-[340px] h-[220px]">
+-                        <div>
+-                            <div className="relative h-[510px]">
+-                                <div className="absolute w-[319px] h-[153px] left-0">
+-                                    <div className="absolute w-[48px] h-[40px] top-[24px] left-[24px]">
+-                                        <div className="relative h-[36px] top-[4px]">
+-                                            <div className="w-[36px] h-[36px] bg-neutral-100 rounded-[18px]">
+-                                                <div className="h-[36px]">
+-                                                    <div className="relative w-[37px] h-[37px] rounded-[17.5px]">
+-                                                        <div
+-                                                            className="w-[36px] h-[36px] rounded-[18px] bg-[url(https://c.animaapp.com/30zOW6yf/img/357786538-658912836132654-4013649251107777622-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0"/>
+-                                                        <div
+-                                                            className="w-[37px] h-[37px] rounded-[17.5px] border border-solid border-[#00000026] absolute top-0 left-0"/>
+-                                                    </div>
+-                                                </div>
+-                                            </div>
+-                                        </div>
+-                                    </div>
+-                                    <div className="absolute w-[523px] left-[30px]">
+-                                        <div className="h-[21px]">
+-                                            <div className="relative w-[523px]">
+-                                                <div className="absolute w-[523px] h-[21px] top-[24px] left-[46px]">
+-                                                    jamesdinh
+-                                                </div>
+-                                            </div>
+-                                        </div>
+-
+-
+-                                        <div className="absolute top-[55px] left-[46px]">
+-                                            {!showAutoInput ? (
+-                                                <TextArea
+-                                                    className="borderless-textarea"
+-                                                    placeholder="Press ‘space’ for AI suggestion"
+-                                                       onKeyPress={handleKeyPress}
+-                                                       onChange={handleInputChange}
+-                                                       value={inputValue}
+-                                                       ref={inputRef}
+-                                                       style={{ border: 'none', height: '70px', width: '420px' }}
+-                                                />
+-                                            ) : (
+-                                                <AutoInput autoInputValue={autoInputValue} setAutoInputValue={setAutoInputValue} />                                            )}
+-                                            {imagePreviewUrl && (
+-                                                <img
+-                                                    src={imagePreviewUrl}
+-                                                    alt="Preview"
+-                                                    style={{width: '300px', height: '300px', position: 'absolute', top: '0', left: '0' , marginTop: '52px'}}
+-                                                />
+-                                            )}
+-                                        </div>
+-                                    </div>
+-
+-                                </div>
+-                                <div className="absolute w-[571px] h-[93px] top-[105px] left-[-20px] opacity-40">
+-                                    <UploadImage onImageUpload={handleImageUpload} imagePreviewUrl={imagePreviewUrl} />
+-                                </div>
+-
+-                                <div className="absolute w-[619px] top-[155px] left-0">
+-                                    <div className="absolute w-[495px] left-[10px]">
+-                                        <div className="flex justify-between items-end w-full h-[84px] p-4">
+-                                            <div style={{marginLeft: '-15px'}}>
+-                                                <DropdownSelect/>
+-                                            </div>
+-                                            <div>
+-                                                <Button
+-                                                    disabled={!inputValue && !autoInputValue && !imageUploaded}
+-                                                    style={{
+-                                                        background: "#a20103",
+-                                                        color: "#fff",
+-                                                        borderRadius: 243,
+-                                                        opacity: (!inputValue && !autoInputValue && !imageUploaded) ? 0.5 : 1
+-                                                    }}>
+-                                                    Post
+-                                                </Button>
+-
+-                                            </div>
+-                                        </div>
+-
+-                                    </div>
+-                                </div>
+-
+-                            </div>
+-                        </div>
+-                    </div>
+-                </Modal>
+-        </>
+-    );
+-};
+-
+-export default App;
+\ No newline at end of file
+Index: client/src/components/common/Post.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useState } from 'react';\nimport { Dropdown, Menu } from 'antd';\n\n\nconst SocialMediaPost = () => {\n    const menu = (\n        <Menu>\n            <Menu.Item style={{ color: 'red', fontWeight: 'bold'}}>\n                Report</Menu.Item>\n        </Menu>\n    );\n    return (\n        <div className=\"relative w-[572px] h-[533.99px]\">\n            <hr/>\n            <div className=\"relative w-[572px] h-[533.99px] top-[20px]\">\n                <div className=\"h-[40px] top-0 absolute w-[48px] left-0\">\n                    <div className=\"relative top-[4px] w-[36px] h-[36px] bg-[#efefef] rounded-[18px]\">\n                        <div className=\"h-[36px] bg-neutral-100 rounded-[18px]\">\n                            <div className=\"w-[36px] h-[36px]\">\n                                <div className=\"relative w-[37px] h-[37px] rounded-[17.5px]\">\n                                    <div\n                                        className=\"w-[36px] h-[36px] rounded-[18px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/377212994-626721102778908-3499740340252537033-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0\"/>\n                                    <div\n                                        className=\"w-[37px] h-[37px] rounded-[17.5px] border border-solid border-[#00000026] absolute top-0 left-0\"/>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div className=\"absolute w-[524px] h-[22px] -top-px left-[48px]\">\n                    <div className=\"relative h-[22px]\">\n                        <div className=\"w-[470px] absolute h-[21px] top-0 left-0\">\n                            <div className=\"w-[85px] h-[21px]\">\n                                <div className=\"h-[21px]\">\n                                    <div className=\"w-[85px] h-[21px]\">\n                                        <div className=\"relative h-[21px]\">\n                                            <div\n                                                className=\"absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap\">\n                                                aman_tokyo\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div className=\"absolute w-[54px] h-[22px] top-0 left-[470px]\">\n                            <div className=\"absolute w-[24px] h-[14px] top-[4px] left-0\">\n                                <div\n                                    className=\"w-[24px] text-[14.4px] absolute h-[21px] top-[-4px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-center tracking-[0] leading-[21px] whitespace-nowrap\">\n                                    12h\n                                </div>\n                            </div>\n                            <Dropdown overlay={menu} placement=\"bottomRight\">\n                                <img\n                                    className=\"left-[24px] absolute w-[30px] h-[22px] top-0 object-cover\"\n                                    alt=\"Div margin\"\n                                    src=\"https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg\"\n                                />\n                            </Dropdown>\n\n\n                        </div>\n                    </div>\n                </div>\n                <div className=\"h-[466px] top-[40px] absolute w-[48px] left-0\"/>\n                <div className=\"h-[485px] absolute w-[524px] top-[21px] left-[48px]\">\n                    <div className=\"relative h-[477px] top-[8px]\">\n                        <div className=\"h-[435px] top-0 absolute w-[524px] left-0\">\n                            <div className=\"w-[360px] h-[430px] rounded-[8px]\">\n                                <div className=\"h-[430px]\">\n                                    <div className=\"w-[360px] h-[430px]\">\n                                        <div className=\"h-[430px]\">\n                                            <div className=\"relative w-[360px] h-[430px] rounded-[7px]\">\n                                                <div\n                                                    className=\"rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/400983289-889270855965019-4991156490034155777-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute w-[360px] h-[430px] top-0 left-0\"/>\n                                                <div\n                                                    className=\"rounded-[7px] border border-solid border-[#00000026] absolute w-[360px] h-[430px] top-0 left-0\"/>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div className=\"absolute w-[531px] h-[36px] top-[441px] left-[-7px]\">\n                            <img\n                                className=\"absolute w-[36px] h-[36px] top-0 left-0 object-cover\"\n                                alt=\"Div\"\n                                src=\"https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg\"\n                            />\n                            <img\n                                className=\"absolute w-[36px] h-[36px] top-0 left-[36px] object-cover\"\n                                alt=\"Div\"\n                                src=\"https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg\"\n                            />\n                            <div className=\"absolute w-[36px] h-[36px] top-0 left-[72px]\">\n                                <img\n                                    className=\"absolute w-[20px] h-[20px] top-[8px] left-[8px]\"\n                                    alt=\"Reshare icon\"\n                                    src=\"https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg\"\n                                />\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div className=\"absolute w-[572px] h-[28px] top-[506px] left-0\">\n                    <div className=\"relative w-[202px] h-[28px]\">\n                        <div className=\"absolute w-[48px] h-[20px] top-[4px] left-0\">\n                            <div className=\"w-[40px] h-[20px]\">\n                                <div className=\"relative w-[32px] h-[20px] left-[4px]\">\n                                    <div className=\"relative h-[20px]\">\n                                        <div\n                                            className=\"absolute w-[16px] h-[16px] top-[2px] left-0 bg-neutral-100 rounded-[8px]\">\n                                            <div className=\"h-[16px]\">\n                                                <div className=\"relative w-[17px] h-[17px] rounded-[7.5px]\">\n                                                    <div\n                                                        className=\"w-[16px] h-[16px] rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/357811045-1987868941549293-8596588435582708190-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0\"/>\n                                                    <div\n                                                        className=\"w-[17px] h-[17px] rounded-[7.5px] border border-solid border-[#00000026] absolute top-0 left-0\"/>\n                                                </div>\n                                            </div>\n                                        </div>\n                                        <div\n                                            className=\"absolute w-[20px] h-[20px] top-0 left-[12px] bg-white rounded-[10px]\">\n                                            <div\n                                                className=\"relative w-[16px] h-[16px] top-[2px] left-[2px] bg-neutral-100 rounded-[8px]\">\n                                                <div className=\"h-[16px]\">\n                                                    <div className=\"relative w-[17px] h-[17px] rounded-[7.5px]\">\n                                                        <div\n                                                            className=\"w-[16px] h-[16px] rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/359452161-7212821988744843-2119687233277087413-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0\"/>\n                                                        <div\n                                                            className=\"w-[17px] h-[17px] rounded-[7.5px] border border-solid border-[#00000026] absolute top-0 left-0\"/>\n                                                    </div>\n                                                </div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div className=\"absolute w-[16px] h-[21px] top-[4px] left-[114px]\">\n                            <div\n                                className=\"absolute w-[12px] h-[18px] top-0 left-[2px] [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap\">\n                                {\" \"}\n                                ·\n                            </div>\n                        </div>\n                        <div className=\"absolute w-[66px] h-[14px] top-[7px] left-[48px]\">\n                            <div\n                                className=\"absolute w-[66px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap\">\n                                16 replies\n                            </div>\n                        </div>\n                        <button className=\"absolute w-[72px] h-[14px] top-[7px] left-[130px] all-[unset] box-border\">\n                            <div className=\"relative h-[14px]\">\n                                <div\n                                    className=\"absolute w-[72px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap\">\n                                    3,510 likes\n                                </div>\n                            </div>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default SocialMediaPost;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/common/Post.tsx b/client/src/components/common/Post.tsx
+--- a/client/src/components/common/Post.tsx	(revision 7be4296c4eaea812b5931d2447906c46c477a0df)
++++ b/client/src/components/common/Post.tsx	(date 1704167272182)
+@@ -10,8 +10,7 @@
+         </Menu>
+     );
+     return (
+-        <div className="relative w-[572px] h-[533.99px]">
+-            <hr/>
++        <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
+             <div className="relative w-[572px] h-[533.99px] top-[20px]">
+                 <div className="h-[40px] top-0 absolute w-[48px] left-0">
+                     <div className="relative top-[4px] w-[36px] h-[36px] bg-[#efefef] rounded-[18px]">
+Index: client/src/components/common/CreatePost.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, {useEffect, useRef, useState} from 'react';\nimport {Button} from \"antd\";\n\nimport ModalPost from \"@/src/components/common/ModalPost\";\n\nconst CreatePost: React.FC = () => {\n\n    const [isModalOpen, setIsModalOpen] = useState(false);\n    return (\n        <div className=\"inline-flex flex-col items-start gap-[16px] relative\">\n            <div className=\"relative w-[572px] h-[68px]\">\n                <div className=\"absolute w-[36px] h-[36px] top-[16px] left-0 bg-neutral-100 rounded-[18px]\">\n                    <div className=\"h-[36px]\">\n                        <div className=\"relative w-[37px] h-[37px] rounded-[17.5px]\">\n                            <div\n                                className=\"w-[36px] h-[36px] rounded-[18px]\n                                bg-[url(https://c.animaapp.com/n1QiTcNd/img/357786538-658912836132654-4013649251107777622-n-jpg@2x.png)]\n                                bg-cover bg-[50%_50%] absolute top-0 left-0\"/>\n                            <div\n                                className=\"w-[37px] h-[37px] rounded-[17.5px] border border-solid border-[#00000026] absolute top-0 left-0\"/>\n                        </div>\n                    </div>\n                </div>\n\n                {/*make a modal for this input section*/}\n\n                <div className=\"absolute w-[472px] h-[36px] top-[16px] left-[36px]\" onClick={() => setIsModalOpen(true)} >\n                    <div className=\"relative w-[456px] h-[36px] left-[8px] rounded-[10px]\">\n                        <div className=\"relative w-[107px] h-[21px] top-[8px] left-[4px]\">\n                            <p className=\"absolute w-[211px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-normal\n                            text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap\">\n                                Press ‘space’ for AI suggestion\n                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />\n                            </p>\n                        </div>\n                    </div>\n                </div>\n\n                {/*this is a button to post, default button is disabled, users need to input something to be able to tap on this one*/}\n\n                <div className=\"absolute w-[64px] h-[36px] top-[16px] left-[508px]\">\n                    <Button disabled style={{\n                        background: \"#a20103\",\n                        color: \"#fff\",\n                        borderRadius: 243,\n                        opacity: 0.5\n                    }}>Post</Button>\n                </div>\n            </div>\n        </div>\n    );\n};\n\nexport default CreatePost;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/common/CreatePost.tsx b/client/src/components/common/CreatePost.tsx
+--- a/client/src/components/common/CreatePost.tsx	(revision 7be4296c4eaea812b5931d2447906c46c477a0df)
++++ b/client/src/components/common/CreatePost.tsx	(date 1704167860858)
+@@ -6,6 +6,9 @@
+ const CreatePost: React.FC = () => {
+ 
+     const [isModalOpen, setIsModalOpen] = useState(false);
++
++
++
+     return (
+         <div className="inline-flex flex-col items-start gap-[16px] relative">
+             <div className="relative w-[572px] h-[68px]">
+@@ -28,9 +31,9 @@
+                     <div className="relative w-[456px] h-[36px] left-[8px] rounded-[10px]">
+                         <div className="relative w-[107px] h-[21px] top-[8px] left-[4px]">
+                             <p className="absolute w-[211px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-normal
+-                            text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
++                            text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap" >
+                                 Press ‘space’ for AI suggestion
+-                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
++                                <ModalPost isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+                             </p>
+                         </div>
+                     </div>
+@@ -51,4 +54,4 @@
+     );
+ };
+ 
+-export default CreatePost;
++export default CreatePost;
+\ No newline at end of file

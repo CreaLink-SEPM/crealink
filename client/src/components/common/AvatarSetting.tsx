@@ -14,8 +14,10 @@ import {
 import Image from 'next/image';
 import SignOutBtn from './SignOutBtn';
 import EditProfile from '../user/EditProfile';
+import { useSession } from 'next-auth/react';
 
 function AvatarSetting() {
+  const {data: session} = useSession();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,7 +26,7 @@ function AvatarSetting() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel className="text-center">Welcome back, Huy</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-center">Welcome back, {session?.user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="flex items-center justify-center p-1 hover:bg-slate-400 rounded-md cursor-pointer">
           <User className="mr-2 h-4 w-4" />

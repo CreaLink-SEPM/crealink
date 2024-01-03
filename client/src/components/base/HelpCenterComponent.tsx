@@ -6,6 +6,7 @@ import LeftSideBar from './LeftSideBar';
 import Loading from '../common/loading';
 import SideBarLinks from '../common/SidebarLinks';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Link from 'next/link';
 
 function HelpCenterComponent({ children }: { children: React.ReactNode }) {
   return (
@@ -14,6 +15,7 @@ function HelpCenterComponent({ children }: { children: React.ReactNode }) {
         {/* HEADER SECTION */}
         <div className="flex justify-between">
           <div className="flex items-stat gap-3">
+            <Link href="/home" className="px-3 my-2">
             <Image
               src="/assets/icons/Logo Icon.svg"
               typeof="image/svg"
@@ -23,7 +25,8 @@ function HelpCenterComponent({ children }: { children: React.ReactNode }) {
               width={50}
               height={40}
             />
-            <p className="w-[124px] h-5 text-xl font-semibold text-left text-neutral-800">Help Center</p>
+            </Link>
+            <p className="w-[124px] h-5 mt-3 text-xl font-semibold text-left text-neutral-800">Help Center</p>
           </div>
           <div className="">
             <Select>

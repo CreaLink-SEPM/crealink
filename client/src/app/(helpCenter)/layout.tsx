@@ -1,6 +1,5 @@
 import '../globals.css';
 import type { Metadata } from 'next';
-import CustomProvider from '../provider';
 import HelpCenterComponent from '@/src/components/base/HelpCenterComponent';
 
 export const metadata: Metadata = {
@@ -9,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function HelpCenterLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <CustomProvider>
-      <HelpCenterComponent>{children}</HelpCenterComponent>
-    </CustomProvider>
-  );
+  return <HelpCenterComponent>{children}</HelpCenterComponent>;
 }

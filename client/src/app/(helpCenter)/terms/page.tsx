@@ -12,7 +12,7 @@ export default function FavoritesPage() {
   return (
     <div className="w-full md:container">
       <Suspense fallback={<Loading />}>
-        <div className="w-full mt-10 leqading-3">
+        <div className="w-full mt-10 leading-7">
           <p className=" text-[22.5px] font-bold text-left text-neutral-800">Terms of Use</p>
           <hr className="w-[70%] border-collapse border-gray-300 h-[3px] mt-5" />
           <p className=" text-[16.203125px] text-left text-neutral-800 mt-8">Welcome to CreaLink!</p>

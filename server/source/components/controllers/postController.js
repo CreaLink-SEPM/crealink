@@ -52,10 +52,10 @@ exports.startMessage = async (req, res, next) => {
       //   console.log(message.content)
       // })
       const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: prompt }],
+        messages: [{ role: "user", content: prompt }],
         model: "gpt-3.5-turbo",
       });
-      const respone = completion.choices[0];
+      const respone = await completion.choices[0].message.content;
       return res.status(200).json({
         success: true,
         message: respone

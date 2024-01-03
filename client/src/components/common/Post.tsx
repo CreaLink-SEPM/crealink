@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Dropdown, Menu } from 'antd';
+
 
 const SocialMediaPost = () => {
+    const menu = (
+        <Menu>
+            <Menu.Item style={{ color: 'red', fontWeight: 'bold'}}>
+                Report</Menu.Item>
+        </Menu>
+    );
     return (
-        <div className="relative w-[572px] h-[533.99px]">
-            <hr/>
+        <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
             <div className="relative w-[572px] h-[533.99px] top-[20px]">
                 <div className="h-[40px] top-0 absolute w-[48px] left-0">
                     <div className="relative top-[4px] w-[36px] h-[36px] bg-[#efefef] rounded-[18px]">
@@ -28,7 +35,7 @@ const SocialMediaPost = () => {
                                         <div className="relative h-[21px]">
                                             <div
                                                 className="absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                                kiit.connnor
+                                                aman_tokyo
                                             </div>
                                         </div>
                                     </div>
@@ -42,11 +49,15 @@ const SocialMediaPost = () => {
                                     12h
                                 </div>
                             </div>
-                            <img
-                                className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
-                                alt="Div margin"
-                                src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
-                            />
+                            <Dropdown overlay={menu} placement="bottomRight">
+                                <img
+                                    className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
+                                    alt="Div margin"
+                                    src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                                />
+                            </Dropdown>
+
+
                         </div>
                     </div>
                 </div>

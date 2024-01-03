@@ -9,9 +9,9 @@ export const metadata: Metadata = {
   description: 'Share your experience with others',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children, session }: { children: React.ReactNode, session: any }) {
   return (
-    <CustomProvider>
+    <CustomProvider session={session}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <BaseComponent >
           {children}
