@@ -32,24 +32,30 @@ initializeAssistant();
 exports.startMessage = async (req, res, next) => {
     try {
       const prompt = req.body.prompt;
-      const thread = await openai.beta.threads.create();
-      const message = await openai.beta.threads.messages.create(thread.id, {
-        role: "user",
-        content: prompt
+      // const thread = await openai.beta.threads.create();
+      // const message = await openai.beta.threads.messages.create(thread.id, {
+      //   role: "user",
+      //   content: prompt
+      // });
+      // const run = await openai.beta.threads.runs.create(thread.id,{
+      //   assistant_id: assistant.id,
+      //   instructions: "Address assistant as CreaLink Bot"
+      // });
+      // const runStatus = await openai.beta.threads.runs.retrieve(
+      //   thread_id = thread.id,
+      //   run_id = run.id
+      // );
+      // const messages = await openai.beta.threads.messages.list(
+      //   thread.id
+      // );
+      // await messages.body.data.forEach((message) => {
+      //   console.log(message.content)
+      // })
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: prompt }],
+        model: "gpt-3.5-turbo",
       });
-      const run = await openai.beta.threads.runs.create(thread.id, {
-        assistant_id: assistant.id
-      });
-      const runStatus = await openai.beta.threads.runs.retrieve(
-        thread.id, run.id
-      );
-      const messages = await openai.beta.threads.messages.list(
-        thread.id
-      );
-      let respone;
-     messages.body.data.forEach((message) => {
-         respone = message.content;
-      });
+      const respone = completion.choices[0];
       return res.status(200).json({
         success: true,
         message: respone
