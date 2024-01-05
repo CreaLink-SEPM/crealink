@@ -1,8 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Menu } from 'antd';
+import axios, { AxiosError } from 'axios';
 
+
+interface PostData {
+    [key: string]: any;
+}
 
 const SocialMediaPost = () => {
+
+    const [posts, setPosts] = useState([]);
+    const [error, setError] = useState<string | null>(null);
+
+    const apiUrl = 'http://localhost:3000/api/feed';
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/posts`);
+                setPosts(response.data.posts);
+            } catch (err: any) {
+                setError(err.message);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
+    const createPost = async (postData: PostData) => {
+        try {
+            await axios.post(`${apiUrl}/post`, postData);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const updatePost = async (postId: string, updatedData: PostData) => {
+        try {
+            await axios.put(`${apiUrl}/post/${postId}`, updatedData);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const deletePost = async (postId: string) => {
+        try {
+            await axios.delete(`${apiUrl}/post/${postId}`);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const toggleLike = async (postId: string) => {
+        try {
+            await axios.post(`${apiUrl}/like/${postId}`);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const sharePost = async (postId: string) => {
+        try {
+            const response = await axios.post(`${apiUrl}/share/${postId}`);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    const reportPost = async (postId: string, reason: string) => {
+        try {
+            await axios.post(`${apiUrl}/report/${postId}`, { reason });
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    if (error) return <div>Error: {error}</div>;
+    if (!posts.length) return <div>Loading...</div>;
+
+
     const menu = (
         <Menu>
             <Menu.Item style={{ color: 'red', fontWeight: 'bold'}}>

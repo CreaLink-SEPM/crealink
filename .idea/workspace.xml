@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="test">
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/CreatePost.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/ModalPost.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/UploadImage.tsx" afterDir="false" />
+    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="fix bugs">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/common/Post.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,24 +50,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Notification.DisplayName-DoNotAsk-Dependencies from package.json": "Dependencies from package.json available",
-    "Notification.DoNotAsk-Dependencies from package.json": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "modalAI",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Users/jamesdinh/Desktop/crealink/client/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Notification.DisplayName-DoNotAsk-Dependencies from package.json&quot;: &quot;Dependencies from package.json available&quot;,
+    &quot;Notification.DoNotAsk-Dependencies from package.json&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;homepage-api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/jamesdinh/Desktop/crealink/client/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -80,6 +81,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/client" />
       <recent name="$PROJECT_DIR$/client/public/assets/images" />
       <recent name="$PROJECT_DIR$/client/public/assets/icons" />
       <recent name="$PROJECT_DIR$" />
@@ -106,6 +108,9 @@
       <workItem from="1703298492959" duration="5904000" />
       <workItem from="1703341751742" duration="30531000" />
       <workItem from="1703992765441" duration="23007000" />
+      <workItem from="1704171133587" duration="6740000" />
+      <workItem from="1704440228920" duration="57000" />
+      <workItem from="1704440301532" duration="1745000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />
