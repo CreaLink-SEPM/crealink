@@ -3,13 +3,19 @@ const { body } = require("express-validator");
 const PostController = require("../controllers/postController");
 const AuthMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
+const hashHashTags = (value) => {
 
+  const regex = /(?:^|\s)(?:#)([a-zA-Z\d]+)/gm;
+  const matches = value.match(regex);
+  return matches && matches.length > 0;
+}
 router.post(
   "/post",
   AuthMiddleware.userAuthenToken,
   [
     body("title").trim().isLength({ min: 1 }),
-    body("content").trim().isLength({ min: 1 }),
+    body("content").trim().isLength({ min: 1 }).custom(hashHashTags).withMessage('Content must include at least one hash tag'),
+
   ],
   PostController.createPost
 );
