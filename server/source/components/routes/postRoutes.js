@@ -14,8 +14,7 @@ router.post(
   AuthMiddleware.userAuthenToken,
   [
     body("title").trim().isLength({ min: 1 }),
-    body("content").trim().isLength({ min: 1 }).custom(hashHashTags).withMessage('Content must include at least one hash tag'),
-
+    body("content").trim().isLength({ min: 1 }).custom(hashHashTags).withMessage('Content must include at least one hash tag')
   ],
   PostController.createPost
 );
@@ -35,7 +34,7 @@ router.put(
   AuthMiddleware.userAuthenToken,
   [
     body("title").trim().isLength({ min: 1 }),
-    body("content").trim().isLength({ min: 1 }),
+    body("content").trim().isLength({ min: 1 }).custom(hashHashTags).withMessage('Content must include at least one hash tag')
   ],
   PostController.updatePost
 );

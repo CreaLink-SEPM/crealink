@@ -61,11 +61,10 @@ exports.startMessage = async (req, res, next) => {
         message: respone
       })
     } catch (err) {
-      console.log(err);
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+      return res.status(500).json({
+        status: "error", 
+        message: "Internal Server Error: Please try again later"
+      })
   }
     
 }
@@ -73,9 +72,10 @@ exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error("Validation failed, entered data is not correct");
-      error.statusCode = 422;
-      throw error;
+      res.status(422).json({
+        status: "error",
+        message: "Validation failed, enterted data is not correct"
+      })
     }
     const title = req.body.title;
     const content = req.body.content;
@@ -122,17 +122,22 @@ exports.createPost = async (req, res, next) => {
       creator: { _id: creator._id, name: creator.username },
     });
   } catch (err) {
-    console.log(err);
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = 10;
+  if (currentPage < 1 || isNaN(currentPage)) {
+    res.status(400).json({
+      status: "error",
+      message: "Invalid page number"
+    })
+  }
   try {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
@@ -157,10 +162,10 @@ exports.getPosts = async (req, res, next) => {
       posts: postLikes,
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -170,9 +175,10 @@ exports.getPost = async (req, res, next) => {
     const post = await Post.findById(postId).populate("creator", ["username", "user_image"]);
 
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 403;
-      throw error;
+      res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     const likesCount = post.likes.length;
     const { likes, ...postWithoutLikes } = post.toObject();
@@ -186,10 +192,10 @@ exports.getPost = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -198,9 +204,10 @@ exports.getLikes = async (req, res, next) => {
   try {
     const post = await Post.findById(postId);
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 404;
-      throw error;
+      res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     const likesArray = post.likes;
     const likedUsers = await User.find(
@@ -214,10 +221,10 @@ exports.getLikes = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -226,21 +233,24 @@ exports.updatePost = async (req, res, next) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 404;
-      throw error;
+      return res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error("Validation failed, entered data is not correct");
-      error.statusCode = 422;
-      throw error;
+      return res.status(422).json({
+        status: "error",
+        message: "Validation failed, enterted data is not correct"
+      })
     }
 
     if (post.creator.toString() !== req.userId) {
-      const error = new Error("Not authorized");
-      error.statusCode = 403;
-      throw error;
+      res.status(403).json({
+        status: "error",
+        message: 'Not authorized'
+      })
     }
 
     const title = req.body.title;
@@ -283,10 +293,10 @@ exports.updatePost = async (req, res, next) => {
       post: result,
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -295,14 +305,16 @@ exports.deletePost = async (req, res, next) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 404;
-      throw error;
+      return res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     if (post.creator.toString() !== req.userId) {
-      const error = new Error("Not authorized");
-      error.statusCode = 403;
-      throw error;
+      res.status(403).json({
+        status: "error",
+        message: 'Not authorized'
+      })
     }
     if (post.imageUrl) {
       await clearImageFromS3(post.imageUrl);
@@ -317,10 +329,10 @@ exports.deletePost = async (req, res, next) => {
       message: "Delete post successfully",
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -329,9 +341,10 @@ exports.sharePost = async (req, res, next) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 422;
-      throw error;
+      return res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     const shareableUrl = `${req.protocol}://${req.get("host")}/posts/${
       post._id
@@ -341,11 +354,10 @@ exports.sharePost = async (req, res, next) => {
       shareableUrl: shareableUrl,
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -354,9 +366,10 @@ exports.toggleLike = async (req, res, next) => {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
     if (!post) {
-      const error = new Error("Could not find post");
-      error.statusCode = 404;
-      throw error;
+      return res.status(404).json({
+        status: "error", 
+        message: "Could not find post"
+      });
     }
     const currentUserId = req.userId;
     if (!currentUserId) {
@@ -387,11 +400,10 @@ exports.toggleLike = async (req, res, next) => {
       });
     }
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
@@ -400,7 +412,9 @@ exports.reportPost = async (req, res, next) => {
     const postId = req.params.postId;
     const { reason } = req.body;
     if (!reason) {
-      return res.status(400).json({ message: "No report reason provided" });
+      return res.status(400).json({ 
+        status: "error", 
+        message: "No report reason provided" });
     }
     const reportedPost = new ReportedPost({
       postId,
@@ -416,10 +430,10 @@ exports.reportPost = async (req, res, next) => {
       reportedPost: reportedPost,
     });
   } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+    return res.status(500).json({
+      status: "error", 
+      message: "Internal Server Error: Please try again later"
+    })
   }
 };
 
