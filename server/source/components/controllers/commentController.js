@@ -42,7 +42,7 @@ exports.createComment = async (req, res, next) =>  {
           status: "error", 
           message: "Internal Server Error: Please try again later"
         })
-}
+}}
 exports.getComments = async (req, res, next) => {
     try {
         const postId = req.params.postId;
