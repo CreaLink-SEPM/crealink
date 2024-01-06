@@ -6,29 +6,29 @@ const router = express.Router();
 
 router.post(
   "/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   [body("commentText").trim().isLength({ min: 1 })],
   commentController.createComment
 );
 router.get(
   "/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   commentController.getComments
 );
 router.put(
   "/:commentId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   [body("commentText").trim().isLength({ min: 1 })],
   commentController.editComment
 );
 router.put(
   "/like/:commentId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   commentController.toggleLike
 );
 router.delete(
   "/:commentId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   commentController.deleteComment
 );
 module.exports = router;
