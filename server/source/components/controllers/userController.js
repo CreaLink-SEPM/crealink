@@ -458,6 +458,51 @@ const searchUser = async (req, res) => {
   }
 };
 
+const profileUser = async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        status: "error",
+        message: "Username is required",
+      });
+    }
+
+    const user = await User.findOne({ username }).populate("posts");
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const userData = {
+      _id: user._id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      followers: user.followers.length,
+      following: user.following.length,
+      is_verified: user.is_verified,
+      isAdmin: user.isAdmin,
+      posts: user.posts,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      data: userData,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 const followUser = async (req, res) => {
   try {
     const { user_id } = req.params; // User ID to follow
@@ -751,51 +796,6 @@ const clearImageFromS3 = async (avatarUrl) => {
     console.log("Old avatar deleted successfully: ", deleteResult);
   } catch (err) {
     console.log("Error deleting image from S3: ", err);
-  }
-};
-
-const profileUser = async (req, res) => {
-  try {
-    const { username } = req.body;
-
-    if (!username) {
-      return res.status(400).json({
-        status: "error",
-        message: "Username is required",
-      });
-    }
-
-    const user = await User.findOne({ username }).populate("posts");
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
-
-    const userData = {
-      _id: user._id,
-      username: user.username,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      followers: user.followers.length,
-      following: user.following.length,
-      is_verified: user.is_verified,
-      isAdmin: user.isAdmin,
-      posts: user.posts,
-    };
-
-    return res.status(200).json({
-      status: "success",
-      data: userData,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      status: "error",
-      message: err.message,
-    });
   }
 };
 
