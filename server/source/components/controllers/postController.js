@@ -32,25 +32,12 @@ initializeAssistant();
 exports.startMessage = async (req, res, next) => {
     try {
       const prompt = req.body.prompt;
-      // const thread = await openai.beta.threads.create();
-      // const message = await openai.beta.threads.messages.create(thread.id, {
-      //   role: "user",
-      //   content: prompt
-      // });
-      // const run = await openai.beta.threads.runs.create(thread.id,{
-      //   assistant_id: assistant.id,
-      //   instructions: "Address assistant as CreaLink Bot"
-      // });
-      // const runStatus = await openai.beta.threads.runs.retrieve(
-      //   thread_id = thread.id,
-      //   run_id = run.id
-      // );
-      // const messages = await openai.beta.threads.messages.list(
-      //   thread.id
-      // );
-      // await messages.body.data.forEach((message) => {
-      //   console.log(message.content)
-      // })
+      if (!prompt || prompt.trim().length === 0) {
+        return res.status(400).json({
+          status: "error",
+          message: "Prompt cannot be empty"
+        });
+      }
       const completion = await openai.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
         model: "gpt-3.5-turbo",
@@ -374,7 +361,7 @@ exports.toggleLike = async (req, res, next) => {
     const currentUserId = req.userId;
     if (!currentUserId) {
       return res.status(401).json({
-        message: "User not found",
+        message: "User not found, not authorized",
         status: "error",
       });
     }

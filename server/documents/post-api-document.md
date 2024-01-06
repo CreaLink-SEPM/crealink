@@ -9,7 +9,7 @@ The createPost function servers the purpose of allowing users to create post wit
 
 - Method: POST
 - Headers: Content-Type: application/json (or as appropriate for your API)
-- Authorization: Bearer [token] (if authentication is required)
+- Authorization: Bearer [token] 
 -Body: JSON object containing the follwing fields:
   - `title` (string, required): Title of the post,
   - `content` (string, required): Content of the post, must have hash tags (at least one character)
@@ -70,7 +70,7 @@ The getPosts function retrieves a paginated list of posts from the feed within t
 ### Request
 - Method: GET
 - Headers: Content-Type: application/json (or as appropriate for your API)
-- Authorization: Bearer [token] (if authentication is required)
+- Authorization: Bearer [token]
 - Query Parameters: page (integer, optional): Specifies the page number of posts to retrieve. Defaults to the first page if not provided.
 
 ### Example Input
@@ -124,6 +124,7 @@ This endpoint allows users to retrieve a single post based on its unique identif
 ### Request
 - Method: GET,
 - Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
 - Parameters: `postId` The unique identifier of the post to be fetched.
 ### Success Respone
 ```json
@@ -168,6 +169,7 @@ This endpoint allows users to update the details of a specific post identified b
 ### Request
 - Method: PUT
 - Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
 - Parameters:
  - postId: The unique identifier of the post to be updated.
 - Body: A JSON object containing the updated fields:
@@ -248,6 +250,8 @@ This endpoint enables users to delete a specific post using its unique identifie
 ### Request
 Request
 - Method: DELETE
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
 - Parameters:
   - postId: The unique identifier of the post to be deleted.
 ### Example Response
@@ -277,7 +281,7 @@ Request
 - `200 OK`: The post was successfully deleted.
 - `404 Not Found`: The post was not found
 - `403 Forbidden`: User is not authorized to delete the post
-- `500 Internal Server Error`: Unexpected server-side issues during delete.
+- `500 Internal Server Error`: Unexpected server-side issues during delete  .
 ## Get Liked Users for a Post
 
 Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
@@ -285,6 +289,9 @@ Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
 ### Purpose
 his endpoint retrieves the list of users who have liked a specific post identified by `postId`.
 ### Request
+- Method: PUT
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
 - Parameters:
   - postId: The unique identifier of the post to get liked users.
 ### Response
@@ -293,7 +300,6 @@ his endpoint retrieves the list of users who have liked a specific post identifi
 
 ```json 
 {
-    {
   "message": "Fetched liked users successfully",
   "post": {
     "likedUsers": [
@@ -310,46 +316,120 @@ his endpoint retrieves the list of users who have liked a specific post identifi
   }
 }
 ```
+### Error Response
+- Invalid postId 
+```json
+{
+  "status": "error",
+  "message": "Could not find post"
+}
+```
+### Notes
+- `200 OK`: Liked users successfully retrieved
+- `404 Not Found`: The post was not found.
+- `500 Internal Server Error`: Unexpected server-side issues during retrieval liked users.
 
 ## Toggle like for a post
 Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
+### Purpose
+This endpoint allows users to toggle their like or unlike status on a specific post identified by `postId`.
 
-### Respone
+### Request
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
+- Parameters:
+    - postId: The unique identifier of the post to get like or unlike the post.
+### Sucess Respone
 ```json
 {
     "message": "Successfully liked the post"
 }
 ```
 
-### Respone
 ```json
 {
     "message": "Successfully unliked the post"
 }
 ```
 
+### Error Response
+- Post ID is not valid
+```json
+{
+  "status": "error",
+  "message": "Could not find post"
+}
+```
+- User not found
+```json 
+{
+  "message": "User not found, not authenticated",
+  "status": "error"
+}
+```
+### Notes
+- `404 Not Found`: Post could not be found
+- `401 Unauthorized`: Unauthorized user
+- `500 Internal Server Error`: Unexpected server-side issues during like or unlike post.
+
+
 ## Share point
 Endpoint: `http:/localhost:[port]/api/feed/share/{postId}`
 
+### Purpose
+This endpoint generates a shareable URL for a specific post identified by `postId`.
+
+### Request
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
+- Method: GET
+- Parameters:
+   - postId: The unique identifier of the post to share the post url.
+
 ### Respone
+
+### Sucess Respone
 ```json
 {
   "message": "Share post URL successfully",
   "shareableUrl": "https://example.com/posts/{postId}"
 }
 ```
+### Error Respone
+- Post ID is not valid
+```json
+{
+  "status": "error",
+  "message": "Could not find post"
+}
+```
+### Notes
+- `200 OK`: Shareable URL was successfully generated.
+- `404 Not Found`: Post was not found
+- `500 Internal Server Error`: Unexpected server-side issues during fetching post URL.
 
 ## Report violated post
+
 Endpoint: `http://localhost:[port]/api/feed/report/{postId}`
 
+### Purpose
+This endpoint allows users to report a specific post identified by `postId` for violating community guidelines or other reasons.
+
 ### Request
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
+- Method: POST
+- Parameters:
+   - postId: The unique identifier of the post be reported.
+### Example Input
+
 ```json
 {
   "reason": "Reported reason"
 }
 ```
 
-### Response
+### Success Response
 ```json
 {
     "message": "Post has been reported",
@@ -363,4 +443,55 @@ Endpoint: `http://localhost:[port]/api/feed/report/{postId}`
         "__v": 0
     }
 }
+```
+### Error Respone
+- No report reason given
+```json
+{
+  "status": "error",
+  "message": "No report reason provided"
+}
+```
+### Notes
+- `201 Created`: Report request was created successfully 
+- `400 Bad Request`: No report reason
+- `500 Internal Server Error`: Unexpected server-side issues during reporting post.
 
+### Generate AI response
+Endpoint: `http://localhost:[port]/api/feed/generativeAI`
+
+### Purpose
+This endpoint allows users to prompt questions for AI support
+
+### Request
+- Headers: Content-Type: application/json (or as appropriate for your API)
+- Authorization: Bearer [token]
+- Method: POST
+
+### Example Input
+```json
+{
+  "prompt": "Prompt question"
+}
+```
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "AI response"
+}
+```
+### Error Response
+- Prompt question is empty
+```json
+{
+  "status": "error",
+  "message": "Prompt cannot be empty"
+}
+```
+
+### Notes
+- `200 OK`: AI gives response
+- `400 Bad Request`: Request is not given
+- `500 Internal Server Error`: Unexpected server-side issues during reporting post.
