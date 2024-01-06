@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="fix bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/common/Post.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +108,7 @@
       <workItem from="1703992765441" duration="23007000" />
       <workItem from="1704171133587" duration="6740000" />
       <workItem from="1704440228920" duration="57000" />
-      <workItem from="1704440301532" duration="1745000" />
+      <workItem from="1704440301532" duration="12757000" />
     </task>
     <task id="LOCAL-00001" summary="new update">
       <option name="closed" value="true" />

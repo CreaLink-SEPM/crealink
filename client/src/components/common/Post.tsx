@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Menu } from 'antd';
 import axios, { AxiosError } from 'axios';
@@ -12,12 +14,13 @@ const SocialMediaPost = () => {
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState<string | null>(null);
 
-    const apiUrl = 'http://localhost:3000/api/feed';
+    const apiUrl = 'http://54.169.199.32:5000/api/feed';
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/posts`);
+                console.log(response);
                 setPosts(response.data.posts);
             } catch (err: any) {
                 setError(err.message);
@@ -132,8 +135,6 @@ const SocialMediaPost = () => {
                                     src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
                                 />
                             </Dropdown>
-
-
                         </div>
                     </div>
                 </div>
