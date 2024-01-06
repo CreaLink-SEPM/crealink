@@ -9,14 +9,16 @@ exports.createComment = async (req, res, next) =>  {
         const post = await Post.findById(postId);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const error = new Error('Validation failed, entered data is empty');
-            error.statusCode = 422;
-            throw error;
+            res.status(422).json({
+                status: "error",
+                "message": "Validation failed, entered data is empty"
+            })
         }
         if (!post) {
-            const error = new Error('Could not find post');
-            error.statusCode = 404;
-            throw error;
+            res.status(404).json({
+                status: "error",
+                message: "Could not find post"
+            })
         }
         const commentText= req.body.commentText;
         const comment = new Comment({
@@ -35,11 +37,11 @@ exports.createComment = async (req, res, next) =>  {
         })
         
     } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
-    }
+        console.log(err); 
+        return res.status(500).json({
+          status: "error", 
+          message: "Internal Server Error: Please try again later"
+        })
 }
 exports.getComments = async (req, res, next) => {
     try {
@@ -49,9 +51,10 @@ exports.getComments = async (req, res, next) => {
             .populate("userId", "username user_image")
             .exec();
         if (!comments) {
-            const error = new Error ('Comments retreived failure');
-            error.statusCode = 404;
-            throw error;
+            res.status(404).json({
+                status: "error",
+                message: "Comments retreived failure"
+            })
         }
         const commentWithLikesCount = comments.map(comment => ({
             _id: comment._id,
@@ -65,10 +68,11 @@ exports.getComments = async (req, res, next) => {
             comments: commentWithLikesCount
         });
     } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+        console.log(err); 
+        return res.status(500).json({
+          status: "error", 
+          message: "Internal Server Error: Please try again later"
+        })
     }
 }
 exports.editComment = async (req, res, next) => {
@@ -77,9 +81,10 @@ exports.editComment = async (req, res, next) => {
         const {commentText} = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const error = new Error('Validation failed, entered data is empty');
-            error.statusCode = 422;
-            throw error;
+            res.status(422).json({
+                status: "error",
+                message: "Validation failed, entered data is empty"
+            })
         }
         const comment = await Comment.findByIdAndUpdate(
             commentId,
@@ -87,9 +92,10 @@ exports.editComment = async (req, res, next) => {
             {new: true}
         )
         if (comment.userId.toString() !== req.userId) {
-            const error = new Error('Not authorized to edit this comment');
-            error.statusCode = 403;
-            throw error;
+            res.status(403).json({
+                status: "error",
+                message: "Not authorized to edit this comment"
+            })
         }
         await comment.save();
         io.getIO().emit('comments', {action: "update", comment});
@@ -98,10 +104,11 @@ exports.editComment = async (req, res, next) => {
             comment
         })
     } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+        console.log(err); 
+        return res.status(500).json({
+          status: "error", 
+          message: "Internal Server Error: Please try again later"
+        })
     }
 }
 exports.deleteComment = async (req, res, next) => {
@@ -109,14 +116,16 @@ exports.deleteComment = async (req, res, next) => {
         const commentId = req.params.commentId;
         const comment = await Comment.findById(commentId);
         if (!comment) {
-            const error = new Error('Comment retrieved failure');
-            error.statusCode = 404;
-            throw error;
+            res.status(404).json({
+                status: "error",
+                message: "Comment retrieved failure"
+            })
         }
         if (comment.userId.toString() !== req.userId) {
-            const error = new Error('Not authorized to delete this comment');
-            error.statusCode = 403;
-            throw error;
+            res.status(403).json({
+                status: "error",
+                message: "Not authorized to delete this comment"
+            })
         }
         await Comment.findByIdAndDelete(commentId);
         io.getIO().emit('comments', {action: 'delete', comment: commentId});
@@ -126,10 +135,11 @@ exports.deleteComment = async (req, res, next) => {
 
 
     } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+        console.log(err); 
+        return res.status(500).json({
+          status: "error", 
+          message: "Internal Server Error: Please try again later"
+        })
     }
 };
 exports.toggleLike = async (req, res, next) => {
@@ -137,9 +147,10 @@ exports.toggleLike = async (req, res, next) => {
         const commentId = req.params.commentId;
         const comment = await Comment.findById(commentId);
         if (!comment) {
-            const error = new Error('Comment retrieved failure');
-            error.statusCode = 404;
-            throw error;
+            res.status(404).json({
+                status: "error",
+                message: "Comment retrieved failure"
+            })
         }
         const currentUserId = req.userId;
         if (!currentUserId) {
@@ -165,9 +176,10 @@ exports.toggleLike = async (req, res, next) => {
         }
 
     } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
+        console.log(err); 
+        return res.status(500).json({
+          status: "error", 
+          message: "Internal Server Error: Please try again later"
+        })
     }
 }

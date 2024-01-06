@@ -3,15 +3,21 @@
 ## Create comment
 
 Endpoint: `http://localhost:[port]/api/comment/{postId}`
-### Request
+### Purpose 
+The create comment function allows users to post a comment that belongs to a specific `postId`. 
 
+### Request
+- Method: POST,
+- Headers: Content-Type: application/json (or as appropriate for your API).
+- Authorization: Bearer [token]
+### Example Input
 ```json
 {
     "commentText": "Comment content"
 }
 ```
 
-### Response
+### Success Response
 
 ```json
 {
@@ -28,7 +34,7 @@ Endpoint: `http://localhost:[port]/api/comment/{postId}`
     }
 }
 ```
-
+### Error Res
 ## Get all comments of the post
 Endpoint: `http://localhost:[port]/api/comment/{postId}`
 
