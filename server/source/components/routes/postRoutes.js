@@ -10,7 +10,7 @@ const hashHashTags = (value) => {
 };
 router.post(
   "/post",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   [
     body("title").trim().isLength({ min: 1 }),
     body("content")
@@ -23,22 +23,22 @@ router.post(
 );
 router.get(
   "/posts",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.getPosts
 );
 router.get(
   "/post/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.getPost
 );
 router.get(
   "/like/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.getLikes
 );
 router.put(
   "/post/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   [
     body("title").trim().isLength({ min: 1 }),
     body("content")
@@ -51,27 +51,27 @@ router.put(
 );
 router.get(
   "/share/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.sharePost
 );
 router.put(
   "/like/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.toggleLike
 );
 router.delete(
   "/post/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.deletePost
 );
 router.post(
   "/report/:postId",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.reportPost
 );
 router.post(
   "/generativeAI",
-  // AuthMiddleware.userAuthenToken,
+  AuthMiddleware.userAuthenToken,
   PostController.startMessage
 );
 

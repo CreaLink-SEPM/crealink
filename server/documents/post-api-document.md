@@ -307,11 +307,13 @@ his endpoint retrieves the list of users who have liked a specific post identifi
     "likedUsers": [
       {
         "id": "user1 Id",
-        "username": "user1"
+        "username": "user1",
+        "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg"
       },
       {
         "id": "user2 Id",
-        "username": "user2"
+        "username": "user2",
+        "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg"
       }
       // ... other liked users
     ]
