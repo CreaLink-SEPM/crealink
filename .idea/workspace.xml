@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="test">
+    <list default="true" id="a3649d34-d47d-41d7-bca4-6b903bd0dced" name="Changes" comment="fix bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/common/Post.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/common/Post.tsx" afterDir="false" />
     </list>
@@ -162,7 +162,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703993485082</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix bugs">
+      <option name="closed" value="true" />
+      <created>1704536002975</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1704536002975</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,6 +188,7 @@
     <MESSAGE value="update some changes for transparent icon" />
     <MESSAGE value="update new files for modal AI" />
     <MESSAGE value="test" />
-    <option name="LAST_COMMIT_MESSAGE" value="test" />
+    <MESSAGE value="fix bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bugs" />
   </component>
 </project>

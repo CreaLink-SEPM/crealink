@@ -19,6 +19,7 @@ interface Post {
 }
 
 
+
 const SocialMediaPost = () => {
 
     const [posts, setPosts] = useState([]);
