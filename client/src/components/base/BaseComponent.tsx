@@ -45,9 +45,9 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
           <RightSideBar />
         </Suspense>
       </div>
-      <div className=''>
-        {/* <Footer /> */}
-      </div>
+      {/* <div className=''>
+        <Footer />
+      </div> */}
     </div>
   );
 }

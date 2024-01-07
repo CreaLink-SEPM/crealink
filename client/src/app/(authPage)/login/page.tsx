@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../globals.css';
 import Image from 'next/image';
 import { Label } from '@/src/components/ui/label';
@@ -9,64 +9,53 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/src/components/ui/use-toast';
-import { ToastAction } from '@/src/components/ui/toast';
-import { storeTokens } from '@/src/utils/auth';
 import { signIn } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
+import { useSession } from "next-auth/react";
 
 function Login() {
   const router = useRouter();
-  const { toast } = useToast();
   const params = useSearchParams();
+  const { status } = useSession();
   const [authState, setAuthState] = useState<AuthStateType>({
     email: '',
     password: '',
   });
-  const email = useRef('')
-  const password = useRef('')
+  const email = useRef('');
+  const password = useRef('');
   const [errors, setErrors] = useState<AuthErrorType>({});
   const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (status == "authenticated") {
+      router.push("/home");
+    }
+  }, [status]);
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
-    const result = await signIn('credentials', {
-      email: email.current,
-      password: password.current,
-      redirect: true,
-      callbackUrl: "/home",
-    })
-    
-;
-
     // API FOR LOGIN
-    // axios
-    //   .post('http://54.169.199.32:5000/api/user/login', authState)
-    //   .then(res => {
-    //     setLoading(false);
-    //     const response = res.data; // Options for API***
+    axios
+      .post('http://54.169.199.32:5000/api/user/login', authState)
+      .then(res => {
+        setLoading(false);
+        const response = res.data; // Options for API***
 
-    //     if (response.status === 'success' || 200) {
-    //       alert('Login success');
-    //        // Store the token in local storage
-    //       window.localStorage.setItem('accessToken', response.accessToken);
-    //       storeTokens(response);
-    //       router.push(`/home?message=${response.message}`);
-    //     } else if (response.status === 'error' || 400) {
-    //       setErrors(response.message.error);
-    //       toast({
-    //         variant: 'destructive',
-    //         title: 'Uh oh! Something went wrong.',
-    //         description: 'There was a problem with your request.',
-    //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-    //       });
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     setLoading(false);
-    //   });
+        if (response.status === 'success' || 200) {
+          alert('Login success');
+          // router.push(`/home?message=${response.message}`);
+          signIn('credentials', {
+            email: authState.email,
+            password: authState.password,
+            callbackUrl: '/home',
+            redirect: true,
+          });
+        } else if (response.status === 'error' || 400) {
+          setErrors(response.message.error);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   return (
@@ -105,8 +94,7 @@ function Login() {
                   type="email"
                   id="email"
                   placeholder="Type your email.."
-                  // onChange={event => setAuthState({ ...authState, email: event.target.value })}
-                  onChange={event => (email.current = event.target.value)}
+                  onChange={event => setAuthState({ ...authState, email: event.target.value })}
                 />
                 <span className="text-red-400 font-bold">{errors?.email}</span>
               </div>
@@ -117,13 +105,14 @@ function Login() {
                   type="password"
                   id="password"
                   placeholder="Type your password.."
-                  // onChange={event => setAuthState({ ...authState, password: event.target.value })}
-                   onChange={event => (password.current = event.target.value)}
+                  onChange={event => setAuthState({ ...authState, password: event.target.value })}
                 />
                 <span className="text-red-400 font-bold">{errors?.password}</span>
               </div>
               <div className="mt-5">
-                <Button className="w-full bg-red-800" disabled={loading}>{loading ? 'Processing...' : 'Login'}</Button>
+                <Button className="w-full bg-red-800" disabled={loading}>
+                  {loading ? 'Processing...' : 'Login'}
+                </Button>
               </div>
               <div className="mt-5 text-center">
                 <span>Don't Have an account yet? </span>

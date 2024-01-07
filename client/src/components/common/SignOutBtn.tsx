@@ -14,12 +14,11 @@ import {
 import { Button } from '../ui/button';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { clearTokens } from '@/src/utils/auth';
+
 
 function SignOutBtn() {
   const logout = () => {
     signOut({ callbackUrl: '/login', redirect: true });
-    clearTokens();
   };
 
   return (
