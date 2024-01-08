@@ -218,6 +218,7 @@ const loginUser = async (req, res) => {
     enqueueNotification("User " + username + " has logged in!");
 
     return res.status(200).json({
+      id: user._id,
       status: "success",
       message: "Login successful",
       accessToken,
