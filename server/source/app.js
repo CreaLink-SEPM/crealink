@@ -39,7 +39,7 @@ AWS.config.update({
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./components/images");
+    cb(null, path.join(__dirname, '/components/images'));
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);
@@ -67,7 +67,7 @@ app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
-app.use("/components/images", express.static(path.join(__dirname, "images")));
+app.use(express.static(__dirname));
 app.use(bodyParser.json());
 routes(app);
 

@@ -54,7 +54,14 @@ The create comment function allows users to post a comment that belongs to a spe
 ## Get all comments of the post
 Endpoint: `http://localhost:[port]/api/comment/{postId}`
 
-### Respone:
+### Purpose
+The create comment function allows users to fetch all comments that belongs to a specific `postId`. 
+### Request
+- Method: GET,
+- Headers: Content-Type: application/json (or as appropriate for your API).
+- Authorization: Bearer [token]
+
+### Success Respone:
 ```json
 {
     "message": "Comments retrieved successfully",
@@ -73,10 +80,33 @@ Endpoint: `http://localhost:[port]/api/comment/{postId}`
     ]
 }
 ```
+### Error Responses:
+- Error fetching comments
+```json
+{
+    "status": "error",
+    "message": "Comments retrieved failure"
+}
+```
+
+### Notes
+- `200 OK`: All comments retrieved successfully
+- `404 Not Found`: Comment retrieved failed
+- `500 Internal Server Error`: Unexpected server-side issues during fetching comments.
+
 
 ## Edit comments
 Endpoint: `http://localhost:[port]/api/comment/{commentId}`
+### Purpose
+This endpoint allows users to edit their belonging comments that belong to the post which has `postId` attribute
+
 ### Request
+- Method: GET,
+- Headers: Content-Type: application/json (or as appropriate for your API).
+- Authorization: Bearer [token]
+
+### Example Input
+
 ```json
 {
     "commentText": "Text comment Here"
