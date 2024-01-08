@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     following: [{ type: String }],
     followers: [{ type: String }],
     image: { type: String },
+    bio: { type: String },
     is_verified: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],

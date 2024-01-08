@@ -229,6 +229,10 @@ const loginUser = async (req, res) => {
       user_image,
       image,
       is_verified,
+      followers: user.followers.length,
+      following: user.following.length,
+      posts: user.posts,
+      bio: user.bio,
     });
   } catch (err) {
     return res.status(500).json({
@@ -337,16 +341,16 @@ const getAllUser = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const { username: requestedUsername } = req.params;
+    const { username: requestedUserID } = req.params;
 
-    if (!requestedUsername) {
+    if (!requestedUserID) {
       return res.status(400).json({
         status: "error",
-        message: "Username is required",
+        message: "User ID is required",
       });
     }
 
-    const user = await User.findOne({ username: requestedUsername });
+    const user = await User.findOne({ _id: requestedUserID });
 
     if (!user) {
       return res.status(404).json({
@@ -489,6 +493,7 @@ const profileUser = async (req, res) => {
       is_verified: user.is_verified,
       isAdmin: user.isAdmin,
       posts: user.posts,
+      bio: user.bio,
     };
 
     return res.status(200).json({
