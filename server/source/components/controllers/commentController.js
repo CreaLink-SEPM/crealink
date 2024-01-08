@@ -155,7 +155,7 @@ exports.toggleLike = async (req, res, next) => {
         const currentUserId = req.userId;
         if (!currentUserId) {
             return res.status(401).json({
-                message: 'User not found',
+                message: 'User not found, not authorized',
                 status: 'error'
             });
         };
