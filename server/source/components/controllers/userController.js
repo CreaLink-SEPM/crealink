@@ -555,6 +555,7 @@ const followUser = async (req, res) => {
       username: user.username,
       user_image: user.user_image,
     });
+    await userToFollow.save();
 
     return res.status(200).json({
       status: "success",
