@@ -230,6 +230,7 @@ const loginUser = async (req, res) => {
       image,
       is_verified,
       followers: user.followers.length,
+      follower: user.followers,
       following: user.following.length,
       posts: user.posts,
       bio: user.bio,
