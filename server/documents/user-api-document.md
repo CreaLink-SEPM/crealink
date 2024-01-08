@@ -795,7 +795,7 @@ Uploads a new avatar image for the user.
 
 - Method: POST
 - Headers: `Authorization: Bearer [token]`
-- Body: Form-data with a file field named `avatar`
+- Body: Form-data with a file field named `image`
 
 ### Success Response
 
@@ -837,7 +837,7 @@ Updates the user's avatar image.
 
 - Method: PUT
 - Headers: `Authorization: Bearer [token]`
-- Body: Form-data with a file field named `avatar` and a field `user_image` containing the existing avatar URL
+- Body: Form-data with a file field named `image` 
 
 ### Success Response
 

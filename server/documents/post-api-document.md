@@ -87,7 +87,8 @@ The getPosts function retrieves a paginated list of posts from the feed within t
       "content": "Lorem ipsum...",
       "creator": {
         "_id": "user_id",
-        "name": "username"
+        "name": "username",
+        "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg",
       },
       "createdAt": "2023-12-14T03:27:36.695Z",
       "updatedAt": "2023-12-14T03:27:36.695Z",
@@ -137,7 +138,8 @@ This endpoint allows users to retrieve a single post based on its unique identif
     "content": "Lorem ipsum...",
     "creator": {
       "_id": "user_id",
-      "name": "username"
+      "name": "username",
+      "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg"
     },
     "createdAt": "2023-12-14T03:27:36.695Z",
     "updatedAt": "2023-12-14T03:27:36.695Z",
@@ -305,11 +307,13 @@ his endpoint retrieves the list of users who have liked a specific post identifi
     "likedUsers": [
       {
         "id": "user1 Id",
-        "username": "user1"
+        "username": "user1",
+        "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg"
       },
       {
         "id": "user2 Id",
-        "username": "user2"
+        "username": "user2",
+        "user_image": "https://crealink-images.s3.ap-southeast-1.amazonaws.com/avatar/istockphoto-1451587807-612x612.jpg"
       }
       // ... other liked users
     ]
@@ -335,6 +339,7 @@ Endpoint: `http:/localhost:[port]/api/feed/like/{postId}`
 This endpoint allows users to toggle their like or unlike status on a specific post identified by `postId`.
 
 ### Request
+- Request Method: PUT
 - Headers: Content-Type: application/json (or as appropriate for your API)
 - Authorization: Bearer [token]
 - Parameters:

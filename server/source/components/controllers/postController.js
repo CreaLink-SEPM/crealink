@@ -48,6 +48,7 @@ exports.startMessage = async (req, res, next) => {
         message: respone
       })
     } catch (err) {
+      console.log(err);
       return res.status(500).json({
         status: "error", 
         message: "Internal Server Error: Please try again later"
@@ -109,6 +110,7 @@ exports.createPost = async (req, res, next) => {
       creator: { _id: creator._id, name: creator.username },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -149,6 +151,7 @@ exports.getPosts = async (req, res, next) => {
       posts: postLikes,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -179,6 +182,7 @@ exports.getPost = async (req, res, next) => {
       },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -208,6 +212,7 @@ exports.getLikes = async (req, res, next) => {
       },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -280,6 +285,7 @@ exports.updatePost = async (req, res, next) => {
       post: result,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -316,6 +322,7 @@ exports.deletePost = async (req, res, next) => {
       message: "Delete post successfully",
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -341,6 +348,7 @@ exports.sharePost = async (req, res, next) => {
       shareableUrl: shareableUrl,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -387,6 +395,7 @@ exports.toggleLike = async (req, res, next) => {
       });
     }
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
@@ -417,6 +426,7 @@ exports.reportPost = async (req, res, next) => {
       reportedPost: reportedPost,
     });
   } catch (err) {
+    console.log(err); 
     return res.status(500).json({
       status: "error", 
       message: "Internal Server Error: Please try again later"
