@@ -11,7 +11,7 @@ exports.createComment = async (req, res, next) =>  {
         if (!errors.isEmpty()) {
             res.status(422).json({
                 status: "error",
-                "message": "Validation failed, entered data is empty"
+                message: "Validation failed, entered data is empty"
             })
         }
         if (!post) {

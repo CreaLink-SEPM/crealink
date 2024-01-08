@@ -71,7 +71,7 @@ router.post(
 );
 router.post(
   "/generativeAI",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.startMessage
 );
 

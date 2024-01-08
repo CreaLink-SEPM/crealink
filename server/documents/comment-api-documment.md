@@ -34,7 +34,23 @@ The create comment function allows users to post a comment that belongs to a spe
     }
 }
 ```
-### Error Res
+
+
+### Error Respone
+- Data input is not meet the criteria
+```json
+{
+    "status": "error",
+    "message": "Validation failed, entered data is empty"
+}
+```
+- Post ID is not valid
+```json
+{
+    "status": "error",
+    "message": "Could not find post"
+}
+```
 ## Get all comments of the post
 Endpoint: `http://localhost:[port]/api/comment/{postId}`
 
