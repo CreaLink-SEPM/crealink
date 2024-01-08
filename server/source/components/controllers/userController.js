@@ -540,11 +540,11 @@ const followUser = async (req, res) => {
     }
 
     // Update following for the user initiating the follow action
-    user.following.push(userToFollow._id);
+    user.following.push(userToFollow);
     await user.save();
 
     // Update followers for the user being followed
-    userToFollow.followers.push(userId);
+    userToFollow.followers.push(user);
     await userToFollow.save();
 
     return res.status(200).json({
