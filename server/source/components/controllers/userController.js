@@ -736,11 +736,14 @@ const getFollowing = async (req, res) => {
 
 const uploadAvatar = async (req, res, next) => {
   try {
+    const { username, email, password } = req.body;
+
     if (!req.file) {
       return res.status(404).json({
         message: "No file uploaded",
       });
     }
+
     const image = req.file.path;
     const fileExtension = path.extname(req.file.originalname);
     const stream = fs.createReadStream(image);
@@ -751,8 +754,17 @@ const uploadAvatar = async (req, res, next) => {
       Body: stream,
     };
     const uploadResult = await client.send(new PutObjectCommand(params));
-    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
-    await User.findByIdAndUpdate(req.userId, { user_image: avatarUrl });
+    const avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+
+    // Construct object with fields that need updating
+    const updateFields = { user_image: avatarUrl };
+    if (username) updateFields.username = username;
+    if (email) updateFields.email = email;
+    if (password) updateFields.password = password;
+
+    // Update user with the new attributes
+    const updatedUser = await User.findByIdAndUpdate(req.userId, updateFields, { new: true });
+
     fs.unlinkSync(image, (err) => {
       if (err) {
         console.error("Error deleting local avatar image:", err);
@@ -760,9 +772,10 @@ const uploadAvatar = async (req, res, next) => {
         console.log("Local avatar image deleted successfully.");
       }
     });
+
     res.status(200).json({
       message: "Avatar uploaded successfully",
-      user_image: avatarUrl,
+      user: updatedUser,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -771,6 +784,7 @@ const uploadAvatar = async (req, res, next) => {
     next(err);
   }
 };
+
 const updateAvatar = async (req, res, next) => {
   let avatarUrl = req.body.user_image;
   try {
