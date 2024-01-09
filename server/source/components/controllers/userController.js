@@ -734,6 +734,8 @@ const getFollowing = async (req, res) => {
   }
 };
 
+const bcrypt = require("bcrypt");
+
 const uploadAvatar = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -761,18 +763,18 @@ const uploadAvatar = async (req, res, next) => {
     const updateFields = { user_image: avatarUrl };
     if (username) updateFields.username = username;
     if (email) updateFields.email = email;
-    if (password) updateFields.password = password;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password securely
+      updateFields.password = hashedPassword;
+    }
 
     // Update user with the new attributes
-    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, {
+      new: true,
+    });
 
-    // fs.unlinkSync(image, (err) => {
-    //   if (err) {
-    //     console.error("Error deleting local avatar image:", err);
-    //   } else {
-    //     console.log("Local avatar image deleted successfully.");
-    //   }
-    // });
+    // Delete the local file after uploading to S3
+    fs.unlinkSync(req.file.path);
 
     res.status(200).json({
       message: "Avatar uploaded successfully",
