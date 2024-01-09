@@ -3,6 +3,21 @@ import { headers } from "next/headers";
 
 
 const apiBaseUrl = Env.APP_URL_SERVER;
+
+
+// SHOW USER WITH POSTS AND FOLLOWERS
+export async function fetchUsers(id: number) {
+  const res = await fetch(`${apiBaseUrl}/api/user/get-user/${id}`, {
+    cache: "no-cache",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fecth posts");
+  }
+  const response = await res.json();
+  return response?.data;
+}
+
+
 export async function searchUser(query: string) {
     try {
       const res = await fetch(`${apiBaseUrl}/api/user/search-user?searchQuery=${query}`, {

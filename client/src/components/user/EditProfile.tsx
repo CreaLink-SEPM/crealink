@@ -68,7 +68,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              defaultValue="bCqo0@example.com"
+              placeholder='Change new password'
               className="col-span-2 w-[280px]"
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="w-3 ml-10 items-center">

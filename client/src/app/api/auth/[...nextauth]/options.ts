@@ -14,6 +14,10 @@ export interface CustomUser {
   username?: string | null;
   email?: string | null;
   image?: string | null;
+  user_image?: string | null;
+  followers?: number | null;
+  bio?: string | null;
+  follower?: [] | null;
 }
 
 export const authOptions: AuthOptions = {

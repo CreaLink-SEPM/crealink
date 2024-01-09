@@ -12,7 +12,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="md:container ml-[8%] h-auto">
+    <div className="md:container ml-[8%] mb-5 h-[100%] mt-10">
       <form onSubmit={submit}>
         <input
           type="search"

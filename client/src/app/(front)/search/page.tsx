@@ -27,17 +27,17 @@ export default async function ExplorePage({ searchParams }: { searchParams: { [k
   const users: Array<User> = await searchUser(searchParams?.query);
   console.log('USER', users);
   return (
-    <div className="w-[100%] container mb-[46%] relative">
+    <div className="w-[100%] container mb-[46%] relative h-[100%]">
       <Suspense fallback={<Loading />}>
         <SearchBar />
       </Suspense>
 
       {users?.length > 0 &&
         users.map(user => (
-          <div className="h-[100%]">
+          <div className="">
             <div key={user._id} className="w-full mb-2">
               <div className="w-full flex items-center gap-5 justify-around">
-                <div className="flex items-center">
+                <div className="flex items-center ">
                   <Avatar>
                     <AvatarImage src="/assets/images/avatar.png" className="object-cover" width={80} height={70} />
                     <AvatarFallback></AvatarFallback>
@@ -92,7 +92,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: { [k
                       className="border-2 text-black w-[100px] rounded-xl font-bold text-lg'"
                       asChild
                     >
-                      <Link href={`/profile/${user._id}`}>View</Link>
+                      <Link href={`/user/${user._id}`}>View</Link>
                     </Button>
                   </div>
                 </div>
