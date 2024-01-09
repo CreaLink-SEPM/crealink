@@ -7,7 +7,8 @@
     "build": "next build && next export",
     "start": "NEXT_PUBLIC_BASE_PATH='/home' next start",
     "lint": "next lint",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "type": "module"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.0",
