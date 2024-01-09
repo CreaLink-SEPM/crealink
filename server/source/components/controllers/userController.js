@@ -736,48 +736,63 @@ const getFollowing = async (req, res) => {
 
 const uploadAvatar = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, image } = req.body; // Change 'image' to match the field name in the request
+
     const { userID } = req.params;
 
-    if (!req.file) {
-      return res.status(404).json({
-        message: "No file uploaded",
+    if (!image && (!username || !email || !password)) {
+      return res.status(400).json({
+        message: "You should input either an image or username, email, and password",
       });
     }
 
-    const fileExtension = path.extname(req.file.originalname);
-    const stream = fs.createReadStream(req.file.path);
-    const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
-    const params = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: avatarFileName,
-      Body: stream,
-    };
+    if (image) {
+      const fileExtension = path.extname(req.file.originalname);
+      const stream = fs.createReadStream(req.file.path);
+      const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+      const params = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: avatarFileName,
+        Body: stream,
+      };
 
-    const uploadResult = await client.send(new PutObjectCommand(params));
-    const avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+      const uploadResult = await client.send(new PutObjectCommand(params));
+      const avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
 
-    // Construct object with fields that need updating
-    const updateFields = { user_image: avatarUrl };
+      // Construct object with fields that need updating
+      var updateFields = { user_image: avatarUrl };
+    } else {
+      // If no image is provided, initialize updateFields as an empty object
+      var updateFields = {};
+    }
+
     if (username) updateFields.username = username;
     if (email) updateFields.email = email;
-    if (password) updateFields.password = password;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password securely
+      updateFields.password = hashedPassword;
+    }
 
-    // Update user with the new attributes
-    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, { new: true });
+    // Update user with the new attributes if any updates are present
+    if (Object.keys(updateFields).length > 0) {
+      const updatedUser = await User.findByIdAndUpdate(userID, updateFields, {
+        new: true,
+      });
 
-    // fs.unlinkSync(image, (err) => {
-    //   if (err) {
-    //     console.error("Error deleting local avatar image:", err);
-    //   } else {
-    //     console.log("Local avatar image deleted successfully.");
-    //   }
-    // });
+      res.status(200).json({
+        message: "Avatar uploaded successfully and user updated",
+        user: updatedUser,
+      });
+    } else {
+      res.status(400).json({
+        message: "You should input either an image or username, email, and password",
+      });
+    }
 
-    res.status(200).json({
-      message: "Avatar uploaded successfully",
-      user: updatedUser,
-    });
+    if (image) {
+      // Delete the local file after uploading to S3
+      fs.unlinkSync(req.file.path);
+    }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
