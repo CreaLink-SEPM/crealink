@@ -39,7 +39,7 @@ AWS.config.update({
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./components/images");
+    cb(null, ".");
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);
