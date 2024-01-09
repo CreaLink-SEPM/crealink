@@ -15,6 +15,7 @@ import Image from 'next/image';
 import SignOutBtn from './SignOutBtn';
 import EditProfile from '../user/EditProfile';
 import { useSession } from 'next-auth/react';
+import  Support from '../user/Support';
 
 function AvatarSetting() {
   const {data: session} = useSession();
@@ -36,7 +37,8 @@ function AvatarSetting() {
         <DropdownMenuSeparator />
         <div className='flex items-center justify-center p-1 hover:bg-slate-400 rounded-md'>
           <LifeBuoy className="mr-2 h-4 w-4" />
-          <div className='cursor-pointer'>Support</div>
+          {/* <div className='cursor-pointer'>Support</div> */}
+          <Support> Support</Support>
           <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
         </div>
         <DropdownMenuSeparator />
