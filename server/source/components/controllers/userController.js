@@ -736,17 +736,12 @@ const getFollowing = async (req, res) => {
 
 const uploadAvatar = async (req, res, next) => {
   try {
-    const { username, email, password, image } = req.body; // Change 'image' to match the field name in the request
-
+    const { username, email, password } = req.body;
     const { userID } = req.params;
 
-    if (!image && (!username || !email || !password)) {
-      return res.status(400).json({
-        message: "You should input either an image or username, email, and password",
-      });
-    }
+    let avatarUrl = ''; // Initialize the avatarUrl variable
 
-    if (image) {
+    if (req.file) {
       const fileExtension = path.extname(req.file.originalname);
       const stream = fs.createReadStream(req.file.path);
       const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
@@ -757,15 +752,15 @@ const uploadAvatar = async (req, res, next) => {
       };
 
       const uploadResult = await client.send(new PutObjectCommand(params));
-      const avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+      avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
 
-      // Construct object with fields that need updating
-      var updateFields = { user_image: avatarUrl };
-    } else {
-      // If no image is provided, initialize updateFields as an empty object
-      var updateFields = {};
+      // Delete the local file after uploading to S3
+      fs.unlinkSync(req.file.path);
     }
 
+    // Construct object with fields that need updating
+    const updateFields = {};
+    if (avatarUrl) updateFields.user_image = avatarUrl; // Add user_image only if avatarUrl is present
     if (username) updateFields.username = username;
     if (email) updateFields.email = email;
     if (password) {
@@ -773,26 +768,15 @@ const uploadAvatar = async (req, res, next) => {
       updateFields.password = hashedPassword;
     }
 
-    // Update user with the new attributes if any updates are present
-    if (Object.keys(updateFields).length > 0) {
-      const updatedUser = await User.findByIdAndUpdate(userID, updateFields, {
-        new: true,
-      });
+    // Update user with the new attributes
+    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, {
+      new: true,
+    });
 
-      res.status(200).json({
-        message: "Avatar uploaded successfully and user updated",
-        user: updatedUser,
-      });
-    } else {
-      res.status(400).json({
-        message: "You should input either an image or username, email, and password",
-      });
-    }
-
-    if (image) {
-      // Delete the local file after uploading to S3
-      fs.unlinkSync(req.file.path);
-    }
+    res.status(200).json({
+      message: req.file ? "Avatar uploaded successfully" : "No file uploaded", // Inform about file upload status
+      user: updatedUser,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
