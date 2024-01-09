@@ -745,15 +745,15 @@ const uploadAvatar = async (req, res, next) => {
       });
     }
 
-    const image = req.file.path;
     const fileExtension = path.extname(req.file.originalname);
-    const stream = fs.createReadStream(image);
+    const stream = fs.createReadStream(req.file.path);
     const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: avatarFileName,
       Body: stream,
     };
+
     const uploadResult = await client.send(new PutObjectCommand(params));
     const avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
 
@@ -766,13 +766,13 @@ const uploadAvatar = async (req, res, next) => {
     // Update user with the new attributes
     const updatedUser = await User.findByIdAndUpdate(userID, updateFields, { new: true });
 
-    fs.unlinkSync(image, (err) => {
-      if (err) {
-        console.error("Error deleting local avatar image:", err);
-      } else {
-        console.log("Local avatar image deleted successfully.");
-      }
-    });
+    // fs.unlinkSync(image, (err) => {
+    //   if (err) {
+    //     console.error("Error deleting local avatar image:", err);
+    //   } else {
+    //     console.log("Local avatar image deleted successfully.");
+    //   }
+    // });
 
     res.status(200).json({
       message: "Avatar uploaded successfully",
