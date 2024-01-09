@@ -737,7 +737,7 @@ const getFollowing = async (req, res) => {
 const uploadAvatar = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    const { _id } = req.params;
+    const { userID } = req.params;
 
     if (!req.file) {
       return res.status(404).json({
@@ -764,7 +764,7 @@ const uploadAvatar = async (req, res, next) => {
     if (password) updateFields.password = password;
 
     // Update user with the new attributes
-    const updatedUser = await User.findByIdAndUpdate(_id, updateFields, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, { new: true });
 
     fs.unlinkSync(image, (err) => {
       if (err) {
