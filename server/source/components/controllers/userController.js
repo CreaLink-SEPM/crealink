@@ -232,8 +232,9 @@ const loginUser = async (req, res) => {
       is_verified,
       followers: user.followers.length,
       follower: user.followers,
-      following: user.following.length,
-      posts: user.posts,
+      followings: user.following.length,
+      following: user.following,
+    posts: user.posts,
       bio: user.bio,
     });
   } catch (err) {
@@ -376,7 +377,8 @@ const getUser = async (req, res, next) => {
         is_verified: user.is_verified,
         followers: user.followers.length,
         follower: user.followers,
-        following: user.following.length,
+        followings: user.following.length,
+        following: user.following,
         posts: user.posts,
         bio: user.bio,
         },
@@ -606,23 +608,26 @@ const unfollowUser = async (req, res) => {
       });
     }
 
-    if (!userToUnfollow.followers.includes(userId)) {
+    const isFollowing = userToUnfollow.followers.some(
+      (follower) => follower._id.toString() === userId.toString()
+    );
+
+    if (!isFollowing) {
       return res.status(400).json({
         status: "error",
         message: "You are not following this user",
       });
     }
 
-    // Remove userId from follows list of userToUnfollow
+    // Remove userToUnfollow from followers list of user
     userToUnfollow.followers = userToUnfollow.followers.filter(
-      (followerId) => followerId.toString() !== userId.toString()
+      (follower) => !follower._id.equals(userId)
     );
     await userToUnfollow.save();
 
-    // Remove userToUnfollow from following list of the user initiating the unfollow action
+    // Remove user from following list of the user initiating the unfollow action
     user.following = user.following.filter(
-      (followedUser) =>
-        followedUser.toString() !== userToUnfollow._id.toString()
+      (followedUser) => !followedUser._id.equals(userToUnfollow._id)
     );
     await user.save();
 
