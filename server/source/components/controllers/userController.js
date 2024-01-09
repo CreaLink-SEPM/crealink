@@ -218,6 +218,7 @@ const loginUser = async (req, res) => {
     enqueueNotification("User " + username + " has logged in!");
 
     return res.status(200).json({
+      id: user._id,
       status: "success",
       message: "Login successful",
       accessToken,
@@ -230,6 +231,7 @@ const loginUser = async (req, res) => {
       image,
       is_verified,
       followers: user.followers.length,
+      follower: user.followers,
       following: user.following.length,
       posts: user.posts,
       bio: user.bio,
@@ -359,15 +361,25 @@ const getUser = async (req, res, next) => {
       });
     }
 
-    const { _id, name, email, username } = user;
     return res.status(200).json({
       status: "success",
       data: {
-        _id,
-        name,
-        email,
-        username,
-      },
+        id: user._id,
+        accessToken: user.accessToken,
+        refreshToken: user.refreshToken,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        user_image: user.user_image,
+        image: user.image,
+        is_verified: user.is_verified,
+        followers: user.followers.length,
+        follower: user.followers,
+        following: user.following.length,
+        posts: user.posts,
+        bio: user.bio,
+        },
     });
   } catch (err) {
     return res.status(500).json({
@@ -530,7 +542,9 @@ const followUser = async (req, res) => {
       });
     }
 
-    if (userToFollow.followers.includes(userId)) {
+    if (
+      userToFollow.followers.some((follower) => follower._id.equals(userId))
+    ) {
       return res.status(400).json({
         status: "error",
         message: "You are already following this user",
@@ -538,11 +552,21 @@ const followUser = async (req, res) => {
     }
 
     // Update following for the user initiating the follow action
-    user.following.push(userToFollow._id);
+    user.following.push({
+      _id: userToFollow._id,
+      name: userToFollow.name,
+      username: userToFollow.username,
+      user_image: userToFollow.user_image,
+    });
     await user.save();
 
     // Update followers for the user being followed
-    userToFollow.followers.push(userId);
+    userToFollow.followers.push({
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      user_image: user.user_image,
+    });
     await userToFollow.save();
 
     return res.status(200).json({
