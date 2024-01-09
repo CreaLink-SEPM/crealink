@@ -746,12 +746,12 @@ const uploadAvatar = async (req, res, next) => {
     }
 
     const fileExtension = path.extname(req.file.originalname);
-    // const stream = fs.createReadStream(req.file.path);
+    const stream = fs.createReadStream(req.file.path);
     const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: avatarFileName,
-      Body: "components/images/",
+      Body: stream,
     };
 
     const uploadResult = await client.send(new PutObjectCommand(params));
@@ -766,7 +766,13 @@ const uploadAvatar = async (req, res, next) => {
     // Update user with the new attributes
     const updatedUser = await User.findByIdAndUpdate(userID, updateFields, { new: true });
 
-    // No need to delete the local file as it's not saved
+    // fs.unlinkSync(image, (err) => {
+    //   if (err) {
+    //     console.error("Error deleting local avatar image:", err);
+    //   } else {
+    //     console.log("Local avatar image deleted successfully.");
+    //   }
+    // });
 
     res.status(200).json({
       message: "Avatar uploaded successfully",
