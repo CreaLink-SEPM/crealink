@@ -234,7 +234,7 @@ const loginUser = async (req, res) => {
       follower: user.followers,
       followings: user.following.length,
       following: user.following,
-    posts: user.posts,
+      posts: user.posts,
       bio: user.bio,
     });
   } catch (err) {
@@ -381,7 +381,7 @@ const getUser = async (req, res, next) => {
         following: user.following,
         posts: user.posts,
         bio: user.bio,
-        },
+      },
     });
   } catch (err) {
     return res.status(500).json({
@@ -657,21 +657,30 @@ const getFollowers = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate(
-      "followers",
-      "username name"
-    );
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
+    const followers = await User.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(user_id) } },
+      {
+        $lookup: {
+          from: "users", // Assuming the collection name is "users"
+          localField: "followers._id",
+          foreignField: "_id",
+          as: "followersInfo",
+        },
+      },
+      { $unwind: "$followersInfo" },
+      {
+        $project: {
+          _id: "$followersInfo._id",
+          name: "$followersInfo.name",
+          username: "$followersInfo.username",
+          user_image: "$followersInfo.user_image",
+        },
+      },
+    ]);
 
     return res.status(200).json({
       status: "success",
-      data: user.followers,
+      data: followers,
     });
   } catch (err) {
     return res.status(500).json({
@@ -692,21 +701,30 @@ const getFollowing = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate(
-      "following",
-      "username name"
-    );
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
+    const following = await User.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(user_id) } },
+      {
+        $lookup: {
+          from: "users", // Assuming the collection name is "users"
+          localField: "following._id",
+          foreignField: "_id",
+          as: "followingInfo",
+        },
+      },
+      { $unwind: "$followingInfo" },
+      {
+        $project: {
+          _id: "$followingInfo._id",
+          name: "$followingInfo.name",
+          username: "$followingInfo.username",
+          user_image: "$followingInfo.user_image",
+        },
+      },
+    ]);
 
     return res.status(200).json({
       status: "success",
-      data: user.following,
+      data: following,
     });
   } catch (err) {
     return res.status(500).json({
