@@ -734,8 +734,6 @@ const getFollowing = async (req, res) => {
   }
 };
 
-const bcrypt = require("bcrypt");
-
 const uploadAvatar = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
