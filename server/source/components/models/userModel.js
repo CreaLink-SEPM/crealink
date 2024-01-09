@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     is_verified: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    savedPosts: [{ type: Schema.Types.ObjectId, ref: "Post" }]
   },
   {
     timestamps: true,
