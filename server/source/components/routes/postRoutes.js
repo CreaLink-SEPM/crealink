@@ -23,7 +23,7 @@ router.post(
 );
 router.get(
   "/posts",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.getPosts
 );
 router.get(
@@ -51,7 +51,7 @@ router.put(
 );
 router.get(
   "/share/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.sharePost
 );
 router.put(
