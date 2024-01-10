@@ -501,6 +501,7 @@ This endpoint allows users to prompt questions for AI support
 - `400 Bad Request`: Request is not given
 - `500 Internal Server Error`: Unexpected server-side issues during reporting post.
 
+
 ### Get saved posts
 Endpoint: `http://localhost:[port]/api/feed/savedPosts`
 
@@ -560,3 +561,4 @@ This endpoint allows users to fetch posts which are liked by the user
 - `200 OK`: Fetch saved post successfully
 - `404 Not Found`: Post or User not found
 - `500 Internal Server Error`: Unexpected server-side issues during fetch saved post
+

@@ -48,7 +48,7 @@ export default async function ProfilesPage() {
               width={100}
               height={90}
               alt="avatar"
-              src= {session?.user?.user_image || '/assets/images/profile.jpg'}
+              src= {session?.user?.image || '/assets/images/profile.jpg'}
               className="aspect-square object-contain object-center w-[150px] justify-center rounded-full items-center overflow-hidden shrink-0 max-w-full"
             />
           </div>
