@@ -423,20 +423,24 @@ exports.toggleLike = async (req, res, next) => {
         status: "error", 
         message: "User not found"
       })
-    }
+    };
     if (post.likes.includes(currentUserId)) {
       post.likes = post.likes.filter((id) => id !== currentUserId);
       await post.save();
       user.savedPosts = user.savedPosts.filter(savedPostId => savedPostId.toString() !== postId);
+      user.save();
       io.getIO().emit(
         ("posts", { action: "unliked", user: currentUserId, post: post })
       );
       return res.status(200).json({
         message: "Successfully unliked the post",
       });
+
     } else {
       await post.likes.push(currentUserId);
-      user.savedPosts.push(postId);
+      if (!user.savedPosts.includes(postId)) {
+        user.savedPosts.push(postId);
+      }
       await post.save();
       await user.save();
       io.getIO().emit("posts", {
