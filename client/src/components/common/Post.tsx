@@ -45,54 +45,54 @@ const SocialMediaPost = () => {
         fetchPosts();
     }, []);
 
-    const createPost = async (postData: PostData) => {
-        try {
-            await axios.post(`${apiUrl}/post`, postData);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const createPost = async (postData: PostData) => {
+    //     try {
+    //         await axios.post(`${apiUrl}/post`, postData);
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
-    const updatePost = async (postId: string, updatedData: PostData) => {
-        try {
-            await axios.put(`${apiUrl}/post/${postId}`, updatedData);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const updatePost = async (postId: string, updatedData: PostData) => {
+    //     try {
+    //         await axios.put(`${apiUrl}/post/${postId}`, updatedData);
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
 
-    const deletePost = async (postId: string) => {
-        try {
-            await axios.delete(`${apiUrl}/post/${postId}`);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const deletePost = async (postId: string) => {
+    //     try {
+    //         await axios.delete(`${apiUrl}/post/${postId}`);
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
-    const toggleLike = async (postId: string) => {
-        try {
-            await axios.put(`${apiUrl}/like/${postId}`);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const toggleLike = async (postId: string) => {
+    //     try {
+    //         await axios.put(`${apiUrl}/like/${postId}`);
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
-    const sharePost = async (postId: string) => {
-        try {
-            const response = await axios.get(`${apiUrl}/share/${postId}`);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const sharePost = async (postId: string) => {
+    //     try {
+    //         const response = await axios.get(`${apiUrl}/share/${postId}`);
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
-    const reportPost = async (postId: string, reason: string) => {
-        try {
-            await axios.post(`${apiUrl}/report/${postId}`, { reason });
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
+    // const reportPost = async (postId: string, reason: string) => {
+    //     try {
+    //         await axios.post(`${apiUrl}/report/${postId}`, { reason });
+    //     } catch (err: any) {
+    //         setError(err.message);
+    //     }
+    // };
 
     if (error) return <div>Error: {error}</div>;
     if (!posts.length) return <div>Loading...</div>;
@@ -116,13 +116,13 @@ const SocialMediaPost = () => {
                         <div className="user-profile-picture">
                              {/*Dynamic user image URL */}
                             <div
-                                className="w-[36px] h-[36px] rounded-[18px] bg-[url({creator.user_image})] bg-cover bg-[50%_50%]"
+                                className="w-[36px] h-[36px] rounded-[18px]  bg-cover bg-[50%_50%]"
                             />
                         </div>
                         {/* User Name and Timestamp */}
                         <div className="user-info">
-                            <span className="user-name">{posts.username}</span>
-                            <span className="timestamp">{posts.createdAt}</span>
+                            <span className="user-name"></span>
+                            <span className="timestamp"></span>
                         </div>
                         {/* Dropdown Menu */}
                         <div className="dropdown-menu">
@@ -141,7 +141,7 @@ const SocialMediaPost = () => {
                     <div className="post-content">
                         {/* Main Post Image or Text */}
                         <div className="main-post-image">
-                            <img src={post.contentImageUrl} alt="Post content"/>
+                            <img src="#" alt="Post content"/>
                         </div>
                     </div>
 
@@ -172,8 +172,8 @@ const SocialMediaPost = () => {
                     {/* Post Footer */}
                     <div className="post-footer">
                         {/* Likes and Comments Info */}
-                        <span>{post.likes} likes</span>
-                        <span>{post.comments.length} comments</span>
+                        <span> likes</span>
+                        <span>comments</span>
                     </div>
                 </div>
             ))}
