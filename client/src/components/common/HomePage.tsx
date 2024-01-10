@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useClient } from 'next/server-components';
 import CreatePost from "@/src/components/common/CreatePost";
 import { CLIENT_RENEG_WINDOW } from 'tls';
 import { fetchPosts } from '@/lib/serverMethod';
-// import { useRouter } from '@/node_modules/next/router';
-// import SocialMediaPost from "@/src/components/common/Post";
-// import { Dropdown, Menu } from 'antd';
+import { useRouter } from '@/node_modules/next/router';
+import SocialMediaPost from "@/src/components/common/Post";
 const {Dropdown, Menu} = require('antd');
 // import axios, { AxiosError } from 'axios';
 const axios = require('axios');
@@ -13,11 +13,19 @@ const axios = require('axios');
 
 
 export default function HomePage({posts } : { posts: PostType}) {
-    const [query, setQuery] = useState<string>('');
-    // const router = useRouter();
-    // const [posts, setPosts] = useState([]);
-    const [error, setError] = useState<string | null>(null);
+    useClient();
 
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const fetchedPosts = await fetchPosts(1); // Replace 1 with the correct id or variable
+            console.log("fetchedPosts:", fetchedPosts);
+          } catch (error) {
+            console.error("Error fetching posts:", error);
+          }
+        };
+        fetchData();
+      }, []);
     
     // const response = await fetchPosts();
     // const data = await response;

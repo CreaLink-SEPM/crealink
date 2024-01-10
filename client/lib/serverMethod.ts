@@ -54,7 +54,17 @@ export async function searchUser(query: string) {
       });
 
       if (!res.ok) {
-        const errorMessage = `Failed to fetch user data. Status: ${res.status}`;
+        // Log the actual error response
+        const errorResponse = await res.json();
+        console.error("Server response:", errorResponse);
+
+        // Handle specific error scenarios
+        if (res.status === 404) {
+            console.error("Posts not found for the requested page.");
+            return []; // or handle this scenario as appropriate for your application
+        }
+
+        const errorMessage = `Failed to fetch post data. Status: ${res.status}`;
         console.error(errorMessage);
         throw new Error(errorMessage);
       }
@@ -71,3 +81,4 @@ export async function searchUser(query: string) {
       throw new Error("Internal Server Error");
     }
 }
+
