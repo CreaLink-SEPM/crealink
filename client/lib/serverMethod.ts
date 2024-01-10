@@ -42,4 +42,32 @@ export async function searchUser(query: string) {
       console.error("Error fetching user data:", error);
       throw new Error("Internal Server Error");
     }
-  }
+  };
+
+
+
+  export async function fetchPosts(page: number) {
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/feed/posts?page=${page}`, {
+        cache: "no-cache",
+        headers: headers(),
+      });
+
+      if (!res.ok) {
+        const errorMessage = `Failed to fetch user data. Status: ${res.status}`;
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+  
+      const response = await res.json();
+      if (response && response.data) {
+        return response.data;
+      } else {
+        throw new Error("Invalid response format");
+      }
+      
+    } catch (error) {
+      console.error("Fetch Posts Error:", error);
+      throw new Error("Internal Server Error");
+    }
+}
