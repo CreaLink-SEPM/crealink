@@ -5,7 +5,7 @@ import ProfilePage from '@/src/components/common/ProfilePage';
 
 import { getServerSession } from 'next-auth';
 import { CustomSession, authOptions } from '../../api/auth/[...nextauth]/options';
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
 
