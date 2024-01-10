@@ -1,6 +1,7 @@
 import { AuthOptions, ISODateString, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import axios from 'axios';
+// import axios from 'axios';
+const axios = require('axios');
 import { JWT } from 'next-auth/jwt';
 
 export interface CustomSession {

@@ -74,5 +74,10 @@ router.post(
   AuthMiddleware.userAuthenToken,
   PostController.startMessage
 );
+router.get(
+  "/savedPosts",
+  AuthMiddleware.userAuthenToken,
+  PostController.getSavedPosts
+)
 
 module.exports = router;

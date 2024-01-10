@@ -218,6 +218,7 @@ const loginUser = async (req, res) => {
     enqueueNotification("User " + username + " has logged in!");
 
     return res.status(200).json({
+      id: user._id,
       status: "success",
       message: "Login successful",
       accessToken,
@@ -230,7 +231,9 @@ const loginUser = async (req, res) => {
       image,
       is_verified,
       followers: user.followers.length,
-      following: user.following.length,
+      follower: user.followers,
+      followings: user.following.length,
+      following: user.following,
       posts: user.posts,
       bio: user.bio,
     });
@@ -359,14 +362,25 @@ const getUser = async (req, res, next) => {
       });
     }
 
-    const { _id, name, email, username } = user;
     return res.status(200).json({
       status: "success",
       data: {
-        _id,
-        name,
-        email,
-        username,
+        id: user._id,
+        accessToken: user.accessToken,
+        refreshToken: user.refreshToken,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        user_image: user.user_image,
+        image: user.image,
+        is_verified: user.is_verified,
+        followers: user.followers.length,
+        follower: user.followers,
+        followings: user.following.length,
+        following: user.following,
+        posts: user.posts,
+        bio: user.bio,
       },
     });
   } catch (err) {
@@ -530,7 +544,9 @@ const followUser = async (req, res) => {
       });
     }
 
-    if (userToFollow.followers.includes(userId)) {
+    if (
+      userToFollow.followers.some((follower) => follower._id.equals(userId))
+    ) {
       return res.status(400).json({
         status: "error",
         message: "You are already following this user",
@@ -538,11 +554,21 @@ const followUser = async (req, res) => {
     }
 
     // Update following for the user initiating the follow action
-    user.following.push(userToFollow._id);
+    user.following.push({
+      _id: userToFollow._id,
+      name: userToFollow.name,
+      username: userToFollow.username,
+      user_image: userToFollow.user_image,
+    });
     await user.save();
 
     // Update followers for the user being followed
-    userToFollow.followers.push(userId);
+    userToFollow.followers.push({
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      user_image: user.user_image,
+    });
     await userToFollow.save();
 
     return res.status(200).json({
@@ -582,23 +608,26 @@ const unfollowUser = async (req, res) => {
       });
     }
 
-    if (!userToUnfollow.followers.includes(userId)) {
+    const isFollowing = userToUnfollow.followers.some(
+      (follower) => follower._id.toString() === userId.toString()
+    );
+
+    if (!isFollowing) {
       return res.status(400).json({
         status: "error",
         message: "You are not following this user",
       });
     }
 
-    // Remove userId from follows list of userToUnfollow
+    // Remove userToUnfollow from followers list of user
     userToUnfollow.followers = userToUnfollow.followers.filter(
-      (followerId) => followerId.toString() !== userId.toString()
+      (follower) => !follower._id.equals(userId)
     );
     await userToUnfollow.save();
 
-    // Remove userToUnfollow from following list of the user initiating the unfollow action
+    // Remove user from following list of the user initiating the unfollow action
     user.following = user.following.filter(
-      (followedUser) =>
-        followedUser.toString() !== userToUnfollow._id.toString()
+      (followedUser) => !followedUser._id.equals(userToUnfollow._id)
     );
     await user.save();
 
@@ -628,21 +657,30 @@ const getFollowers = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate(
-      "followers",
-      "username name"
-    );
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
+    const followers = await User.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(user_id) } },
+      {
+        $lookup: {
+          from: "users", // Assuming the collection name is "users"
+          localField: "followers._id",
+          foreignField: "_id",
+          as: "followersInfo",
+        },
+      },
+      { $unwind: "$followersInfo" },
+      {
+        $project: {
+          _id: "$followersInfo._id",
+          name: "$followersInfo.name",
+          username: "$followersInfo.username",
+          user_image: "$followersInfo.user_image",
+        },
+      },
+    ]);
 
     return res.status(200).json({
       status: "success",
-      data: user.followers,
+      data: followers,
     });
   } catch (err) {
     return res.status(500).json({
@@ -663,21 +701,30 @@ const getFollowing = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id).populate(
-      "following",
-      "username name"
-    );
-
-    if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-    }
+    const following = await User.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(user_id) } },
+      {
+        $lookup: {
+          from: "users", // Assuming the collection name is "users"
+          localField: "following._id",
+          foreignField: "_id",
+          as: "followingInfo",
+        },
+      },
+      { $unwind: "$followingInfo" },
+      {
+        $project: {
+          _id: "$followingInfo._id",
+          name: "$followingInfo.name",
+          username: "$followingInfo.username",
+          user_image: "$followingInfo.user_image",
+        },
+      },
+    ]);
 
     return res.status(200).json({
       status: "success",
-      data: user.following,
+      data: following,
     });
   } catch (err) {
     return res.status(500).json({
@@ -689,33 +736,46 @@ const getFollowing = async (req, res) => {
 
 const uploadAvatar = async (req, res, next) => {
   try {
-    if (!req.file) {
-      return res.status(404).json({
-        message: "No file uploaded",
-      });
+    const { username, email, password } = req.body;
+    const { userID } = req.params;
+
+    let avatarUrl = ''; // Initialize the avatarUrl variable
+
+    if (req.file) {
+      const fileExtension = path.extname(req.file.originalname);
+      const stream = fs.createReadStream(req.file.path);
+      const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
+      const params = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: avatarFileName,
+        Body: stream,
+      };
+
+      const uploadResult = await client.send(new PutObjectCommand(params));
+      avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
+
+      // Delete the local file after uploading to S3
+      fs.unlinkSync(req.file.path);
     }
-    const image = req.file.path;
-    const fileExtension = path.extname(req.file.originalname);
-    const stream = fs.createReadStream(image);
-    const avatarFileName = `avatar/${uuid.v4()}-${new Date().toISOString()}${fileExtension}`;
-    const params = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: avatarFileName,
-      Body: stream,
-    };
-    const uploadResult = await client.send(new PutObjectCommand(params));
-    avatarUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.ap-southeast-1.amazonaws.com/${avatarFileName}`;
-    await User.findByIdAndUpdate(req.userId, { user_image: avatarUrl });
-    fs.unlinkSync(image, (err) => {
-      if (err) {
-        console.error("Error deleting local avatar image:", err);
-      } else {
-        console.log("Local avatar image deleted successfully.");
-      }
+
+    // Construct object with fields that need updating
+    const updateFields = {};
+    if (avatarUrl) updateFields.user_image = avatarUrl; // Add user_image only if avatarUrl is present
+    if (username) updateFields.username = username;
+    if (email) updateFields.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password securely
+      updateFields.password = hashedPassword;
+    }
+
+    // Update user with the new attributes
+    const updatedUser = await User.findByIdAndUpdate(userID, updateFields, {
+      new: true,
     });
+
     res.status(200).json({
-      message: "Avatar uploaded successfully",
-      user_image: avatarUrl,
+      message: req.file ? "Avatar uploaded successfully" : "No file uploaded", // Inform about file upload status
+      user: updatedUser,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -724,6 +784,7 @@ const uploadAvatar = async (req, res, next) => {
     next(err);
   }
 };
+
 const updateAvatar = async (req, res, next) => {
   let avatarUrl = req.body.user_image;
   try {

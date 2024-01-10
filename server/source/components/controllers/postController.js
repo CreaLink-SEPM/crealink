@@ -56,6 +56,7 @@ exports.startMessage = async (req, res, next) => {
   }
     
 }
+
 exports.createPost = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -158,6 +159,49 @@ exports.getPosts = async (req, res, next) => {
     })
   }
 };
+exports.getSavedPosts = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId).populate('savedPosts');
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found"
+      });
+    }
+    const savedPostsWithCounts = await Promise.all(
+      user.savedPosts.map(async (postId) => {
+        const post = await Post.findById(postId)
+          .populate("creator", ["username", "user_image"]);
+        if (!post) {
+          return res.status(404).json({
+            status: "error",
+            message: "Post not found"
+          })
+        }
+        const likesCount = post.likes.length;
+        const commentCount = await Comment.countDocuments({postId: post._id});
+        const {likes, ...postWithoutLikes} = post.toObject();
+        return {
+          ...postWithoutLikes,
+          likesCount,
+          commentCount
+        };
+      })
+    );
+    const validSavedPosts = savedPostsWithCounts.filter(post => post !== null);
+    res.status(200).json({
+      status: "success",
+      savedPosts: validSavedPosts
+    })
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        status: "error", 
+        message: "Internal Server Error: Please try again later"
+      })
+  }
+}
 
 exports.getPost = async (req, res, next) => {
   try {
@@ -373,18 +417,32 @@ exports.toggleLike = async (req, res, next) => {
         status: "error",
       });
     }
+    const user = await User.findById(currentUserId);
+    if (!user) {
+      return res.status(404).json({
+        status: "error", 
+        message: "User not found"
+      })
+    };
     if (post.likes.includes(currentUserId)) {
       post.likes = post.likes.filter((id) => id !== currentUserId);
       await post.save();
+      user.savedPosts = user.savedPosts.filter(savedPostId => savedPostId.toString() !== postId);
+      user.save();
       io.getIO().emit(
         ("posts", { action: "unliked", user: currentUserId, post: post })
       );
       return res.status(200).json({
         message: "Successfully unliked the post",
       });
+
     } else {
       await post.likes.push(currentUserId);
+      if (!user.savedPosts.includes(postId)) {
+        user.savedPosts.push(postId);
+      }
       await post.save();
+      await user.save();
       io.getIO().emit("posts", {
         action: "liked",
         user: currentUserId,
