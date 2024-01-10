@@ -18,6 +18,7 @@ export interface CustomUser {
   followers?: number | null;
   bio?: string | null;
   follower?: [] | null;
+  accessToken?: string | null;
 }
 
 export const authOptions: AuthOptions = {

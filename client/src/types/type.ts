@@ -53,3 +53,14 @@ type ShowUserType = {
   Post: Array<PostType> | [];
   Follower: Array<FollowerType> | [];
 };
+
+
+type savedPostType = {
+  _id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  creator?: [];
+  comment_count: number;
+  likesCount: number;
+}
