@@ -785,7 +785,7 @@ http:/localhost:[port]/api/user/profile?username=username_here
 
 ## Upload Avatar
 
-Endpoint: `http:/localhost:[port]/api/user/avatar` (POST)
+Endpoint: `http:/localhost:[port]/api/user/upload-avatar/:userID` (POST)
 
 ### Purpose:
 
@@ -795,14 +795,17 @@ Uploads a new avatar image for the user.
 
 - Method: POST
 - Headers: `Authorization: Bearer [token]`
-- Body: Form-data with a file field named `image`
+- Body: Form-data with a file field named `avatar`
 
 ### Success Response
 
 ```json
 {
   "message": "Avatar uploaded successfully",
-  "user_image": "avatar_url_here"
+  "notification": "Profile update successful.",
+  "user": {
+    // Updated user details including the new avatar URL
+  }
 }
 ```
 
