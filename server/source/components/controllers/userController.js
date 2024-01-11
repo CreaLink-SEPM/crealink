@@ -11,7 +11,7 @@ const {
 const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({ region: process.env.AWS_REGION });
-const { enqueueNotification } = require("../../socket.js");
+const { enqueueNotification, getIO } = require("../../socket.js");
 
 const createNotification = async (user, content) => {
   try {
@@ -21,6 +21,7 @@ const createNotification = async (user, content) => {
       read: false,
     });
     await user.save();
+    const io = getIO();
     enqueueNotification(content);
   } catch (err) {
     console.error("Error creating notification:", err.message);
