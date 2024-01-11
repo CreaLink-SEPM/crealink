@@ -443,6 +443,10 @@ exports.toggleLike = async (req, res, next) => {
       }
       await post.save();
       await user.save();
+
+      // Send a notification when someone likes the post
+      await sendLikeNotification(post.creator, currentUserId, postId);
+
       io.getIO().emit("posts", {
         action: "liked",
         user: currentUserId,
@@ -458,6 +462,43 @@ exports.toggleLike = async (req, res, next) => {
       status: "error", 
       message: "Internal Server Error: Please try again later"
     })
+  }
+};
+
+// Function to send a notification when someone likes a post
+const sendLikeNotification = async (postCreatorId, likerId, postId) => {
+  try {
+    // Get the post creator's information
+    const postCreator = await User.findById(postCreatorId);
+    if (!postCreator) {
+      console.log("Post creator not found");
+      return;
+    }
+
+    // Create a notification for the post creator
+    const notificationContent = `${postCreator.username} liked your post.`;
+    await createNotification(postCreator, notificationContent, postId);
+
+  } catch (err) {
+    console.log("Error sending like notification: ", err);
+  }
+};
+
+// Function to create a notification
+const createNotification = async (user, content, postId) => {
+  try {
+    // Create a new notification object
+    const notification = {
+      content: content,
+      postId: postId,
+      createdAt: new Date(),
+    };
+
+    // Add the notification to the user's notifications array
+    user.notifications.push(notification);
+    await user.save();
+  } catch (err) {
+    console.log("Error creating notification: ", err);
   }
 };
 

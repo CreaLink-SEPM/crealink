@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema(
     notifications: [
       {
         content: { type: String, required: true },
-        timestamp: { type: Date, default: Date.now },
+        postId: { type: Schema.Types.ObjectId, ref: "Post" },
+        createdAt: { type: Date, default: Date.now },
         read: { type: Boolean, default: false },
       },
     ],
@@ -56,6 +57,54 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Function to add a notification to the user's notifications array
+userSchema.methods.addNotification = async function (content, postId) {
+  try {
+    this.notifications.push({
+      content: content,
+      postId: postId,
+      createdAt: new Date(),
+    });
+    await this.save();
+  } catch (err) {
+    console.log("Error adding notification: ", err);
+  }
+};
+
+// Function to remove a notification from the user's notifications array
+userSchema.methods.removeNotification = async function (notificationId) {
+  try {
+    this.notifications = this.notifications.filter(
+      (notification) => notification._id.toString() !== notificationId
+    );
+    await this.save();
+  } catch (err) {
+    console.log("Error removing notification: ", err);
+  }
+};
+
+// Function to add a saved post to the user's savedPosts array
+userSchema.methods.addSavedPost = async function (postId) {
+  try {
+    this.savedPosts.push(postId);
+    await this.save();
+  } catch (err) {
+    console.log("Error adding saved post: ", err);
+  }
+};
+
+// Function to remove a saved post from the user's savedPosts array
+userSchema.methods.removeSavedPost = async function (postId) {
+  try {
+    this.savedPosts = this.savedPosts.filter(
+      (savedPostId) => savedPostId.toString() !== postId
+    );
+    await this.save();
+  } catch (err) {
+    console.log("Error removing saved post: ", err);
+  }
+};
 
 const User = mongoose.model("User", userSchema);
 
