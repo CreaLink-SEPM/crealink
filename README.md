@@ -40,12 +40,12 @@ To be added...
 - Login and Registration an account.
 - User Profile, edit account, change password.
 - Follow friends and view details of others' accounts.
-- Trending Topic page to view the most popular posts, as well as a search tool.
+- Trending Topic to view the most popular posts, as well as a search tool.
 - View, Create, Delete, Update, and Interact with posts.
-- Responsive design for mobile and desktop UI.
+- Responsive design for desktop UI.
 - Language selection (English and Vietnamese) and light/dark themes.
 - Notification events.
-- Direct messaging between users.
+- Saved the posts page that the user liked.
 - Integration of AI tools for post suggestions.
 
 ## Technologies
