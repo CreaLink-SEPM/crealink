@@ -1,26 +1,31 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Menu } from 'antd';
-// const {Dropdown, Menu} = require('antd');
-import axios, { AxiosError } from 'axios';
-// const axios = require('axios');
+// import { Dropdown, Menu } from 'antd';
+const {Dropdown, Menu} = require('antd');
+// import axios, { AxiosError } from 'axios';
+const axios = require('axios');
 
-// interface PostData {
-//     [key: string]: any;
-// }
+interface PostData {
+    [key: string]: any;
+}
 
-// interface Post {
-//     title: string;
-//     imageUrl: string;
-//     createdAt: Date;
-//     updatedat: Date;
-//     likesCount: number;
-//     commentsCount: number;
-//     comments: Comment[];
-//     creator: User[];
-
-// }
+interface Post {
+    _id: string;
+    title: string;
+    content: string;
+    creator: {
+        _id: string;
+        username: string;
+        user_image: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    likesCount: number;
+    commentsCount: number;
+    comments: Comment[];
+}
 
 
 
@@ -29,16 +34,29 @@ const SocialMediaPost = () => {
 
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState<string | null>(null);
+
     const apiUrl = 'http://54.169.199.32:5000/api/feed/posts';
     useEffect(() => {
-        fetch(apiUrl. {
-            method: "GET"
-        })
-        .then((response) => response.json())
-        
-    })
- 
-    // const apiUrl = 'http://54.169.199.32:5000/api/feed';
+        const fetchData = async () => {
+          try {
+            const response = await axios.get(apiUrl, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+    
+            if (!response.ok) {
+              throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            setPosts(data.posts);
+          } catch (error) {
+            setError(error.message);
+          }
+        };
+        fetchData();
+      }, []);
 
     // useEffect(() => {
     //     const fetchPosts = async () => {
@@ -113,81 +131,79 @@ const SocialMediaPost = () => {
         </Menu>
     );
     return (
-        <>
-        </>
-        // <div>
-        //     {posts.map((post, index) => (
-        //         <div key={index} className="relative w-[572px] h-[533.99px]"
-        //              style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
+        <div>
+            {posts.map((post, index) => (
+                <div key={post._id} className="relative w-[572px] h-[533.99px]"
+                     style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
 
-        //             {/* Post Header */}
-        //             <div className="post-header">
-        //                 {/* User Profile Picture */}
-        //                 <div className="user-profile-picture">
-        //                      {/*Dynamic user image URL */}
-        //                     <div
-        //                         className="w-[36px] h-[36px] rounded-[18px] bg-cover bg-[50%_50%]"
-        //                     />
-        //                 </div>
-        //                 {/* User Name and Timestamp */}
-        //                 <div className="user-info">
-        //                     <span className="user-name">{posts.username}</span>
-        //                     <span className="timestamp">{posts.createdAt}</span>
-        //                 </div>
-        //                 {/* Dropdown Menu */}
-        //                 <div className="dropdown-menu">
-        //                     {/* Dropdown component */}
-        //                     <Dropdown overlay={menu} placement="bottomRight">
-        //                         <img
-        //                             className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
-        //                             alt="Div margin"
-        //                             src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
-        //                         />
-        //                     </Dropdown>
-        //                 </div>
-        //             </div>
+                    {/* Post Header */}
+                    <div className="post-header">
+                        {/* User Profile Picture */}
+                        <div className="user-profile-picture">
+                             {/*Dynamic user image URL */}
+                            <div
+                                className="w-[36px] h-[36px] rounded-[18px] bg-[url({post.creator.user_image)] bg-cover bg-[50%_50%]"
+                            />
+                        </div>
+                        {/* User Name and Timestamp */}
+                        <div className="user-info">
+                            <span className="user-name">{post.creator.name}</span>
+                            <span className="timestamp">{new Date(post.createdAt).toLocaleString()}</span>
+                        </div>
+                        {/* Dropdown Menu */}
+                        <div className="dropdown-menu">
+                            {/* Dropdown component */}
+                            <Dropdown overlay={menu} placement="bottomRight">
+                                <img
+                                    className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
+                                    alt="Div margin"
+                                    src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                                />
+                            </Dropdown>
+                        </div>
+                    </div>
 
-        //             {/* Post Content */}
-        //             <div className="post-content">
-        //                 {/* Main Post Image or Text */}
-        //                 <div className="main-post-image">
-        //                     <img src={post.contentImageUrl} alt="Post content"/>
-        //                 </div>
-        //             </div>
+                    {/* Post Content */}
+                    <div className="post-content">
+                        {/* Main Post Image or Text */}
+                        <div className="main-post-image">
+                            <img src={post.imageUrl} alt="Post content"/>
+                        </div>
+                    </div>
 
-        //             {/* Post Interaction Section */}
-        //             <div className="post-interactions">
-        //                 {/* Interaction Icons */}
-        //                 {/* Icons for like, comment, share, etc. */}
-        //                 <img
-        //                     className="absolute w-[36px] h-[36px] top-0 left-0 object-cover"
-        //                     alt="Div"
-        //                     src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-        //                 />
-        //                 <img
-        //                     className="absolute w-[36px] h-[36px] top-0 left-[36px] object-cover"
-        //                     alt="Div"
-        //                     src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
-        //                 />
-        //                 <div className="absolute w-[36px] h-[36px] top-0 left-[72px]">
-        //                     <img
-        //                         className="absolute w-[20px] h-[20px] top-[8px] left-[8px]"
-        //                         alt="Reshare icon"
-        //                         src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-        //                     />
-        //                 </div>
-        //             </div>
+                    {/* Post Interaction Section */}
+                    <div className="post-interactions">
+                        {/* Interaction Icons */}
+                        {/* Icons for like, comment, share, etc. */}
+                        <img
+                            className="absolute w-[36px] h-[36px] top-0 left-0 object-cover"
+                            alt="Div"
+                            src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
+                        />
+                        <img
+                            className="absolute w-[36px] h-[36px] top-0 left-[36px] object-cover"
+                            alt="Div"
+                            src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
+                        />
+                        <div className="absolute w-[36px] h-[36px] top-0 left-[72px]">
+                            <img
+                                className="absolute w-[20px] h-[20px] top-[8px] left-[8px]"
+                                alt="Reshare icon"
+                                src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
+                            />
+                        </div>
+                    </div>
 
 
-        //             {/* Post Footer */}
-        //             <div className="post-footer">
-        //                 {/* Likes and Comments Info */}
-        //                 <span>{post.likes} likes</span>
-        //                 <span>{post.comments.length} comments</span>
-        //             </div>
-        //         </div>
-        //     ))}
-        // </div>
+                    {/* Post Footer */}
+                    <div className="post-footer">
+                        {/* Likes and Comments Info */}
+                        <span>{post.likesCount}likes</span>
+                        <span>{post.commentsCount}comments</span>
+                    </div>
+                </div>
+            ))}
+        </div>
 
 
         // <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
