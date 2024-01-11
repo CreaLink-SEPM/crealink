@@ -23,17 +23,17 @@ router.post(
 );
 router.get(
   "/posts",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.getPosts
 );
 router.get(
   "/post/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.getPost
 );
 router.get(
   "/like/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.getLikes
 );
 router.put(
@@ -51,7 +51,7 @@ router.put(
 );
 router.get(
   "/share/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   PostController.sharePost
 );
 router.put(

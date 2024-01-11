@@ -12,7 +12,7 @@ router.post(
 );
 router.get(
   "/:postId",
-  AuthMiddleware.userAuthenToken,
+  // AuthMiddleware.userAuthenToken,
   commentController.getComments
 );
 router.put(
