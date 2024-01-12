@@ -39,8 +39,9 @@ function EditProfile({ children }: { children: React.ReactNode }) {
 
     // Append the selected file to FormData if a file is selected
     if (pictureInput.files && pictureInput.files[0]) {
-      formData.append('avatar', pictureInput.files[0]);
+      formData.append('image', pictureInput.files[0]);
     }
+    
 
     axios
     .post(`http://54.169.199.32:5000/api/user/avatar/${session?.user?.id}`, formData, {
