@@ -59,7 +59,8 @@ To be added...
 - Pham Ngoc Huy (%)
 - Nguyen Trong Khang (%)
 - Nguyen Huynh Quang (%)
-- Dinh Le Hong Tin (%)
+- Dinh Le Hong Tin (%).
 
-##  - Next JS: " ^13.0.5"
-##  - Express JS : "^4.18.2"  
+ 
++ <i>Next JS: "^13.0.5" </i>
++ <i> Express JS : "^4.18.2" </i>  
