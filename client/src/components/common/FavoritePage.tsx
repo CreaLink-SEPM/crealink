@@ -8,24 +8,28 @@ import axios from 'axios';
 export default function FavoritePage() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [savedPosts, setSavedPosts] = useState([]);
- 
+  const [posts, setPosts] = useState([]);
+  console.log('SAVED POSTS', posts);
   useEffect(() => {
     const fetchPosts = async () => {
+      if (!session) return;
+
+      const token = session?.user?.accessToken
       try {
         // Make a GET request to the API
         const response = await axios.get('http://54.169.199.32:5000/api/feed/savedPosts', {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bear ${session?.user?.accessToken}`,
+            'Authorization': `Bear ${token}`,
           },
         });
 
         if (response.status === 200) {
           const data = response.data;
+          console.log('DATA', data);
           // Update the state with the fetched posts
           if (data.status === 'success') {
-            setSavedPosts(data.savedPosts);
+            setPosts(data.savedPosts);
           } else {
             console.error('Error fetching posts:', data.status);
           }
@@ -38,7 +42,7 @@ export default function FavoritePage() {
     };
 
     fetchPosts();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+  }, [session]); // Empty dependency array means this effect runs once when the component mounts
 
   const menu = (
     <Menu>
@@ -51,7 +55,7 @@ export default function FavoritePage() {
       <div className="w-full max-w-md">
         <div className="text-center font-extrabold pl-20 text-2xl">Your Saved Post</div>{' '}
         <div className="mt-10">
-          {savedPosts.map((post, index) => (
+          {posts && posts.map((post, index) => (
             <div key={index}
               className="relative w-[572px] h-[533.99px]"
               style={{ borderTop: '0.5px solid lightgrey', marginBottom: '33px' }}
@@ -77,7 +81,7 @@ export default function FavoritePage() {
                           <div className="w-[85px] h-[21px]">
                             <div className="relative h-[21px]">
                               <div className="absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                aman_tokyo
+                                {post?.title}
                               </div>
                             </div>
                           </div>

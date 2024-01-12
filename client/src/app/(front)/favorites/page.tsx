@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 
-export default async function FavoritesPage({session}: {session: CustomUser}) {
+export default async function FavoritesPage() {
     return (
         <div className="w-full md:container">
             <Suspense fallback={<Loading />}>
