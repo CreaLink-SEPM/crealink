@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 // import { Dropdown, Menu } from 'antd';
 const {Dropdown, Menu} = require('antd');
 const {useSession} = require('next-auth/react');
@@ -159,75 +160,86 @@ const SocialMediaPost = () => {
                       style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
 
                      {/* Post Header */}
-                     <div className="post-header">
-                         {/* User Profile Picture */}
-                         <div className="user-profile-picture">
-                              {/*Dynamic user image URL */}
-                             <div
-                                 className="w-[36px] h-[36px] rounded-[18px] bg-[url(${post.creator.user_image)] bg-cover bg-[50%_50%]"
-                             />
-                         </div>
-                         {/* User Name and Timestamp */}
-                         <div className="user-info">
-                             <span className="user-name">{post.creator.name}</span>
-                             <span className="timestamp">{new Date(post.createdAt).toLocaleString()}</span>
-                         </div>
-                         {/* Dropdown Menu */}
-                         <div className="dropdown-menu">
-                             {/* Dropdown component */}
-                             <Dropdown overlay={menu} placement="bottomRight">
-                                 <img
-                                     className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
-                                     alt="Div margin"
-                                     src="https:c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
-                                 />
-                             </Dropdown>
-                         </div>
-                     </div>
+                    <div className="post-header flex items-center">
+                    {/* User Profile Picture */}
+                    <div className="user-profile-picture mr-2">
+                        {/* Dynamic user image URL */}
+                        <div
+                        className="w-[36px] h-[36px] rounded-[18px] bg-cover"
+                        style={{ backgroundImage: `url(${post.creator.user_image})` }}
+                        />
+                    </div>
 
+                    {/* User Name */}
+                    <div className="user-info flex items-center">
+                        {post.creator && (
+                        <span className="user-name font-bold">{post.creator.username}</span>
+                        )}
+                    </div>
+
+                    {/* Timestamp */}
+                    <div className="ml-auto">
+                        {post.creator && (
+                        <span className="timestamp ml-2">{moment(post.createdAt).startOf('day').fromNow()}</span>
+                        )}
+                    </div>
+
+                    {/* Dropdown Menu */}
+                    <div className="dropdown-menu ml-2">
+                        {/* Dropdown component */}
+                        <Dropdown overlay={menu} placement="bottomRight">
+                        <img
+                            className="w-30 h-22 object-cover"
+                            alt="Div margin"
+                            src="https:c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                        />
+                        </Dropdown>
+                    </div>
+                    </div>
                      {/* Post Content */}
                      <div className="post-content">
                          {/* Main Post Image or Text */}
                          <h1>{post.title}</h1>   
                          <p>{post.content}</p>
-                         <div className="main-post-image">
-                             <img src={post.imageUrl || "/assets/images/profile.jpg"}  alt="Post content"/>
+                         <div className="main-post-image overflow-hidden">
+                             <img src={post.imageUrl || "/assets/images/profile.jpg"}  alt="Post content" className="w-full h-full object-cover rounded-lg"/>
                          </div>
                      </div>
 
-                     {/* Post Interaction Section */}
-                     <div className="post-interactions">
-                         {/* Interaction Icons */}
-                         {/* Icons for like, comment, share, etc. */}
-                         <img
-                             className="absolute w-[36px] h-[36px] top-0 left-0 object-cover"
-                             alt="Div"
-                             src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-                         />
-                         <img
-                             className="absolute w-[36px] h-[36px] top-0 left-[36px] object-cover"
-                             alt="Div"
-                             src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
-                         />
-                         <div className="absolute w-[36px] h-[36px] top-0 left-[72px]">
-                             <img
-                                 className="absolute w-[20px] h-[20px] top-[8px] left-[8px]"
-                                 alt="Reshare icon"
-                                 src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-                             />
-                         </div>
-                     </div>
+                     {/* Post Interaction and Footer Container */}
+                     <div className="post-interaction-footer-container flex flex-col justify-between">
+                        {/* Interaction Icons */}
+                        <div className="post-interactions flex items-center">
+                            {/* Icons for like and comment */}
+                            <img
+                            className="w-[36px] h-[36px] object-cover mr-2"
+                            alt="Like icon"
+                            src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
+                            />
+                            <img
+                            className="w-[36px] h-[36px] object-cover mr-2"
+                            alt="Comment icon"
+                            src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
+                            />
+                            <img
+                            className="w-[20px] h-[20px] top-[8px] left-[8px]"
+                            alt="Reshare icon"
+                            src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
+                            />
+                        </div>
 
+                        {/* Post Footer */}
+                        <div className="post-footer">
+                            {/* Likes and Comments Info */}
+                            <span className="mr-2">{post.likesCount} likes .</span>
+                            <span>{post.commentsCount} comments</span>
+                        </div>
 
-                     {/* Post Footer */}
-                     <div className="post-footer">
-                         {/* Likes and Comments Info */}
-                         <span>{post.likesCount}likes</span>
-                         <span>{post.commentsCount}comments</span>
-                     </div>
-                 </div>
-             ))}
-         </div>
+                        </div>
+
+                                        </div>
+                                    ))}
+                                </div>
 
 
         //  <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
