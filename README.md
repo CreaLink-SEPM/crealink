@@ -20,11 +20,7 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 
 ### Running on Localhost
 
-To be added...
-
-
-
-- [Localhost](http://localhost:3000/) => (Run `npm run dev`)
+-Frontend: Change directory to client folder, open termianl and run command line ( `npm run dev' ) =>  [Localhost](http://localhost:3000/) 
 
 
 ### Website run on server :
