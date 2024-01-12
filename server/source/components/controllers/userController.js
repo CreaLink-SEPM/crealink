@@ -11,7 +11,22 @@ const {
 const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({ region: process.env.AWS_REGION });
-const { enqueueNotification } = require("../../socket.js");
+const { enqueueNotification, getIO } = require("../../socket.js");
+
+const createNotification = async (user, content) => {
+  try {
+    user.notifications.push({
+      content,
+      timestamp: new Date(),
+      read: false,
+    });
+    await user.save();
+    const io = getIO();
+    enqueueNotification(content);
+  } catch (err) {
+    console.error("Error creating notification:", err.message);
+  }
+};
 
 // Function to create a new user
 const registerUser = async (req, res) => {
@@ -85,7 +100,8 @@ const registerUser = async (req, res) => {
       isAdmin: false,
     });
 
-    enqueueNotification("New user registered!");
+    // Notify the user about the new account
+    await createNotification(createdUser, "Welcome! Your account has been created.");
 
     return res.status(201).json({
       status: "success",
@@ -169,6 +185,7 @@ const loginAdmin = async (req, res) => {
     const adminAccessToken = generateAdminAccessToken(user);
     const adminRefreshToken = generateAdminRefreshToken(user);
     storeRefreshToken(adminRefreshToken);
+    
     return res.status(200).json({
       status: "success",
       message: "Admin login successful",
@@ -216,6 +233,9 @@ const loginUser = async (req, res) => {
     // Include additional user attributes in the response
     const { username, name, isAdmin, user_image, image, is_verified } = user;
     enqueueNotification("User " + username + " has logged in!");
+
+    // Notify the user about the login
+    await createNotification(user, "You have successfully logged in.");
 
     return res.status(200).json({
       id: user._id,
@@ -571,6 +591,9 @@ const followUser = async (req, res) => {
     });
     await userToFollow.save();
 
+    // Notify the user being followed
+    await createNotification(userToFollow, `${user.username} started following you.`);
+
     return res.status(200).json({
       status: "success",
       message: "Successfully followed user",
@@ -630,6 +653,9 @@ const unfollowUser = async (req, res) => {
       (followedUser) => !followedUser._id.equals(userToUnfollow._id)
     );
     await user.save();
+
+    // Notify the user being unfollowed
+    await createNotification(userToUnfollow, `${user.username} unfollowed you.`);
 
     return res.status(200).json({
       status: "success",
@@ -773,8 +799,12 @@ const uploadAvatar = async (req, res, next) => {
       new: true,
     });
 
+    // Notify the user about the profile update
+    await createNotification(updatedUser, "Profile updated successful.");
+
     res.status(200).json({
       message: req.file ? "Avatar uploaded successfully" : "No file uploaded", // Inform about file upload status
+      notification: "Profile update successful.", // Add notification message to the response
       user: updatedUser,
     });
   } catch (err) {
@@ -784,6 +814,7 @@ const uploadAvatar = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const updateAvatar = async (req, res, next) => {
   let avatarUrl = req.body.user_image;

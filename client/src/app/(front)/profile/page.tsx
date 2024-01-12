@@ -88,10 +88,10 @@ export default async function ProfilesPage() {
                     alt="followers"
                     width={60}
                     height={50}
-                    src={session?.user?.follower[0].user_image||'/assets/images/avatar.png'}
+                    src={session?.user?.follower[0]?.user_image||'/assets/images/avatar.png'}
                     className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
                     /> 
-                      <p>{session?.user?.follower[0].username}</p>
+                      <p>{session?.user?.follower[0]?.username || 'no followers'}</p>
                     </div>
                   </CardHeader>
                 </Card>
