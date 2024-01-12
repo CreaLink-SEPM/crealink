@@ -50,7 +50,7 @@ To be added...
 
 ## Technologies
 
-- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Github Action CI/CD, Vercel, Shadcn/ui, Ant Design.
+- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Github Action CI/CD, Vercel, Shadcn/ui, Ant Design, Docker .
 
  
 ## Contributions: 
@@ -61,4 +61,5 @@ To be added...
 - Nguyen Huynh Quang (%)
 - Dinh Le Hong Tin (%)
 
-- Version: 13.0.5
+##  - Next JS: " ^13.0.5"
+##  - Express JS : "^4.18.2"  
