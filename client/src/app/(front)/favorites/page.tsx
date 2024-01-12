@@ -3,8 +3,7 @@ import { Metadata } from 'next';
 import Loading from '@/src/components/common/loading';
 import FavoritePage from "@/src/components/common/FavoritePage";
 import { fetchLikedPost } from '@/lib/serverMethod';
-import { CustomSession, CustomUser } from '../../api/auth/[...nextauth]/options';
-import { getSession, useSession } from 'next-auth/react';
+
 
 
 export const metadata: Metadata = {
@@ -15,10 +14,10 @@ export const metadata: Metadata = {
 
 export default async function FavoritesPage() {
     return (
-        <div className="w-full md:container">
-            <Suspense fallback={<Loading />}>
+        <div className="w-full md:container h-[100vh]">
+            {/* <Suspense  fallback={<Loading />}> */}
                     <FavoritePage />
-            </Suspense>
+            {/* </Suspense> */}
         </div>
     );
 }

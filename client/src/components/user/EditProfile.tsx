@@ -16,7 +16,7 @@ import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-
+import { notification } from 'antd';
 
 function EditProfile({ children }: { children: React.ReactNode }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -25,6 +25,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
     username: '',
     email: '',
     password: '',
+    user_image: '',
   });
   const { data: session } = useSession();
 
@@ -41,24 +42,37 @@ function EditProfile({ children }: { children: React.ReactNode }) {
     if (pictureInput.files && pictureInput.files[0]) {
       formData.append('image', pictureInput.files[0]);
     }
-    
+
+    formData.append('username', authState.username);
+    formData.append('email', authState.email);
+    formData.append('password', authState.password);
 
     axios
-    .post(`http://54.169.199.32:5000/api/user/avatar/${session?.user?.id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${session?.user?.accessToken}`,
-      },
-    })
-    .then((res) => {
-      const response = res.data;
-      console.log("The response is", response);
-    })
-    .catch((err) => {
-      console.log("The error is", err);
-    });
+      .post(`http://54.169.199.32:5000/api/user/avatar/${session?.user?.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${session?.user?.accessToken}`,
+        },
+      })
+      .then(res => {
+        const response = res.data;
 
-    alert('Profile updated!');
+        setAuthState({
+          ...authState,
+          user_image: response.user_image,
+          username: response.username,
+          email: response.email,
+          password: response.password,
+        });
+      })
+      .catch(err => {
+        console.log('The error is', err);
+      });
+
+    notification.success({
+      message: 'Profile updated',
+      description: 'Try to login again to see changes',
+    })
     closeModal();
   };
 
@@ -88,13 +102,25 @@ function EditProfile({ children }: { children: React.ReactNode }) {
               <Label htmlFor="username" className="text-right">
                 Username
               </Label>
-              <Input id="username" type="text" onChange={(e) => setAuthState({ ...authState, username: e.target.value })} defaultValue={session?.user?.username} className="col-span-3" />
+              <Input
+                id="username"
+                type="text"
+                onChange={e => setAuthState({ ...authState, username: e.target.value })}
+                defaultValue={session?.user?.username}
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
-              <Input id="email" type="email" onChange={(e) => setAuthState({ ...authState, email: e.target.value })} defaultValue={session?.user?.email} className="col-span-3" />
+              <Input
+                id="email"
+                type="email"
+                onChange={e => setAuthState({ ...authState, email: e.target.value })}
+                defaultValue={session?.user?.email}
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="password" className="text-right">
@@ -105,6 +131,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Change new password"
                 className="col-span-2 w-[280px]"
+                onChange={e => setAuthState({ ...authState, password: e.target.value })}
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="w-3 ml-10 items-center">
                 <EyeIcon />
@@ -112,7 +139,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit"  className="bg-red-800 hover:bg-red-900">
+            <Button type="submit" className="bg-red-800 hover:bg-red-900">
               Save
             </Button>
           </DialogFooter>

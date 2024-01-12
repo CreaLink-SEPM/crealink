@@ -16,28 +16,27 @@ export const metadata: Metadata = {
 };
 
 export interface User {
-  _id: string
-  name?: string | null
-  email?: string | null
-  image?: string | null
-  followers?: number | null
-  username?: string | null
+  _id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  followers?: number | null;
+  username?: string | null;
 }
 export default async function ExplorePage({ searchParams }: { searchParams: { [key: string]: string } }) {
   const users: Array<User> = await searchUser(searchParams?.query);
-  console.log('USER', users);
   return (
-    <div className="w-[100%] container mb-[46%] relative h-[100%]">
+    <div className="w-full container mb-[55%] relative h-[100%]">
       <Suspense fallback={<Loading />}>
         <SearchBar />
       </Suspense>
 
-      {users?.length > 0 &&
-        users.map(user => (
-          <div className="">
-            <div key={user._id} className="w-full mb-2">
-              <div className="w-full flex items-center gap-5 justify-around">
-                <div className="flex items-center ">
+      <div className="h-[100vh">
+        {users?.length > 0 &&
+          users.map(user => (
+            <div key={user._id} className="mb-2">
+              <div className="w-full flex absolute items-center gap-5 justify-around bottom-[-7rem] left-10">
+                <div className="flex items-center justify-center  ">
                   <Avatar>
                     <AvatarImage src="/assets/images/avatar.png" className="object-cover" width={80} height={70} />
                     <AvatarFallback></AvatarFallback>
@@ -97,10 +96,9 @@ export default async function ExplorePage({ searchParams }: { searchParams: { [k
                   </div>
                 </div>
               </div>
-              <hr className="w-[90%] ml-[10%] border-collapse border-gray-300 h-[2px] mt-2" />
             </div>
-          </div>
-        ))}
+          ))}
+      </div>
       {users?.length < 1 && searchParams?.query?.length! > 1 && (
         <div className="absolute top-40 right-[20rem]">
           <Empty description={'No user result found'} />

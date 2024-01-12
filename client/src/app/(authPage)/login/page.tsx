@@ -10,24 +10,22 @@ import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
+import { notification } from 'antd';
 
 function Login() {
   const router = useRouter();
-  const params = useSearchParams();
   const { status } = useSession();
   const [authState, setAuthState] = useState<AuthStateType>({
     email: '',
     password: '',
   });
-  const email = useRef('');
-  const password = useRef('');
   const [errors, setErrors] = useState<AuthErrorType>({});
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (status == "authenticated") {
-      router.push("/home");
+    if (status == 'authenticated') {
+      router.push('/home');
     }
   }, [status]);
   const submit = async (event: React.FormEvent) => {
@@ -40,20 +38,25 @@ function Login() {
         const response = res.data; // Options for API***
 
         if (response.status === 'success' || 200) {
-          alert('Login success');
-          // router.push(`/home?message=${response.message}`);
+          notification.success({
+            message: 'Login success',
+          });
           signIn('credentials', {
             email: authState.email,
             password: authState.password,
             callbackUrl: '/home',
             redirect: true,
           });
-        } else if (response.status === 'error' || 400) {
+        } else {
           setErrors(response.message.error);
         }
       })
       .catch(error => {
         console.log(error);
+        notification.error({
+          message: 'Login failed',
+          description: 'Something went wrong',
+        });
         setLoading(false);
       });
   };

@@ -21,8 +21,8 @@ type SheetSide = (typeof SHEET_SIDES)[number]
 export default function Support({children}: {children: React.ReactNode}) {
     const supportChannels = [
         { platform: "Facebook", handle: "CreaLink Fanpage" },
-        { platform: "Email", handle: "creaKink@gamil.com" },
-        { platform: "TikTok", handle: "creaLink_2024" },
+        { platform: "Email", handle: "creaLink2024@gmail.com" },
+        { platform: "TikTok", handle: "creaLink_@2024" },
       ];
   return (
     <div className="grid grid-cols-2 gap-2">

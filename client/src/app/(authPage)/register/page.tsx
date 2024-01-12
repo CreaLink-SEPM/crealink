@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useToast } from "@/src/components/ui/use-toast"
 import { ToastAction } from "@/src/components/ui/toast"
+import { notification } from 'antd';
 
 
 
@@ -37,19 +38,21 @@ function Register() {
         const response = res.data;            // Options for API***
 
         if (response.status === 'success' || 200) {
-          router.push(`/login?message=${response.message}`);    
+          router.push(`/login?message=${response.message}`); 
+          notification.success({
+            message: 'Register success',
+            description: response.message
+          })   
         } else if (response.status === 'error' || 400) {
           setErrors(response.message.error);
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "There was a problem with your request.",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
         }
       })
       .catch(error => {
         console.log(error);
+        notification.error({
+          message: 'Register failed',
+          description: 'Please register all fields required',
+        })
         setLoading(false);
       });
   };

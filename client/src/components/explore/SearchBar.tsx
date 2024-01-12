@@ -1,14 +1,25 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { notification } from 'antd';
 
 export default function SearchBar() {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const router = useRouter();
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    router.replace(`/search?query=${query}`);
+
+    if (query.trim() === '') {
+      // Display a notification or alert message
+      notification.warning({
+        message: 'Empty Search',
+        description: 'Please enter a query to search for a user.',
+      });
+    } else {
+  
+      router.replace(`/search?query=${query}`);
+    }
   };
 
   return (
