@@ -101,7 +101,10 @@ const registerUser = async (req, res) => {
     });
 
     // Notify the user about the new account
-    await createNotification(createdUser, "Welcome! Your account has been created.");
+    await createNotification(
+      createdUser,
+      "Welcome! Your account has been created."
+    );
 
     return res.status(201).json({
       status: "success",
@@ -185,7 +188,7 @@ const loginAdmin = async (req, res) => {
     const adminAccessToken = generateAdminAccessToken(user);
     const adminRefreshToken = generateAdminRefreshToken(user);
     storeRefreshToken(adminRefreshToken);
-    
+
     return res.status(200).json({
       status: "success",
       message: "Admin login successful",
@@ -411,6 +414,40 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getUserNotification = async (req, res, next) => {
+  try {
+    const { username: requestedUserID } = req.params;
+
+    if (!requestedUserID) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findOne({ _id: requestedUserID });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        notifications: user.notifications,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({}, { password: 0 });
@@ -592,7 +629,10 @@ const followUser = async (req, res) => {
     await userToFollow.save();
 
     // Notify the user being followed
-    await createNotification(userToFollow, `${user.username} started following you.`);
+    await createNotification(
+      userToFollow,
+      `${user.username} started following you.`
+    );
 
     return res.status(200).json({
       status: "success",
@@ -655,7 +695,10 @@ const unfollowUser = async (req, res) => {
     await user.save();
 
     // Notify the user being unfollowed
-    await createNotification(userToUnfollow, `${user.username} unfollowed you.`);
+    await createNotification(
+      userToUnfollow,
+      `${user.username} unfollowed you.`
+    );
 
     return res.status(200).json({
       status: "success",
@@ -765,7 +808,7 @@ const uploadAvatar = async (req, res, next) => {
     const { username, email, password } = req.body;
     const { userID } = req.params;
 
-    let avatarUrl = ''; // Initialize the avatarUrl variable
+    let avatarUrl = ""; // Initialize the avatarUrl variable
 
     if (req.file) {
       const fileExtension = path.extname(req.file.originalname);
@@ -814,7 +857,6 @@ const uploadAvatar = async (req, res, next) => {
     next(err);
   }
 };
-
 
 const updateAvatar = async (req, res, next) => {
   let avatarUrl = req.body.user_image;
@@ -897,6 +939,7 @@ const clearImageFromS3 = async (avatarUrl) => {
 };
 
 module.exports = {
+  getUserNotification,
   registerUser,
   registerAdmin,
   loginAdmin,
