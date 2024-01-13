@@ -1,13 +1,35 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from 'antd';
+import { Popconfirm, message, Button } from 'antd';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@radix-ui/react-dropdown-menu';
+import { Input } from '../ui/input';
+import { CopyIcon } from 'lucide-react';
 const { Dropdown, Menu, Flex } = require('antd');
 const { useSession } = require('next-auth/react');
 // import axios, { AxiosError } from 'axios';
 const axios = require('axios');
+const confirm = (e: React.MouseEvent<HTMLElement>) => {
+  console.log(e);
+  message.success('Report successfully, we will look into it !!!');
+};
+
+const cancel = (e: React.MouseEvent<HTMLElement>) => {
+  console.log(e);
+  message.error('Cancel report');
+};
 
 interface PostData {
   [key: string]: any;
@@ -38,6 +60,8 @@ const SocialMediaPost = () => {
   const [page, setPage] = useState<number>(1);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [loadingMoreButton, setLoadingMoreButton] = useState<boolean>(false);
+  const [modal2Open, setModal2Open] = useState(false);
 
   const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
 
@@ -73,17 +97,15 @@ const SocialMediaPost = () => {
         return () => clearTimeout(delay);
       } catch (error) {
         console.log(error);
-      }finally {
+      } finally {
         setLoadingInitial(false);
       }
-
     };
 
     fetchData();
   }, [session]);
 
-
-  // LOAD MORE PAGE 
+  // LOAD MORE PAGE
   const enterLoading = async () => {
     try {
       setLoadingMore(true);
@@ -98,14 +120,23 @@ const SocialMediaPost = () => {
       // Assuming that your API returns a 'posts' property in the response data
       const newData = response.data.posts;
 
-      setPosts((prevPosts) => [...prevPosts, ...newData]);
+      setPosts(prevPosts => [...prevPosts, ...newData]);
     } catch (error) {
       console.error('Error loading more posts:', error);
     } finally {
       setLoadingMore(false);
     }
   };
- 
+
+  useEffect(() => {
+    // Delay the appearance of the "Loading more" button for an additional 3 seconds
+    const delayLoadMoreButton = setTimeout(() => {
+      setLoadingMoreButton(true);
+    }, 3000);
+
+    return () => clearTimeout(delayLoadMoreButton);
+  }, []);
+
   // Rest of your component...
 
   // useEffect(() => {
@@ -173,12 +204,19 @@ const SocialMediaPost = () => {
   // if (!posts.length) return <div>Loading...</div>;
 
   const menu = (
-    <Menu>
-      <Menu.Item style={{ color: 'red', fontWeight: 'bold' }}>Report</Menu.Item>
-    </Menu>
+    <Popconfirm
+      title="Report this post"
+      description="Are you sure to report this post?"
+      okText="Yes"
+      cancelText="No"
+      onConfirm={confirm}
+      onCancel={cancel}
+    >
+      <Button style={{ color: 'red', border: '1px solid red' }}>Report</Button>
+    </Popconfirm>
   );
   return (
-    <div className='relative'>
+    <div className="relative">
       {loadingInitial ? (
         <>
           <Skeleton className="h-12 w-12 rounded-full" />
@@ -260,11 +298,36 @@ const SocialMediaPost = () => {
                       alt="Comment icon"
                       src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
                     />
-                    <img
-                      className="w-[20px] h-[20px] top-[8px] left-[8px]"
-                      alt="Reshare icon"
-                      src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-                    />
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <img
+                          className="w-[20px] h-[20px] top-[8px] left-[8px]"
+                          alt="Reshare icon"
+                          src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
+                        />
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Share link</DialogTitle>
+                          <DialogDescription>Anyone who has this link will be able to view this.</DialogDescription>
+                        </DialogHeader>
+                        <div className="flex items-center space-x-2">
+                          <div className="grid flex-1 gap-2">
+                            <Label className="sr-only">Link</Label>
+                            <Input id="link" defaultValue="https://ui.shadcn.com/docs/installation" readOnly />
+                          </div>
+                          <Button style={{ background: '#a2383a', color: 'white' }} className="p-5">
+                            <span className="sr-only">Copy</span>
+                            <CopyIcon className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <DialogFooter className="sm:justify-start">
+                          <DialogClose asChild>
+                            <Button style={{ background: '#a2383a', color: 'white' }}>Close</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
 
                   {/* Post Footer */}
@@ -276,14 +339,20 @@ const SocialMediaPost = () => {
                 </div>
               </div>
             ))}
-      <Flex gap="large" vertical align="center" wrap="wrap">
-        <Button style={{background: '#a2383a', color: 'white'}} loading={loadingMore} onClick={enterLoading} className="border-none text-white w-30 h-20 ml-[20%">
-          Loading...
-        </Button>
-      </Flex>
+          {loadingMoreButton && (
+            <Flex gap="large" vertical align="center" wrap="wrap">
+              <Button
+                style={{ background: '#a2383a', color: 'white' }}
+                loading={loadingMore}
+                onClick={enterLoading}
+                className="border-none text-white w-30 h-20 ml-[20%]"
+              >
+                Loading more
+              </Button>
+            </Flex>
+          )}
         </>
       )}
-
     </div>
   );
 };
