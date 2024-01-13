@@ -44,7 +44,7 @@ const SocialMediaPost = () => {
     const [loading, setLoading] = useState(true);
     const [likedPosts, setLikedPosts] = useState([]);
 
-    const apiUrl = `http://localhost:5000/api/feed/posts?page=${page}`;
+    const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
     
     useEffect(() => {
         const fetchData = async () => {
@@ -69,15 +69,11 @@ const SocialMediaPost = () => {
                     throw new Error(`Failed to fetch data. Response: ${JSON.stringify(response.data)}`);
                 }
 
-                const delay = setTimeout(() => {
-                    setPosts(data.posts);
-    
-                    // Extract post IDs and call handleLikeToggle for each post
-                    const postIds = data.posts.map(post => post._id);
-                    postIds.forEach(postId => handleLikeToggle(postId));
-                }, 100);
-                
-                return () => clearTimeout(delay);
+                setPosts(data.posts);
+
+                // Extract post IDs and call handleLikeToggle for each post
+                const postIds = data.posts.map(post => post._id);
+                postIds.forEach(postId => handleLikeToggle(postId))
               
 
             } catch (error) {
@@ -98,34 +94,42 @@ const SocialMediaPost = () => {
             }),
         };
     }
-    const handleLikeToggle = async (postId) => {
-        if (!session) return;
-         const token = session.user?.accessToken;
-        try {
-            const response = await axios.put(`http://localhost:5000/api/feed/like/${postId}`, null, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            });
-            console.log('RESPONE', response);
-    
-            if (response.status === 200) {
-                // Toggle like was successful, update likedPosts state
-                if (likedPosts.includes(postId)) {
-                    const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
-                    setLikedPosts(updatedLikedPosts);
-                } else {
-                    setLikedPosts([...likedPosts, postId]);
-                    console.log(`Post ${postId} liked!`);
-                }
-            } else {
-                // Handle other response statuses if needed
-                console.error(`Failed to toggle like. Status: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error toggling like:", error);
+    const handleLikeToggle = (postId) => {
+        if (likedPosts.includes(postId)) {
+            const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+            setLikedPosts(updatedLikedPosts);
+        } else {
+            setLikedPosts([...likedPosts, postId])
         }
-    };
+    }
+    // const handleLikeToggle = async (postId) => {
+    //     if (!session) return;
+    //      const token = session.user?.accessToken;
+    //     try {
+    //         const response = await axios.put(`http://54.169.199.32:5000/api/feed/like/${postId}`, null, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             },
+    //         });
+    //         console.log('RESPONE',response);
+    
+    //         if (response.status === 200) {
+    //             // Toggle like was successful, update likedPosts state
+    //             if (likedPosts.includes(postId)) {
+    //                 const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+    //                 setLikedPosts(updatedLikedPosts);
+    //             } else {
+    //                 setLikedPosts([...likedPosts, postId]);
+    //                 console.log(`Post ${postId} liked!`);
+    //             }
+    //         } else {
+    //             // Handle other response statuses if needed
+    //             console.error(`Failed to toggle like. Status: ${response.status}`);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error toggling like:", error);
+    //     }
+    // };
     
 
     // Rest of your component...
