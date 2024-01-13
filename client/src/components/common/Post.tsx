@@ -237,9 +237,9 @@ const SocialMediaPost = () => {
 
                         </div>
 
-                                        </div>
+                        </div>
                                     ))}
-                                </div>
+                </div>
 
 
         //  <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
@@ -250,7 +250,8 @@ const SocialMediaPost = () => {
         //                     <div className="w-[36px] h-[36px]">
         //                         <div className="relative w-[37px] h-[37px] rounded-[17.5px]">
         //                             <div
-        //                                 className="w-[36px] h-[36px] rounded-[18px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/377212994-626721102778908-3499740340252537033-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0"/>
+        //                                 className="w-[36px] h-[36px] rounded-[18px]  bg-cover bg-[50%_50%] absolute top-0 left-0"/>
+        //                                  style={{ backgroundImage: `url(${post.creator.user_image})` }}
         //                             <div
         //                                 className="w-[37px] h-[37px] rounded-[17.5px] border border-solid border-[#00000026] absolute top-0 left-0"/>
         //                         </div>
@@ -267,7 +268,7 @@ const SocialMediaPost = () => {
         //                                 <div className="relative h-[21px]">
         //                                     <div
         //                                         className="absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                                         aman_tokyo
+        //                                         {post.creator.username}
         //                                     </div>
         //                                 </div>
         //                             </div>
@@ -278,7 +279,7 @@ const SocialMediaPost = () => {
         //                     <div className="absolute w-[24px] h-[14px] top-[4px] left-0">
         //                         <div
         //                             className="w-[24px] text-[14.4px] absolute h-[21px] top-[-4px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-center tracking-[0] leading-[21px] whitespace-nowrap">
-        //                             12h
+        //                             {moment(post.createdAt).startOf('day').fromNow()}
         //                         </div>
         //                     </div>
         //                     <Dropdown overlay={menu} placement="bottomRight">
@@ -376,14 +377,14 @@ const SocialMediaPost = () => {
         //                 <div className="absolute w-[66px] h-[14px] top-[7px] left-[48px]">
         //                     <div
         //                         className="absolute w-[66px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                         16 replies
+        //                         {post.likesCount} replies
         //                     </div>
         //                 </div>
         //                 <button className="absolute w-[72px] h-[14px] top-[7px] left-[130px] all-[unset] box-border">
         //                     <div className="relative h-[14px]">
         //                         <div
         //                             className="absolute w-[72px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                             3,510 likes
+        //                             {post.commentsCount} likes
         //                         </div>
         //                     </div>
         //                 </button>
