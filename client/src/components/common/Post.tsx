@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Skeleton } from "@/components/ui/skeleton"
 // import { Dropdown, Menu } from 'antd';
 const {Dropdown, Menu} = require('antd');
@@ -40,9 +42,36 @@ const SocialMediaPost = () => {
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number | null>(1);
     const [loading, setLoading] = useState(true);
+    const [likedPosts, setLikedPosts] = useState([]);
 
     const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
-
+    const handleLikeToggle = async (postId) => {
+        try {
+            const response = await axios.put(`http://54.169.199.32:5000/api/feed/like/${postId}`, null, {
+                headers: {
+                    Authorization: `Bearer ${session.user?.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
+    
+            if (response.status === 200) {
+                // Toggle like was successful, update likedPosts state
+                if (likedPosts.includes(postId)) {
+                    const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+                    setLikedPosts(updatedLikedPosts);
+                } else {
+                    setLikedPosts([...likedPosts, postId]);
+                    console.log(`Post ${postId} liked!`);
+                }
+            } else {
+                // Handle other response statuses if needed
+                console.error(`Failed to toggle like. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error toggling like:", error);
+        }
+    };
+    
     useEffect(() => {
         const fetchData = async () => {
             if (!session) return;
@@ -68,10 +97,14 @@ const SocialMediaPost = () => {
 
                 const delay = setTimeout(() => {
                     setPosts(data.posts);
-                  }, 100);
+    
+                    // Extract post IDs and call handleLikeToggle for each post
+                    const postIds = data.posts.map(post => post._id);
+                    postIds.forEach(postId => handleLikeToggle(postId));
+                }, 100);
+                
+                return () => clearTimeout(delay);
               
-                  // Clear the timeout on component unmount
-                  return () => clearTimeout(delay);
 
             } catch (error) {
                 console.log(error);
@@ -80,9 +113,18 @@ const SocialMediaPost = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, [session]);
+    const likeButtonStyle = (postId) => {
+        return {
+            transition: 'transform 0.3s ease-in-out',
+            ...(likedPosts.includes(postId) && {
+                color: 'red',
+                transform: 'scale(1.2)',
+            }),
+        };
+    }
+    
 
     // Rest of your component...
 
@@ -230,11 +272,13 @@ const SocialMediaPost = () => {
                          {/* Interaction Icons */}
                          <div className="post-interactions flex items-center">
                              {/* Icons for like and comment */}
-                             <img
-                             className="w-[36px] h-[36px] object-cover mr-2"
-                             alt="Like icon"
-                             src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-                             />
+                             <button
+                                className={`w-[36px] h-[36px] object-cover mr-2 cursor-pointer`}
+                                onClick={() => handleLikeToggle(post._id)}
+                                style={likeButtonStyle(post._id)}
+                            >
+                                <FontAwesomeIcon icon={faHeart} className={`fa-lg ${likedPosts.includes(post._id) ? 'text-red-500' : ''}`} />
+                            </button>
                              <img
                              className="w-[36px] h-[36px] object-cover mr-2"
                              alt="Comment icon"
@@ -263,156 +307,6 @@ const SocialMediaPost = () => {
     )}
     </div>
 
-
-        //  <div className="relative w-[572px] h-[533.99px]" style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
-        //      <div className="relative w-[572px] h-[533.99px] top-[20px]">
-        //          <div className="h-[40px] top-0 absolute w-[48px] left-0">
-        //              <div className="relative top-[4px] w-[36px] h-[36px] bg-[#efefef] rounded-[18px]">
-        //                 <div className="h-[36px] bg-neutral-100 rounded-[18px]">
-        //                     <div className="w-[36px] h-[36px]">
-        //                         <div className="relative w-[37px] h-[37px] rounded-[17.5px]">
-        //                             <div
-        //                                 className="w-[36px] h-[36px] rounded-[18px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/377212994-626721102778908-3499740340252537033-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0"/>
-        //                             <div
-        //                                 className="w-[37px] h-[37px] rounded-[17.5px] border border-solid border-[#00000026] absolute top-0 left-0"/>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <div className="absolute w-[524px] h-[22px] -top-px left-[48px]">
-        //             <div className="relative h-[22px]">
-        //                 <div className="w-[470px] absolute h-[21px] top-0 left-0">
-        //                     <div className="w-[85px] h-[21px]">
-        //                         <div className="h-[21px]">
-        //                             <div className="w-[85px] h-[21px]">
-        //                                 <div className="relative h-[21px]">
-        //                                     <div
-        //                                         className="absolute w-[85px] h-[18px] top-0 left-0 [font-family:'Roboto',Helvetica] font-semibold text-black text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                                         aman_tokyo
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 <div className="absolute w-[54px] h-[22px] top-0 left-[470px]">
-        //                     <div className="absolute w-[24px] h-[14px] top-[4px] left-0">
-        //                         <div
-        //                             className="w-[24px] text-[14.4px] absolute h-[21px] top-[-4px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-center tracking-[0] leading-[21px] whitespace-nowrap">
-        //                             12h
-        //                         </div>
-        //                     </div>
-        //                     <Dropdown overlay={menu} placement="bottomRight">
-        //                         <img
-        //                             className="left-[24px] absolute w-[30px] h-[22px] top-0 object-cover"
-        //                             alt="Div margin"
-        //                             src="https://c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
-        //                         />
-        //                     </Dropdown>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <div className="h-[466px] top-[40px] absolute w-[48px] left-0"/>
-        //         <div className="h-[485px] absolute w-[524px] top-[21px] left-[48px]">
-        //             <div className="relative h-[477px] top-[8px]">
-        //                 <div className="h-[435px] top-0 absolute w-[524px] left-0">
-        //                     <div className="w-[360px] h-[430px] rounded-[8px]">
-        //                         <div className="h-[430px]">
-        //                             <div className="w-[360px] h-[430px]">
-        //                                 <div className="h-[430px]">
-        //                                     <div className="relative w-[360px] h-[430px] rounded-[7px]">
-        //                                         <div
-        //                                             className="rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/400983289-889270855965019-4991156490034155777-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute w-[360px] h-[430px] top-0 left-0"/>
-        //                                         <div
-        //                                             className="rounded-[7px] border border-solid border-[#00000026] absolute w-[360px] h-[430px] top-0 left-0"/>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 <div className="absolute w-[531px] h-[36px] top-[441px] left-[-7px]">
-        //                     <img
-        //                         className="absolute w-[36px] h-[36px] top-0 left-0 object-cover"
-        //                         alt="Div"
-        //                         src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-        //                     />
-        //                     <img
-        //                         className="absolute w-[36px] h-[36px] top-0 left-[36px] object-cover"
-        //                         alt="Div"
-        //                         src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
-        //                     />
-        //                     <div className="absolute w-[36px] h-[36px] top-0 left-[72px]">
-        //                         <img
-        //                             className="absolute w-[20px] h-[20px] top-[8px] left-[8px]"
-        //                             alt="Reshare icon"
-        //                             src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-        //                         />
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <div className="absolute w-[572px] h-[28px] top-[506px] left-0">
-        //             <div className="relative w-[202px] h-[28px]">
-        //                 <div className="absolute w-[48px] h-[20px] top-[4px] left-0">
-        //                     <div className="w-[40px] h-[20px]">
-        //                         <div className="relative w-[32px] h-[20px] left-[4px]">
-        //                             <div className="relative h-[20px]">
-        //                                 <div
-        //                                     className="absolute w-[16px] h-[16px] top-[2px] left-0 bg-neutral-100 rounded-[8px]">
-        //                                     <div className="h-[16px]">
-        //                                         <div className="relative w-[17px] h-[17px] rounded-[7.5px]">
-        //                                             <div
-        //                                                 className="w-[16px] h-[16px] rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/357811045-1987868941549293-8596588435582708190-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0"/>
-        //                                             <div
-        //                                                 className="w-[17px] h-[17px] rounded-[7.5px] border border-solid border-[#00000026] absolute top-0 left-0"/>
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                                 <div
-        //                                     className="absolute w-[20px] h-[20px] top-0 left-[12px] bg-white rounded-[10px]">
-        //                                     <div
-        //                                         className="relative w-[16px] h-[16px] top-[2px] left-[2px] bg-neutral-100 rounded-[8px]">
-        //                                         <div className="h-[16px]">
-        //                                             <div className="relative w-[17px] h-[17px] rounded-[7.5px]">
-        //                                                 <div
-        //                                                     className="w-[16px] h-[16px] rounded-[8px] bg-[url(https://c.animaapp.com/n1QiTcNd/img/359452161-7212821988744843-2119687233277087413-n-jpg@2x.png)] bg-cover bg-[50%_50%] absolute top-0 left-0"/>
-        //                                                 <div
-        //                                                     className="w-[17px] h-[17px] rounded-[7.5px] border border-solid border-[#00000026] absolute top-0 left-0"/>
-        //                                             </div>
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 <div className="absolute w-[16px] h-[21px] top-[4px] left-[114px]">
-        //                     <div
-        //                         className="absolute w-[12px] h-[18px] top-0 left-[2px] [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                         {" "}
-        //                         ·
-        //                     </div>
-        //                 </div>
-        //                 <div className="absolute w-[66px] h-[14px] top-[7px] left-[48px]">
-        //                     <div
-        //                         className="absolute w-[66px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                         16 replies
-        //                     </div>
-        //                 </div>
-        //                 <button className="absolute w-[72px] h-[14px] top-[7px] left-[130px] all-[unset] box-border">
-        //                     <div className="relative h-[14px]">
-        //                         <div
-        //                             className="absolute w-[72px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-        //                             3,510 likes
-        //                         </div>
-        //                     </div>
-        //                 </button>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
     );
 };
 
