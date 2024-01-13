@@ -121,7 +121,7 @@ exports.createPost = async (req, res, next) => {
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
-  const perPage = 10;
+  const perPage = 5;
   if (currentPage < 1 || isNaN(currentPage)) {
     res.status(400).json({
       status: "error",
