@@ -445,7 +445,7 @@ exports.toggleLike = async (req, res, next) => {
       await user.save();
 
       // Send a notification when someone likes the post
-      await sendLikeNotification(post.creator, currentUserId, postId);
+      await sendLikeNotification(currentUserId, post.creator, postId);
 
       io.getIO().emit("posts", {
         action: "liked",
