@@ -32,7 +32,7 @@ function Login() {
     event.preventDefault();
     // API FOR LOGIN
     axios
-      .post('http://54.169.199.32:5000/api/user/login', authState)
+      .post('http://localhost:5000/api/user/login', authState)
       .then(res => {
         setLoading(false);
         const response = res.data; // Options for API***

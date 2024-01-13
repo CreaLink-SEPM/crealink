@@ -44,33 +44,7 @@ const SocialMediaPost = () => {
     const [loading, setLoading] = useState(true);
     const [likedPosts, setLikedPosts] = useState([]);
 
-    const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
-    const handleLikeToggle = async (postId) => {
-        try {
-            const response = await axios.put(`http://54.169.199.32:5000/api/feed/like/${postId}`, null, {
-                headers: {
-                    Authorization: `Bearer ${session.user?.accessToken}`,
-                    "Content-Type": "application/json"
-                },
-            });
-    
-            if (response.status === 200) {
-                // Toggle like was successful, update likedPosts state
-                if (likedPosts.includes(postId)) {
-                    const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
-                    setLikedPosts(updatedLikedPosts);
-                } else {
-                    setLikedPosts([...likedPosts, postId]);
-                    console.log(`Post ${postId} liked!`);
-                }
-            } else {
-                // Handle other response statuses if needed
-                console.error(`Failed to toggle like. Status: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error toggling like:", error);
-        }
-    };
+    const apiUrl = `http://localhost:5000/api/feed/posts?page=${page}`;
     
     useEffect(() => {
         const fetchData = async () => {
@@ -124,6 +98,34 @@ const SocialMediaPost = () => {
             }),
         };
     }
+    const handleLikeToggle = async (postId) => {
+        if (!session) return;
+         const token = session.user?.accessToken;
+        try {
+            const response = await axios.put(`http://localhost:5000/api/feed/like/${postId}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            console.log('RESPONE', response);
+    
+            if (response.status === 200) {
+                // Toggle like was successful, update likedPosts state
+                if (likedPosts.includes(postId)) {
+                    const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+                    setLikedPosts(updatedLikedPosts);
+                } else {
+                    setLikedPosts([...likedPosts, postId]);
+                    console.log(`Post ${postId} liked!`);
+                }
+            } else {
+                // Handle other response statuses if needed
+                console.error(`Failed to toggle like. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error toggling like:", error);
+        }
+    };
     
 
     // Rest of your component...
