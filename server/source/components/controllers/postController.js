@@ -466,18 +466,18 @@ exports.toggleLike = async (req, res, next) => {
 };
 
 // Function to send a notification when someone likes a post
-const sendLikeNotification = async (postCreatorId, likerId, postId) => {
+const sendLikeNotification = async (likerId, postCreatorId, postId) => {
   try {
     // Get the post creator's information
-    const postCreator = await User.findById(postCreatorId);
-    if (!postCreator) {
+    const postLiker = await User.findById(likerId);
+    if (!postLiker) {
       console.log("Post creator not found");
       return;
     }
 
     // Create a notification for the post creator
-    const notificationContent = `${postCreator.username} liked your post.`;
-    await createNotification(postCreator, notificationContent, postId);
+    const notificationContent = `${postLiker.username} liked your post.`;
+    await createNotification(postLiker, notificationContent, postId);
 
   } catch (err) {
     console.log("Error sending like notification: ", err);
