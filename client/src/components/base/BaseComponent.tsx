@@ -48,6 +48,7 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
       {/* <div className=''>
         <Footer />
       </div> */}
+          <Footer></Footer>
     </div>
   );
 }
