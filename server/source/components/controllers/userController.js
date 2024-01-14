@@ -12,6 +12,7 @@ const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({ region: process.env.AWS_REGION });
 const { enqueueNotification, getIO } = require("../../socket.js");
+const Post = require("../models/postModel");
 
 const createNotification = async (user, content) => {
   try {
