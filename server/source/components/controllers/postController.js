@@ -14,48 +14,48 @@ const {
 const dotenv = require("dotenv");
 const uuid = require("uuid");
 const client = new S3Client({ region: process.env.AWS_REGION });
-const {openai} = require('../configs/openai');
+const { openai } = require("../configs/openai");
 const { default: OpenAI } = require("openai");
 const { model } = require("mongoose");
 
 const initializeAssistant = async (req, res, next) => {
   try {
-    assistant = await openai.beta.assistants.retrieve("asst_mmrF48IWoAZBEJnXvHlIzoii");
+    assistant = await openai.beta.assistants.retrieve(
+      "asst_mmrF48IWoAZBEJnXvHlIzoii"
+    );
     console.log("OpenAI assistant initialized");
   } catch (err) {
-    console.log("Error initializing assistant: " + err.message)
+    console.log("Error initializing assistant: " + err.message);
   }
-}
+};
 initializeAssistant();
 
-
 exports.startMessage = async (req, res, next) => {
-    try {
-      const prompt = req.body.prompt;
-      if (!prompt || prompt.trim().length === 0) {
-        return res.status(400).json({
-          status: "error",
-          message: "Prompt cannot be empty"
-        });
-      }
-      const completion = await openai.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: "gpt-3.5-turbo",
+  try {
+    const prompt = req.body.prompt;
+    if (!prompt || prompt.trim().length === 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "Prompt cannot be empty",
       });
-      const respone = await completion.choices[0].message.content;
-      return res.status(200).json({
-        success: true,
-        message: respone
-      })
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({
-        status: "error", 
-        message: "Internal Server Error: Please try again later"
-      })
+    }
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-3.5-turbo",
+    });
+    const respone = await completion.choices[0].message.content;
+    return res.status(200).json({
+      success: true,
+      message: respone,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
-    
-}
+};
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -63,8 +63,8 @@ exports.createPost = async (req, res, next) => {
     if (!errors.isEmpty()) {
       res.status(422).json({
         status: "error",
-        message: "Validation failed, enterted data is not correct"
-      })
+        message: "Validation failed, enterted data is not correct",
+      });
     }
     const title = req.body.title;
     const content = req.body.content;
@@ -113,9 +113,9 @@ exports.createPost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -125,8 +125,8 @@ exports.getPosts = async (req, res, next) => {
   if (currentPage < 1 || isNaN(currentPage)) {
     res.status(400).json({
       status: "error",
-      message: "Invalid page number"
-    })
+      message: "Invalid page number",
+    });
   }
   try {
     const totalItems = await Post.find().countDocuments();
@@ -138,12 +138,14 @@ exports.getPosts = async (req, res, next) => {
     const postLikes = await Promise.all(
       posts.map(async (post) => {
         const likesCount = post.likes.length;
-        const commentsCount = await Comment.countDocuments({postId: post._id});
+        const commentsCount = await Comment.countDocuments({
+          postId: post._id,
+        });
         const { likes, ...postWithoutLikes } = post.toObject();
         return {
           ...postWithoutLikes,
           likesCount,
-          commentsCount
+          commentsCount,
         };
       })
     );
@@ -154,64 +156,71 @@ exports.getPosts = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 exports.getSavedPosts = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const user = await User.findById(userId).populate('savedPosts');
+    const user = await User.findById(userId).populate("savedPosts");
     if (!user) {
       return res.status(404).json({
         status: "error",
-        message: "User not found"
+        message: "User not found",
       });
     }
     const savedPostsWithCounts = await Promise.all(
       user.savedPosts.map(async (postId) => {
-        const post = await Post.findById(postId)
-          .populate("creator", ["username", "user_image"]);
+        const post = await Post.findById(postId).populate("creator", [
+          "username",
+          "user_image",
+        ]);
         if (!post) {
           return res.status(404).json({
             status: "error",
-            message: "Post not found"
-          })
+            message: "Post not found",
+          });
         }
         const likesCount = post.likes.length;
-        const commentCount = await Comment.countDocuments({postId: post._id});
-        const {likes, ...postWithoutLikes} = post.toObject();
+        const commentCount = await Comment.countDocuments({ postId: post._id });
+        const { likes, ...postWithoutLikes } = post.toObject();
         return {
           ...postWithoutLikes,
           likesCount,
-          commentCount
+          commentCount,
         };
       })
     );
-    const validSavedPosts = savedPostsWithCounts.filter(post => post !== null);
+    const validSavedPosts = savedPostsWithCounts.filter(
+      (post) => post !== null
+    );
     res.status(200).json({
       status: "success",
-      savedPosts: validSavedPosts
-    })
+      savedPosts: validSavedPosts,
+    });
   } catch (err) {
-      console.log(err);
-      return res.status(500).json({
-        status: "error", 
-        message: "Internal Server Error: Please try again later"
-      })
+    console.log(err);
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
-}
+};
 
 exports.getPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId).populate("creator", ["username", "user_image"]);
+    const post = await Post.findById(postId).populate("creator", [
+      "username",
+      "user_image",
+    ]);
 
     if (!post) {
       res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     const likesCount = post.likes.length;
@@ -222,15 +231,15 @@ exports.getPost = async (req, res, next) => {
       post: {
         ...postWithoutLikes,
         likesCount,
-        commentCount
+        commentCount,
       },
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -240,15 +249,15 @@ exports.getLikes = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) {
       res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     const likesArray = post.likes;
-    const likedUsers = await User.find(
-      { _id: { $in: likesArray } },
-      ["username", "user_image"]
-    );
+    const likedUsers = await User.find({ _id: { $in: likesArray } }, [
+      "username",
+      "user_image",
+    ]);
     res.status(200).json({
       message: "Fetched liked users successfully",
       post: {
@@ -258,9 +267,9 @@ exports.getLikes = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -270,23 +279,23 @@ exports.updatePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({
         status: "error",
-        message: "Validation failed, enterted data is not correct"
-      })
+        message: "Validation failed, enterted data is not correct",
+      });
     }
 
     if (post.creator.toString() !== req.userId) {
       res.status(403).json({
         status: "error",
-        message: 'Not authorized'
-      })
+        message: "Not authorized",
+      });
     }
 
     const title = req.body.title;
@@ -331,9 +340,9 @@ exports.updatePost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -343,15 +352,15 @@ exports.deletePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     if (post.creator.toString() !== req.userId) {
       res.status(403).json({
         status: "error",
-        message: 'Not authorized'
-      })
+        message: "Not authorized",
+      });
     }
     if (post.imageUrl) {
       await clearImageFromS3(post.imageUrl);
@@ -368,9 +377,9 @@ exports.deletePost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -380,8 +389,8 @@ exports.sharePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     const shareableUrl = `${req.protocol}://${req.get("host")}/posts/${
@@ -394,9 +403,9 @@ exports.sharePost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -406,8 +415,8 @@ exports.toggleLike = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
-        status: "error", 
-        message: "Could not find post"
+        status: "error",
+        message: "Could not find post",
       });
     }
     const currentUserId = req.userId;
@@ -420,14 +429,16 @@ exports.toggleLike = async (req, res, next) => {
     const user = await User.findById(currentUserId);
     if (!user) {
       return res.status(404).json({
-        status: "error", 
-        message: "User not found"
-      })
-    };
+        status: "error",
+        message: "User not found",
+      });
+    }
     if (post.likes.includes(currentUserId)) {
       post.likes = post.likes.filter((id) => id !== currentUserId);
       await post.save();
-      user.savedPosts = user.savedPosts.filter(savedPostId => savedPostId.toString() !== postId);
+      user.savedPosts = user.savedPosts.filter(
+        (savedPostId) => savedPostId.toString() !== postId
+      );
       user.save();
       io.getIO().emit(
         ("posts", { action: "unliked", user: currentUserId, post: post })
@@ -435,7 +446,6 @@ exports.toggleLike = async (req, res, next) => {
       return res.status(200).json({
         message: "Successfully unliked the post",
       });
-
     } else {
       await post.likes.push(currentUserId);
       if (!user.savedPosts.includes(postId)) {
@@ -459,9 +469,9 @@ exports.toggleLike = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -470,7 +480,7 @@ const sendLikeNotification = async (likerId, postCreatorId, postId) => {
   try {
     // Get the post creator's information
     const postLiker = await User.findById(likerId);
-    const postCreator = await User.findById(postCreatorId); 
+    const postCreator = await User.findById(postCreatorId);
 
     if (!postLiker || !postCreator) {
       console.log("Post creator or liker not found");
@@ -485,13 +495,12 @@ const sendLikeNotification = async (likerId, postCreatorId, postId) => {
       content: notificationContent,
       postId: postId,
       createdAt: new Date(),
-      likerId: likerId, 
+      likerId: postLiker._id,
     };
 
     // Add the notification to the post creator's notifications array
     postCreator.notifications.push(notification);
     await postCreator.save();
-
   } catch (err) {
     console.log("Error sending like notification: ", err);
   }
@@ -520,9 +529,10 @@ exports.reportPost = async (req, res, next) => {
     const postId = req.params.postId;
     const { reason } = req.body;
     if (!reason) {
-      return res.status(400).json({ 
-        status: "error", 
-        message: "No report reason provided" });
+      return res.status(400).json({
+        status: "error",
+        message: "No report reason provided",
+      });
     }
     const reportedPost = new ReportedPost({
       postId,
@@ -538,11 +548,11 @@ exports.reportPost = async (req, res, next) => {
       reportedPost: reportedPost,
     });
   } catch (err) {
-    console.log(err); 
+    console.log(err);
     return res.status(500).json({
-      status: "error", 
-      message: "Internal Server Error: Please try again later"
-    })
+      status: "error",
+      message: "Internal Server Error: Please try again later",
+    });
   }
 };
 
@@ -565,5 +575,3 @@ const clearImageFromS3 = async (imageUrl) => {
     console.log("Error deleting image from S3: ", err);
   }
 };
-
-
