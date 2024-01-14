@@ -470,14 +470,27 @@ const sendLikeNotification = async (likerId, postCreatorId, postId) => {
   try {
     // Get the post creator's information
     const postLiker = await User.findById(likerId);
-    if (!postLiker) {
-      console.log("Post creator not found");
+    const postCreator = await User.findById(postCreatorId); 
+
+    if (!postLiker || !postCreator) {
+      console.log("Post creator or liker not found");
       return;
     }
 
     // Create a notification for the post creator
     const notificationContent = `${postLiker.username} liked your post.`;
-    await createNotification(postLiker, notificationContent, postId);
+
+    // Include the liker's user ID in the notification
+    const notification = {
+      content: notificationContent,
+      postId: postId,
+      createdAt: new Date(),
+      likerId: likerId, 
+    };
+
+    // Add the notification to the post creator's notifications array
+    postCreator.notifications.push(notification);
+    await postCreator.save();
 
   } catch (err) {
     console.log("Error sending like notification: ", err);

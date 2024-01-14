@@ -22,10 +22,25 @@ const sendNotification = async (req, res) => {
 
 const getAllNotifications = async (req, res) => {
   try {
-    const notifications = getNotifications();
+    const userId = req.username; // Assuming userId is available in the request
+    const user = await User.findById(userId).populate({
+      path: 'notifications',
+      populate: [
+        { path: 'postId', model: 'Post' },
+        { path: 'likerId', model: 'User' },
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
     return res.status(200).json({
       status: "success",
-      data: notifications,
+      data: user.notifications,
     });
   } catch (err) {
     return res.status(500).json({
