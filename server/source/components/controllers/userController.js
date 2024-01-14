@@ -622,10 +622,6 @@ const followUser = async (req, res) => {
       return res.status(404).json({
         status: "error",
         message: "User not found",
-        debug: {
-          userToFollow: userToFollow,
-          user: user,
-        },
       });
     }
 
