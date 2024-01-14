@@ -446,7 +446,12 @@ const getUserNotification = async (req, res, next) => {
 
         if (notification.likerId) {
           const liker = await User.findById(notification.likerId);
-          populatedNotification.liker = liker;
+          populatedNotification.liker = {
+            _id: liker._id,
+            username: liker.username,
+            user_image: liker.user_image,
+          };
+          delete populatedNotification.liker.notifications;
         }
 
         return populatedNotification;
