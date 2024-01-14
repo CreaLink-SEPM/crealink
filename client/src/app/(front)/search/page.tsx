@@ -104,7 +104,6 @@ export default async function ExplorePage({ searchParams }: { searchParams: { [k
           <Empty description={'No user result found'} />
         </div>
       )}
-      <Footer></Footer>
     </div>
   );
 }

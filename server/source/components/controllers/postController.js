@@ -121,7 +121,7 @@ exports.createPost = async (req, res, next) => {
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
-  const perPage = 10;
+  const perPage = 5;
   if (currentPage < 1 || isNaN(currentPage)) {
     res.status(400).json({
       status: "error",
@@ -445,7 +445,7 @@ exports.toggleLike = async (req, res, next) => {
       await user.save();
 
       // Send a notification when someone likes the post
-      await sendLikeNotification(post.creator, currentUserId, postId);
+      await sendLikeNotification(currentUserId, post.creator, postId);
 
       io.getIO().emit("posts", {
         action: "liked",
@@ -466,18 +466,18 @@ exports.toggleLike = async (req, res, next) => {
 };
 
 // Function to send a notification when someone likes a post
-const sendLikeNotification = async (postCreatorId, likerId, postId) => {
+const sendLikeNotification = async (likerId, postCreatorId, postId) => {
   try {
     // Get the post creator's information
-    const postCreator = await User.findById(postCreatorId);
-    if (!postCreator) {
+    const postLiker = await User.findById(likerId);
+    if (!postLiker) {
       console.log("Post creator not found");
       return;
     }
 
     // Create a notification for the post creator
-    const notificationContent = `${postCreator.username} liked your post.`;
-    await createNotification(postCreator, notificationContent, postId);
+    const notificationContent = `${postLiker.username} liked your post.`;
+    await createNotification(postLiker, notificationContent, postId);
 
   } catch (err) {
     console.log("Error sending like notification: ", err);

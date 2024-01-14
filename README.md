@@ -46,9 +46,11 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 
 ## Technologies
 
-- ReactJS, NextJS, NextAuth, NodeJS, ExpressJS, MongoDB, i18, SocketIO, Figma, TailwindCSS, AWS, Github Action CI/CD, Vercel, Shadcn/ui, Ant Design, Docker .
+- Front-end : ReactJS, NextJS, NextAuth, i18, SocketIO Client, Figma, TailwindCSS, Vercel, Ant Design, Shadcn\ui, Postman,
+  
+- Back-end: NodeJS, ExpressJS, MongoDB, SocketIO Server, AWS (S3,EC2,..) ,Github Action CI/CD, RESTful API, Docker.
 
- 
+
 ## Contributions: 
 
 
@@ -58,5 +60,5 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 - Dinh Le Hong Tin (%).
 
  
-+ <i>Next JS: "^13.0.5" </i>
++ <i>Next JS: "^13.5.6" </i>
 + <i> Express JS : "^4.18.2" </i>  
