@@ -12,6 +12,7 @@ const uuid = require("uuid");
 const { CLIENT_RENEG_WINDOW } = require("tls");
 const client = new S3Client({ region: process.env.AWS_REGION });
 const { enqueueNotification, getIO } = require("../../socket.js");
+const Post = require("../models/postModel");
 
 const createNotification = async (user, content) => {
   try {
@@ -434,10 +435,33 @@ const getUserNotification = async (req, res, next) => {
       });
     }
 
+    const notifications = await Promise.all(
+      user.notifications.map(async (notification) => {
+        const populatedNotification = { ...notification._doc };
+
+        if (notification.postId) {
+          const post = await Post.findById(notification.postId);
+          populatedNotification.post = post;
+        }
+
+        if (notification.likerId) {
+          const liker = await User.findById(notification.likerId);
+          populatedNotification.liker = {
+            _id: liker._id,
+            username: liker.username,
+            user_image: liker.user_image,
+          };
+          delete populatedNotification.liker.notifications;
+        }
+
+        return populatedNotification;
+      })
+    );
+
     return res.status(200).json({
       status: "success",
       data: {
-        notifications: user.notifications,
+        notifications: notifications,
       },
     });
   } catch (err) {
