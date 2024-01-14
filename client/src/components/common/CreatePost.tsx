@@ -47,9 +47,11 @@
     const handleImageUpload = file => {
       const reader = new FileReader();
       reader.onloadend = () => {
+        setPostState({ ...postState, image: reader.result as string });
         setImageUploaded(true);
       };
       reader.readAsDataURL(file);
+      console.log(file);
     };
     
     useEffect(() => {
@@ -89,6 +91,8 @@
       }
     };
     const handlePost = async () => {
+      if (!session) return;
+      const token = session.user?.accessToken;
       try {
         setLoading(true);
   
@@ -99,7 +103,13 @@
         formData.append('image', postState.image);
   
         // Send POST request with form data
-        const response = await axios.post('http://54.169.199.32:5000/api/feed/post', formData);
+        const response = await axios.post('http://54.169.199.32:5000/api/feed/post', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+          }
+        });
+
   
         setLoading(false);
   
@@ -109,6 +119,7 @@
             message: 'Post created successfully',
             description: response.data.message,
           });
+          console.log(response)
         } else if (response.data.status === 'error') {
           setErrors(response.data.message.error);
         }
@@ -152,7 +163,7 @@
           title="Create New Post"
           centered
           visible={isModalOpen}
-          onOk={handleOk}
+          onOk={handlePost}
           footer={null}
           onCancel={handleCancel}
         >
@@ -179,6 +190,7 @@
               action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
               listType="picture"
               maxCount={1}
+              onChange={handleImageUpload }
             >
               <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
             </Upload>
@@ -189,7 +201,7 @@
             <Button onClick={handleCancel} style={{ marginRight: 8 }}>
               Cancel
             </Button>
-            <Button type="primary" onClick={handleOk} style={{
+            <Button type="primary" onClick={handlePost} style={{
             backgroundColor: 'lightgrey',
             borderColor: 'lightgrey',
             ':hover': { backgroundColor: 'blue' },
