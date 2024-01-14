@@ -102,104 +102,7 @@ const SocialMediaPost = () => {
             setLikedPosts([...likedPosts, postId])
         }
     }
-    // const handleLikeToggle = async (postId) => {
-    //     if (!session) return;
-    //      const token = session.user?.accessToken;
-    //     try {
-    //         const response = await axios.put(`http://54.169.199.32:5000/api/feed/like/${postId}`, null, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             },
-    //         });
-    //         console.log('RESPONE',response);
-    
-    //         if (response.status === 200) {
-    //             // Toggle like was successful, update likedPosts state
-    //             if (likedPosts.includes(postId)) {
-    //                 const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
-    //                 setLikedPosts(updatedLikedPosts);
-    //             } else {
-    //                 setLikedPosts([...likedPosts, postId]);
-    //                 console.log(`Post ${postId} liked!`);
-    //             }
-    //         } else {
-    //             // Handle other response statuses if needed
-    //             console.error(`Failed to toggle like. Status: ${response.status}`);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error toggling like:", error);
-    //     }
-    // };
-    
 
-    // Rest of your component...
-
-
-
-    // useEffect(() => {
-    //     const fetchPosts = async () => {
-    //         try {
-    //             const response = await axios.get(`${apiUrl}/posts`);
-    //             setPosts(response.data.posts);
-    //         } catch (err: any) {
-    //             setError(err.message);
-    //         }
-    //     };
-
-    //     fetchPosts();
-    // }, []);
-
-    // const createPost = async (postData: PostData) => {
-    //     try {
-    //         await axios.post(`${apiUrl}/post`, postData);
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-    // const updatePost = async (postId: string, updatedData: PostData) => {
-    //     try {
-    //         await axios.put(`${apiUrl}/post/${postId}`, updatedData);
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-
-    // const deletePost = async (postId: string) => {
-    //     try {
-    //         await axios.delete(`${apiUrl}/post/${postId}`);
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-    // const toggleLike = async (postId: string) => {
-    //     try {
-    //         await axios.put(`${apiUrl}/like/${postId}`);
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-    // const sharePost = async (postId: string) => {
-    //     try {
-    //         const response = await axios.get(`${apiUrl}/share/${postId}`);
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-    // const reportPost = async (postId: string, reason: string) => {
-    //     try {
-    //         await axios.post(`${apiUrl}/report/${postId}`, { reason });
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     }
-    // };
-
-    // if (error) return <div>Error: {error}</div>;
-    // if (!posts.length) return <div>Loading...</div>;
 
 
     const menu = (
@@ -247,7 +150,7 @@ const SocialMediaPost = () => {
                      {/* Timestamp */}
                      <div className="ml-auto">
                          {post.creator && (
-                         <span className="timestamp ml-2">{moment(post.createdAt).startOf('day').fromNow()}</span>
+                         <span className="timestamp ml-2">{moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
                          )}
                      </div>
  
@@ -264,15 +167,22 @@ const SocialMediaPost = () => {
                      </div>
                      </div>
                       {/* Post Content */}
-                      <div className="post-content">
-                          {/* Main Post Image or Text */}
-                          <h1>{post.title}</h1>   
-                          <p>{post.content}</p>
-                          <div className="main-post-image overflow-hidden">
-                              <img src={post.imageUrl || "/assets/images/profile.jpg"}  alt="Post content" className="w-full h-full object-cover rounded-lg"/>
-                          </div>
-                      </div>
- 
+                      {/* Post Content */}
+                    <div className="post-content">
+                        {/* Main Post Image or Text */}
+                        <h1>{post.title}</h1>   
+                        <p>{post.content}</p>
+                        {post.imageUrl && (
+                            <div className="main-post-image overflow-hidden">
+                                <img
+                                    src={post.imageUrl} // Use the imageUrl from the API response
+                                    alt="Post content"
+                                    className="w-full h-full object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
+                    </div>
+
                       {/* Post Interaction and Footer Container */}
                       <div className="post-interaction-footer-container flex flex-col justify-between">
                          {/* Interaction Icons */}

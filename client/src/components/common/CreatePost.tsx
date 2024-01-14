@@ -43,16 +43,6 @@
     const [modal1Open, setModal1Open] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
 
-
-    const handleImageUpload = file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPostState({ ...postState, image: reader.result as string });
-        setImageUploaded(true);
-      };
-      reader.readAsDataURL(file);
-      console.log(file);
-    };
     
     useEffect(() => {
       const delay = setTimeout(() => {
@@ -83,6 +73,20 @@
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
+    const handleImageUpload = (file: File) => {
+      try {
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setPostState({ ...postState, image: reader.result as string });
+            setImageUploaded(true);
+          };
+          reader.readAsDataURL(file);
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    };
 
     const handleKeyPress = (event: React.KeyboardEvent) => {
       if (event.key === ' ' && inputValue === '') {
@@ -90,17 +94,21 @@
         setShowAutoInput(true);
       }
     };
-    const handlePost = async () => {
+    const handlePost = async (event: React.FormEvent) => {
+      event.preventDefault(); // Prevent
       if (!session) return;
       const token = session.user?.accessToken;
       try {
-        setLoading(true);
+        setLoading(false);
   
         // Create FormData object and append form fields
         const formData = new FormData();
+        const pictureInput = document.getElementById('picture') as HTMLInputElement;
+        if (pictureInput.files && pictureInput.files[0]) {
+          formData.append('image', pictureInput.files[0]);
+        }
         formData.append('title', postState.title);
         formData.append('content', postState.content);
-        formData.append('image', postState.image);
   
         // Send POST request with form data
         const response = await axios.post('http://54.169.199.32:5000/api/feed/post', formData, {
@@ -109,28 +117,30 @@
             Authorization: `Bearer ${token}`
           }
         });
-
+        console.log('CREATE POST RESPONE ', response)
   
         setLoading(false);
   
-        if (response.data.status === 'success') {
-          router.push(`/success?message=${response.data.message}`);
-          notification.success({
-            message: 'Post created successfully',
-            description: response.data.message,
-          });
-          console.log(response)
-        } else if (response.data.status === 'error') {
-          setErrors(response.data.message.error);
-        }
+        setPostState({
+        title: response.title,
+        content: response.content,
+        image: response.image
+        });
+        notification.success({
+          message: 'Post created',
+          description: 'Try to reload the page'
+        })
       } catch (error) {
-        console.error(error);
+        console.log('The error is ', error);
         notification.error({
           message: 'Post creation failed',
-          description: 'Please fill in all required fields',
+          description: 'Please fill in all required fields'
         });
+      } finally {
         setLoading(false);
+        setIsModalOpen(false)
       }
+     
     };
     const handleCancel = () => {
       setIsModalOpen(false);
@@ -185,23 +195,14 @@
           />
   
           {/* Image upload section */}
-          <Space direction="vertical" style={{ width: '100%' }} size="large">
-            <Upload
-              action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-              listType="picture"
-              maxCount={1}
-              onChange={handleImageUpload }
-            >
-              <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
-            </Upload>
-          </Space>
+          <Input id="picture" type="file" lang="en" />
   
           {/* Action buttons */}
           <div style={{ marginTop: 16, textAlign: 'right' }}>
             <Button onClick={handleCancel} style={{ marginRight: 8 }}>
               Cancel
             </Button>
-            <Button type="primary" onClick={handlePost} style={{
+            <Button type="submit" onClick={handlePost} style={{
             backgroundColor: 'lightgrey',
             borderColor: 'lightgrey',
             ':hover': { backgroundColor: 'blue' },
