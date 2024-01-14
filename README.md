@@ -46,9 +46,17 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 
 ## Technologies
 
-- Front-end : ReactJS, NextJS, NextAuth, i18, SocketIO Client, Figma, TailwindCSS, Vercel, Ant Design, Shadcn\ui, Postman,
+- Front-end : ReactJS, NextJS, NextAuth, Typescript, i18, SocketIO Client, Figma, TailwindCSS, Ant Design, Shadcn/ui, Postman.
   
 - Back-end: NodeJS, ExpressJS, MongoDB, SocketIO Server, AWS (S3,EC2,..) ,Github Action CI/CD, RESTful API, Docker.
+
+- Deployment: Vercel 
+
+- Version control: Git
+  
+- Package Managers: npm, yarn
+
+- Agile/Scrum Tools: Jira
 
 
 ## Contributions: 
