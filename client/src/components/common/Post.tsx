@@ -1,41 +1,50 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Skeleton } from "@/components/ui/skeleton"
 // import { Dropdown, Menu } from 'antd';
 const {Dropdown, Menu} = require('antd');
 const {useSession} = require('next-auth/react');
+
 // import axios, { AxiosError } from 'axios';
 const axios = require('axios');
+const confirm = (e: React.MouseEvent<HTMLElement>) => {
+  console.log(e);
+  message.success('Report successfully, we will look into it !!!');
+};
+
+const cancel = (e: React.MouseEvent<HTMLElement>) => {
+  console.log(e);
+  message.error('Cancel report');
+};
 
 interface PostData {
-    [key: string]: any;
+  [key: string]: any;
 }
 
 interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  creator: {
     _id: string;
-    title: string;
-    content: string;
-    creator: {
-        _id: string;
-        username: string;
-        user_image: string;
-    };
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-    likesCount: number;
-    commentsCount: number;
-    comments: Comment[];
+    username: string;
+    user_image: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  likesCount: number;
+  commentsCount: number;
+  comments: Comment[];
 }
 
-
-
-
 const SocialMediaPost = () => {
+
     const {data: session} = useSession();
     const [posts, setPosts] = useState("");
     console.log('POSTS ',posts);
@@ -214,16 +223,44 @@ const SocialMediaPost = () => {
                              <span>{post.commentsCount} comments</span>
                          </div>
  
-                        </div>
- 
-                    </div>
-                                     ))}
 
-    </>
-    )}
+                        </div>
+                        <DialogFooter className="sm:justify-start">
+                          <DialogClose asChild>
+                            <Button style={{ background: '#a2383a', color: 'white' }}>Close</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  {/* Post Footer */}
+                  <div className="post-footer">
+                    {/* Likes and Comments Info */}
+                    <span className="mr-2">{post.likesCount} likes .</span>
+                    <span>{post.commentsCount} comments</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          {loadingMoreButton && (
+            <Flex gap="large" vertical align="center" wrap="wrap">
+              <Button
+                style={{ background: '#a2383a', color: 'white' }}
+                loading={loadingMore}
+                onClick={enterLoading}
+                className="border-none text-white w-30 h-20 ml-[20%]"
+              >
+                Loading more
+              </Button>
+            </Flex>
+          )}
+        </>
+      )}
     </div>
 
     );
+
 };
 
 export default SocialMediaPost;

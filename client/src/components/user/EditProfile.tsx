@@ -35,6 +35,19 @@ function EditProfile({ children }: { children: React.ReactNode }) {
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (
+      authState.username === '' &&
+      authState.email === '' &&
+      authState.password === ''
+    ) {
+      // No changes, show an error notification
+      notification.error({
+        message: 'No changes made',
+        description: 'Please make changes to your profile before saving.',
+      });
+      return;
+    }
+
     const formData = new FormData();
     const pictureInput = document.getElementById('picture') as HTMLInputElement;
 
@@ -42,10 +55,11 @@ function EditProfile({ children }: { children: React.ReactNode }) {
     if (pictureInput.files && pictureInput.files[0]) {
       formData.append('image', pictureInput.files[0]);
     }
-
+    
     formData.append('username', authState.username);
     formData.append('email', authState.email);
     formData.append('password', authState.password);
+
 
     axios
       .post(`http://54.169.199.32:5000/api/user/avatar/${session?.user?.id}`, formData, {
@@ -64,16 +78,21 @@ function EditProfile({ children }: { children: React.ReactNode }) {
           email: response.email,
           password: response.password,
         });
+
+        notification.success({
+          message: 'Profile updated',
+          description: 'Try to login again to see changes',
+        })
+        closeModal();
       })
       .catch(err => {
         console.log('The error is', err);
+        notification.error({
+          message: 'Error updating profile',
+          description: 'There was an error while updating your profile. Please try again.',
+        });
       });
 
-    notification.success({
-      message: 'Profile updated',
-      description: 'Try to login again to see changes',
-    })
-    closeModal();
   };
 
   return (

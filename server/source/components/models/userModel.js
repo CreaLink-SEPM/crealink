@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema(
       {
         content: { type: String, required: true },
         postId: { type: Schema.Types.ObjectId, ref: "Post" },
+        likerId: { type: Schema.Types.ObjectId, ref: "User" },
         createdAt: { type: Date, default: Date.now },
         read: { type: Boolean, default: false },
       },
