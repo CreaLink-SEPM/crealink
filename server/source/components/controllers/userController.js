@@ -434,10 +434,28 @@ const getUserNotification = async (req, res, next) => {
       });
     }
 
+    const notifications = await Promise.all(
+      user.notifications.map(async (notification) => {
+        const populatedNotification = { ...notification._doc };
+
+        if (notification.postId) {
+          const post = await Post.findById(notification.postId);
+          populatedNotification.post = post;
+        }
+
+        if (notification.likerId) {
+          const liker = await User.findById(notification.likerId);
+          populatedNotification.liker = liker;
+        }
+
+        return populatedNotification;
+      })
+    );
+
     return res.status(200).json({
       status: "success",
       data: {
-        notifications: user.notifications,
+        notifications: notifications,
       },
     });
   } catch (err) {
