@@ -534,40 +534,46 @@ const searchUser = async (req, res) => {
 
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
-      const followersCount = user.followers.length;
+      try {
+        const followersCount = user.followers.length;
 
-      // Check if the current user follows the user in the iteration
-      const isFollowed =
-        currentUser.following &&
-        currentUser.following.some(
-          (following) => following.id.toString() === user._id.toString()
-        );
+        // Check if the current user follows the user in the iteration
+        const isFollowed =
+          currentUser.following &&
+          currentUser.following.some(
+            (following) => following.id.toString() === user._id.toString()
+          );
 
-      // Select up to 3 random followers' images
-      const followerImages =
-        followersCount > 0
-          ? user.followers
-              .filter((follower) => follower.user_image)
-              .slice(0, Math.min(followersCount, 3))
-              .map((follower) => follower.user_image)
-          : [];
+        // Select up to 3 random followers' images
+        const followerImages =
+          followersCount > 0
+            ? user.followers
+                .filter((follower) => follower.user_image)
+                .slice(0, Math.min(followersCount, 3))
+                .map((follower) => follower.user_image)
+            : [];
 
-      return {
-        _id: user._id,
-        username: user.username,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        followers: followersCount,
-        follower_images: followerImages,
-        is_verified: user.is_verified,
-        isFollowed: isFollowed || false, // Set to false if undefined
-      };
+        return {
+          _id: user._id,
+          username: user.username,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          followers: followersCount,
+          follower_images: followerImages,
+          is_verified: user.is_verified,
+          isFollowed: isFollowed || false, // Set to false if undefined
+        };
+      } catch (error) {
+        console.error("Error in mapping user data:", error);
+        console.error("User data:", user);
+        return null;
+      }
     });
 
     return res.status(200).json({
       status: "success",
-      data: usersData,
+      data: usersData.filter((user) => user !== null), // Remove null entries
     });
   } catch (err) {
     return res.status(500).json({
