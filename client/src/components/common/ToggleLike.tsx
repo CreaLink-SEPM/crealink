@@ -14,13 +14,13 @@ interface ToggleLikeProps {
 }
 
 const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, posts, session }) => {
-  const [liked, setLiked] = useState<boolean>(false);
+    const [liked, setLiked] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Check local storage for liked status
     const storedLikedStatus = localStorage.getItem(`liked_${postId}`);
-    console.log('Stored liked status:', storedLikedStatus);
-    if (storedLikedStatus) {
+    if (storedLikedStatus !== null) {
+      // Use the storedLikedStatus directly instead of comparing with 'true'
       setLiked(storedLikedStatus === 'true');
     }
   }, [postId]);
@@ -29,9 +29,12 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
     // Check server state and update liked status accordingly
     const post = posts.find((post) => post._id === postId);
     if (post) {
-      setLiked(post.likes?.includes(session.user?._id) || false);
-    }
-  }, [posts, postId, session]);
+        const serverLikedStatus = post.likes?.includes(session.user?._id) || false;
+        if (serverLikedStatus !== liked) {
+          setLiked(serverLikedStatus);
+        }
+      }
+    }, [posts, postId, session]);
 
   const handleLikeToggle = async () => {
     if (!session) {
@@ -83,7 +86,6 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
     }
   };
   
-
   return (
     <button
       className={`w-[36px] h-[36px] object-cover mr-2 cursor-pointer`}
