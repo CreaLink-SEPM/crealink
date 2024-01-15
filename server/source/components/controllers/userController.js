@@ -538,9 +538,11 @@ const searchUser = async (req, res) => {
       const followerImages = [];
 
       // Check if the current user follows the user in the iteration
-      const isFollowed = currentUser.following.some(
-        (following) => following.id.toString() === user._id.toString()
-      );
+      const isFollowed =
+        currentUser.following &&
+        currentUser.following.some(
+          (following) => following.id.toString() === user._id.toString()
+        );
 
       // Select up to 3 random followers' images
       if (followersCount > 0) {
@@ -566,7 +568,7 @@ const searchUser = async (req, res) => {
         followers: followersCount,
         follower_images: followerImages,
         is_verified: user.is_verified,
-        isFollowed: isFollowed,
+        isFollowed: isFollowed || false,
       };
     });
 
