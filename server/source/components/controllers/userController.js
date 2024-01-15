@@ -535,7 +535,6 @@ const searchUser = async (req, res) => {
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
       const followersCount = user.followers.length;
-      const followerImages = [];
 
       // Check if the current user follows the user in the iteration
       const isFollowed =
@@ -545,20 +544,13 @@ const searchUser = async (req, res) => {
         );
 
       // Select up to 3 random followers' images
-      if (followersCount > 0) {
-        const randomIndexes = Array.from(
-          { length: Math.min(followersCount, 3) },
-          () => Math.floor(Math.random() * followersCount)
-        );
-
-        randomIndexes.forEach((index) => {
-          const follower = user.followers[index];
-          // Ensure that the follower at the selected index exists and has an image
-          if (follower && follower.user_image) {
-            followerImages.push(follower.user_image);
-          }
-        });
-      }
+      const followerImages =
+        followersCount > 0
+          ? user.followers
+              .filter((follower) => follower.user_image)
+              .slice(0, Math.min(followersCount, 3))
+              .map((follower) => follower.user_image)
+          : [];
 
       return {
         _id: user._id,
