@@ -532,10 +532,12 @@ const searchUser = async (req, res) => {
       });
     }
 
+    console.log("Users:", users);
+
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
       try {
-        const followersCount = user.followers.length;
+        const followersCount = user.followers ? user.followers.length : 0;
 
         // Check if the current user follows the user in the iteration
         const isFollowed =
@@ -547,7 +549,7 @@ const searchUser = async (req, res) => {
         // Select up to 3 random followers' images
         const followerImages =
           followersCount > 0
-            ? user.followers
+            ? (user.followers || [])
                 .filter((follower) => follower.user_image)
                 .slice(0, Math.min(followersCount, 3))
                 .map((follower) => follower.user_image)
@@ -576,6 +578,7 @@ const searchUser = async (req, res) => {
       data: usersData.filter((user) => user !== null), // Remove null entries
     });
   } catch (err) {
+    console.error("Error in searchUser:", err);
     return res.status(500).json({
       status: "error",
       message: err.message,
