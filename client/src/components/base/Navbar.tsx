@@ -15,7 +15,7 @@ function Navbar() {
 
 
   return (
-    <div className="w-[600px] ml-[8%] flex justify-center space-x-20">
+    <div className="w-[600px] ml-[13%] flex justify-center space-x-20">
       {icons.map((icon, index) => (
         <Link key={index} href={hrefs[index]} passHref>
           <div className="flex flex-col items-center cursor-pointer">

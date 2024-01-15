@@ -27,7 +27,7 @@ export default function SearchBar() {
       <form onSubmit={submit}>
         <input
           type="search"
-          className="w-[80%] float-right mr-10 mb-3 flex-1 rounded-2xl h-16 p-5 text-slate-500 bg-muted outline-none"
+          className="w-[80%] float-right mr-6 mb-3 flex-1 rounded-2xl h-16 p-5 text-slate-500 bg-muted outline-none"
           placeholder=" 🔍   Search for a user..."
           value={query}
           onChange={e => setQuery(e.target.value)}

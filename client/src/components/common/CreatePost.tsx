@@ -10,7 +10,7 @@ import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useToast } from "@/src/components/ui/use-toast"
+import { useToast } from '@/src/components/ui/use-toast';
 import { notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import Comment from './Comment';
@@ -43,7 +43,6 @@ const CreatePost: React.FC = () => {
   const [modal1Open, setModal1Open] = useState(false);
   const [modal2Open, setModal2Open] = useState(false);
 
-  
   useEffect(() => {
     const delay = setTimeout(() => {
       setLoading(true);
@@ -67,7 +66,6 @@ const CreatePost: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-
   }, [showAutoInput, inputValue]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,33 +112,32 @@ const CreatePost: React.FC = () => {
       const response = await axios.post('http://54.169.199.32:5000/api/feed/post', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      console.log('CREATE POST RESPONE ', response)
+      console.log('CREATE POST RESPONE ', response);
 
       setLoading(false);
 
       setPostState({
-      title: response.title,
-      content: response.content,
-      image: response.image
+        title: response.title,
+        content: response.content,
+        image: response.image,
       });
       notification.success({
         message: 'Post created',
-        description: 'Try to reload the page'
-      })
+        description: 'Try to reload the page',
+      });
     } catch (error) {
       console.log('The error is ', error);
       notification.error({
         message: 'Post creation failed',
-        description: 'Please fill in all required fields'
+        description: 'Please fill in all required fields',
       });
     } finally {
       setLoading(false);
-      setIsModalOpen(false)
+      setIsModalOpen(false);
     }
-   
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -151,7 +148,7 @@ const CreatePost: React.FC = () => {
     console.log('Title:', postState.title);
     console.log('Content:', postState.content);
     console.log('Image:', postState.image);
-    
+
     // Close the modal
     setIsModalOpen(false);
   };
@@ -166,8 +163,29 @@ const CreatePost: React.FC = () => {
         placeholder="Click here to create new post"
         onClick={() => setIsModalOpen(true)}
         onChange={handleInputChange}
-        style={{ backgroundColor: 'light', borderColor: 'lightgrey' }}
+        style={{
+          backgroundColor: 'light',
+          borderColor: 'lightgrey',
+          width: '125%',
+          padding: '14px',
+          margin: '8px 8px',
+          borderRadius: '8px 8px',
+        }}
       />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="cursor-pointer relative left-[120%] top-[-45px] w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+        />
+      </svg>
 
       <Modal
         title="Create New Post"
@@ -182,15 +200,16 @@ const CreatePost: React.FC = () => {
         <Input
           placeholder="Title"
           value={postState.title}
-          onChange={(e) => setPostState({ ...postState, title: e.target.value })}
+          onChange={e => setPostState({ ...postState, title: e.target.value })}
           style={{ marginBottom: 16 }}
         />
 
         {/* Content input */}
         <Input.TextArea
           placeholder="Content"
+          rows={10}
           value={postState.content}
-          onChange={(e) => setPostState({ ...postState, content: e.target.value })}
+          onChange={e => setPostState({ ...postState, content: e.target.value })}
           style={{ marginBottom: 16 }}
         />
 

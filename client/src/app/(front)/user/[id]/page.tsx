@@ -94,7 +94,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                           src= {user?.follower?.user_image||'/assets/images/avatar.png'}
                           className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
                         />
-                        <p>{user?.follower[0].name}</p>
+                        <p>{user?.followers[0]?.name}</p>
                       </div>
                     </CardHeader>
                   </Card>
