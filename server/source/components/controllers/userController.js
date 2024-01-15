@@ -499,6 +499,25 @@ const searchUser = async (req, res) => {
       });
     }
 
+    // Check if req.userId is available
+    if (!req.userId) {
+      return res.status(401).json({
+        status: "error",
+        message: "User ID not provided",
+      });
+    }
+
+    // Get the current user to check if they follow other users
+    const currentUser = await User.findById(req.userId);
+
+    // Check if currentUser is null or undefined
+    if (!currentUser) {
+      return res.status(404).json({
+        status: "error",
+        message: "Current user not found",
+      });
+    }
+
     const users = await User.find({
       $or: [
         { username: { $regex: searchQuery, $options: "i" } },
@@ -512,9 +531,6 @@ const searchUser = async (req, res) => {
         message: "No users found",
       });
     }
-
-    // Get the current user to check if they follow other users
-    const currentUser = await User.findById(req.userId); // Assuming userId is available in req
 
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
