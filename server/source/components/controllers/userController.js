@@ -507,8 +507,8 @@ const searchUser = async (req, res) => {
       });
     }
 
-    // Get the current user to check if they follow other users
-    const currentUser = await User.findById(req.userId);
+    // Get the current user and populate the 'following' field
+    const currentUser = await User.findById(req.userId).populate("following");
 
     // Check if currentUser is null or undefined
     if (!currentUser) {
