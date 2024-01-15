@@ -2,23 +2,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Popconfirm, message, Button } from 'antd';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@radix-ui/react-dropdown-menu';
-import { Input } from '../ui/input';
-import { CopyIcon } from 'lucide-react';
-const { Dropdown, Menu, Flex } = require('antd');
-const { useSession } = require('next-auth/react');
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { Skeleton } from "@/components/ui/skeleton"
+// import { Dropdown, Menu } from 'antd';
+const {Dropdown, Menu} = require('antd');
+const {useSession} = require('next-auth/react');
+
 // import axios, { AxiosError } from 'axios';
 const axios = require('axios');
 const confirm = (e: React.MouseEvent<HTMLElement>) => {
@@ -53,273 +44,186 @@ interface Post {
 }
 
 const SocialMediaPost = () => {
-  const { data: session } = useSession();
-  const [posts, setPosts] = useState('');
-  console.log('POSTS ', posts);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [loadingMoreButton, setLoadingMoreButton] = useState<boolean>(false);
-  const [modal2Open, setModal2Open] = useState(false);
 
-  const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
+    const {data: session} = useSession();
+    const [posts, setPosts] = useState("");
+    console.log('POSTS ',posts);
+    const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState<number | null>(1);
+    const [loading, setLoading] = useState(true);
+    const [likedPosts, setLikedPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!session) return;
-      const token = session.user?.accessToken;
-      console.log('Access token: ', token);
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        console.log(response);
-        const data = response.data;
-        console.log('RESPONE DATA ', data);
-        if (response.status !== 200) {
-          throw new Error(`Failed to fetch data. Status: ${response.status}`);
-        }
+    const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!session) return;
+            const token = session.user?.accessToken;
+            console.log('Access token: ', token);
+            try {
+                const response = await axios.get(apiUrl, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                });
+                console.log(response);
+                const data = response.data;
+                console.log('RESPONE DATA ',data);
+                if (response.status !== 200) {
+                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                }
 
-        if (!response.data || !response.data.posts) {
-          throw new Error(`Failed to fetch data. Response: ${JSON.stringify(response.data)}`);
-        }
+                if (!response.data || !response.data.posts) {
+                    throw new Error(`Failed to fetch data. Response: ${JSON.stringify(response.data)}`);
+                }
 
-        const delay = setTimeout(() => {
-          setPosts(data.posts);
-          setLoadingMore(false);
-        }, 100);
+                setPosts(data.posts);
 
-        // Clear the timeout on component unmount
-        return () => clearTimeout(delay);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoadingInitial(false);
-      }
-    };
+                // Extract post IDs and call handleLikeToggle for each post
+                const postIds = data.posts.map(post => post._id);
+                postIds.forEach(postId => handleLikeToggle(postId))
+              
 
-    fetchData();
-  }, [session]);
+            } catch (error) {
+                console.log(error);
 
-  // LOAD MORE PAGE
-  const enterLoading = async () => {
-    try {
-      setLoadingMore(true);
-
-      const response = await axios.get(apiUrl, {
-        headers: {
-          Authorization: `Bearer ${session.user?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // Assuming that your API returns a 'posts' property in the response data
-      const newData = response.data.posts;
-
-      setPosts(prevPosts => [...prevPosts, ...newData]);
-    } catch (error) {
-      console.error('Error loading more posts:', error);
-    } finally {
-      setLoadingMore(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [session]);
+    const likeButtonStyle = (postId) => {
+        return {
+            transition: 'transform 0.3s ease-in-out',
+            ...(likedPosts.includes(postId) && {
+                color: 'red',
+                transform: 'scale(1.2)',
+            }),
+        };
     }
-  };
+    const handleLikeToggle = (postId) => {
+        if (likedPosts.includes(postId)) {
+            const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+            setLikedPosts(updatedLikedPosts);
+        } else {
+            setLikedPosts([...likedPosts, postId])
+        }
+    }
 
-  useEffect(() => {
-    // Delay the appearance of the "Loading more" button for an additional 3 seconds
-    const delayLoadMoreButton = setTimeout(() => {
-      setLoadingMoreButton(true);
-    }, 3000);
 
-    return () => clearTimeout(delayLoadMoreButton);
-  }, []);
 
-  // Rest of your component...
-
-  // useEffect(() => {
-  //     const fetchPosts = async () => {
-  //         try {
-  //             const response = await axios.get(`${apiUrl}/posts`);
-  //             setPosts(response.data.posts);
-  //         } catch (err: any) {
-  //             setError(err.message);
-  //         }
-  //     };
-
-  //     fetchPosts();
-  // }, []);
-
-  // const createPost = async (postData: PostData) => {
-  //     try {
-  //         await axios.post(`${apiUrl}/post`, postData);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const updatePost = async (postId: string, updatedData: PostData) => {
-  //     try {
-  //         await axios.put(`${apiUrl}/post/${postId}`, updatedData);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const deletePost = async (postId: string) => {
-  //     try {
-  //         await axios.delete(`${apiUrl}/post/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const toggleLike = async (postId: string) => {
-  //     try {
-  //         await axios.put(`${apiUrl}/like/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const sharePost = async (postId: string) => {
-  //     try {
-  //         const response = await axios.get(`${apiUrl}/share/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const reportPost = async (postId: string, reason: string) => {
-  //     try {
-  //         await axios.post(`${apiUrl}/report/${postId}`, { reason });
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // if (error) return <div>Error: {error}</div>;
-  // if (!posts.length) return <div>Loading...</div>;
-
-  const menu = (
-    <Popconfirm
-      title="Report this post"
-      description="Are you sure to report this post?"
-      okText="Yes"
-      cancelText="No"
-      onConfirm={confirm}
-      onCancel={cancel}
-    >
-      <Button style={{ color: 'red', border: '1px solid red' }}>Report</Button>
-    </Popconfirm>
-  );
-  return (
-    <div className="relative">
-      {loadingInitial ? (
-        <>
+    const menu = (
+        <Menu>
+            <Menu.Item style={{ color: 'red', fontWeight: 'bold'}}>
+                Report</Menu.Item>
+        </Menu>
+    );
+    return (
+         <div>
+             {loading ? (
+            <>
           <Skeleton className="h-12 w-12 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[250px]" />
-            <Skeleton className="h-4 w-[200px]" />
-          </div>
-        </>
-      ) : (
-        <>
-          {posts &&
-            posts?.map(post => (
-              <div
-                key={post._id}
-                className="relative w-[572px] h-[533.99px]"
-                style={{ borderTop: '0.5px solid lightgrey', marginBottom: '33px' }}
-              >
-                {/* Post Header */}
-                <div className="post-header flex items-center mt-3">
-                  {/* User Profile Picture */}
-                  <div className="user-profile-picture mr-2">
-                    {/* Dynamic user image URL */}
-                    <div
-                      className="w-[36px] h-[36px] rounded-[18px] bg-cover"
-                      style={{ backgroundImage: `url(${post.creator.user_image})` }}
-                    />
-                  </div>
+        <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+        </div>
+            </>
 
-                  {/* User Name */}
-                  <div className="user-info flex items-center">
-                    {post.creator && <span className="user-name font-bold">{post.creator.username}</span>}
-                  </div>
+          ) : (
+            <>
+              {posts && 
+              posts?.map((post) => (
+                  <div key={post._id} className="relative w-[572px] h-[533.99px]"
+                       style={{borderTop: '0.5px solid lightgrey', marginBottom: '33px'}}>
+ 
+                      {/* Post Header */}
+                     <div className="post-header flex items-center mt-3">
+                     {/* User Profile Picture */}
+                     <div className="user-profile-picture mr-2">
+                         {/* Dynamic user image URL */}
+                         <div
+                         className="w-[36px] h-[36px] rounded-[18px] bg-cover"
+                         style={{ backgroundImage: `url(${post.creator.user_image})` }}
+                         />
+                     </div>
+ 
+                     {/* User Name */}
+                     <div className="user-info flex items-center">
+                         {post.creator && (
+                         <span className="user-name font-bold">{post.creator.username}</span>
+                         )}
+                     </div>
+ 
+                     {/* Timestamp */}
+                     <div className="ml-auto">
+                         {post.creator && (
+                         <span className="timestamp ml-2">{moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
+                         )}
+                     </div>
+ 
+                     {/* Dropdown Menu */}
+                     <div className="dropdown-menu ml-2">
+                         {/* Dropdown component */}
+                         <Dropdown overlay={menu} placement="bottomRight">
+                         <img
+                             className="w-30 h-22 object-cover"
+                             alt="Div margin"
+                             src="https:c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
+                         />
+                         </Dropdown>
+                     </div>
+                     </div>
+                      {/* Post Content */}
+                      {/* Post Content */}
+                    <div className="post-content">
+                        {/* Main Post Image or Text */}
+                        <h1>{post.title}</h1>   
+                        <p>{post.content}</p>
+                        {post.imageUrl && (
+                            <div className="main-post-image overflow-hidden">
+                                <img
+                                    src={post.imageUrl} // Use the imageUrl from the API response
+                                    alt="Post content"
+                                    className="w-full h-full object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
+                    </div>
 
-                  {/* Timestamp */}
-                  <div className="ml-auto">
-                    {post.creator && (
-                      <span className="timestamp ml-2">{moment(post.createdAt).startOf('day').fromNow()}</span>
-                    )}
-                  </div>
+                      {/* Post Interaction and Footer Container */}
+                      <div className="post-interaction-footer-container flex flex-col justify-between">
+                         {/* Interaction Icons */}
+                         <div className="post-interactions flex items-center">
+                             {/* Icons for like and comment */}
+                             <button
+                                className={`w-[36px] h-[36px] object-cover mr-2 cursor-pointer`}
+                                onClick={() => handleLikeToggle(post._id)}
+                                style={likeButtonStyle(post._id)}
+                            >
+                                <FontAwesomeIcon icon={faHeart} className={`fa-lg ${likedPosts.includes(post._id) ? 'text-red-500' : ''}`} />
+                            </button>
+                             <img
+                             className="w-[36px] h-[36px] object-cover mr-2"
+                             alt="Comment icon"
+                             src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
+                             />
+                             <img
+                             className="w-[20px] h-[20px] top-[8px] left-[8px]"
+                             alt="Reshare icon"
+                             src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
+                             />
+                         </div>
+ 
+                         {/* Post Footer */}
+                         <div className="post-footer">
+                             {/* Likes and Comments Info */}
+                             <span className="mr-2">{post.likesCount} likes .</span>
+                             <span>{post.commentsCount} comments</span>
+                         </div>
+ 
 
-                  {/* Dropdown Menu */}
-                  <div className="dropdown-menu ml-2">
-                    {/* Dropdown component */}
-                    <Dropdown overlay={menu} placement="bottomRight">
-                      <img
-                        className="w-30 h-22 object-cover"
-                        alt="Div margin"
-                        src="https:c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
-                      />
-                    </Dropdown>
-                  </div>
-                </div>
-                {/* Post Content */}
-                <div className="post-content">
-                  {/* Main Post Image or Text */}
-                  <h1>{post.title}</h1>
-                  <p>{post.content}</p>
-                  <div className="main-post-image overflow-hidden">
-                    <img
-                      src={post.imageUrl || '/assets/images/profile.jpg'}
-                      alt="Post content"
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                {/* Post Interaction and Footer Container */}
-                <div className="post-interaction-footer-container flex flex-col justify-between">
-                  {/* Interaction Icons */}
-                  <div className="post-interactions flex items-center">
-                    {/* Icons for like and comment */}
-                    <img
-                      className="w-[36px] h-[36px] object-cover mr-2"
-                      alt="Like icon"
-                      src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-                    />
-                    <img
-                      className="w-[36px] h-[36px] object-cover mr-2"
-                      alt="Comment icon"
-                      src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
-                    />
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <img
-                          className="w-[20px] h-[20px] top-[8px] left-[8px]"
-                          alt="Reshare icon"
-                          src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-                        />
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Share link</DialogTitle>
-                          <DialogDescription>Anyone who has this link will be able to view this.</DialogDescription>
-                        </DialogHeader>
-                        <div className="flex items-center space-x-2">
-                          <div className="grid flex-1 gap-2">
-                            <Label className="sr-only">Link</Label>
-                            <Input id="link" defaultValue="https://ui.shadcn.com/docs/installation" readOnly />
-                          </div>
-                          <Button style={{ background: '#a2383a', color: 'white' }} className="p-5">
-                            <span className="sr-only">Copy</span>
-                            <CopyIcon className="h-4 w-4" />
-                          </Button>
                         </div>
                         <DialogFooter className="sm:justify-start">
                           <DialogClose asChild>
@@ -354,7 +258,9 @@ const SocialMediaPost = () => {
         </>
       )}
     </div>
-  );
+
+    );
+
 };
 
 export default SocialMediaPost;
