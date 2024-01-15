@@ -6,6 +6,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { FloatButton } from 'antd';
 import { MessageOutlined } from '@ant-design/icons';
 
+const { TextArea } = Input;
+
 const AIQuestionPrompt: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
   const { data: session } = useSession();
@@ -65,7 +67,8 @@ const AIQuestionPrompt: React.FC = () => {
       <FloatButton
         shape="circle"
         type="primary"
-        style={{ position: 'fixed', right: 16, bottom: 16, backgroundColor: 'red'}}
+        style={{ position: 'fixed', right: 16, bottom: 16, backgroundColor: '#FF5733' }}
+        className="bg-red-800 hover:bg-red-900"
         icon={<MessageOutlined />}
         onClick={showModal}
       />
@@ -83,6 +86,7 @@ const AIQuestionPrompt: React.FC = () => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               style={{ marginBottom: 16 }}
+              allowClear
             />
           </Form.Item>
           <Form.Item>
@@ -95,7 +99,10 @@ const AIQuestionPrompt: React.FC = () => {
         {aiResponse && (
           <div>
             <h2>AI Response:</h2>
-            <p>{aiResponse}</p>
+            <TextArea
+              value={aiResponse}
+              autoSize={{ minRows: 3, maxRows: 6 }}
+            />
             <Space>
               <CopyToClipboard text={aiResponse} onCopy={handleCopy}>
                 <Button type="primary" disabled={copied} className="bg-red-800 hover:bg-red-900">

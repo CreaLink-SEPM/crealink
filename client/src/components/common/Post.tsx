@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Skeleton } from "@/components/ui/skeleton"
 // import { Dropdown, Menu } from 'antd';
+
 const {Dropdown, Menu} = require('antd');
 const {useSession} = require('next-auth/react');
 // import axios, { AxiosError } from 'axios';
 const axios = require('axios');
+
 
 interface PostData {
     [key: string]: any;
