@@ -663,6 +663,7 @@ const followUser = async (req, res) => {
       message: "Successfully followed user",
       data: {
         userToFollow,
+        isFollowed: true,
       },
     });
   } catch (err) {
@@ -729,6 +730,7 @@ const unfollowUser = async (req, res) => {
       message: "Successfully unfollowed user",
       data: {
         userToUnfollow,
+        isFollowed: false,
       },
     });
   } catch (err) {
