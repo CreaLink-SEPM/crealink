@@ -553,8 +553,9 @@ const searchUser = async (req, res) => {
 
         randomIndexes.forEach((index) => {
           const follower = user.followers[index];
-          if (follower && follower.image) {
-            followerImages.push(follower.image);
+          // Ensure that the follower at the selected index exists and has an image
+          if (follower && follower.user_image) {
+            followerImages.push(follower.user_image);
           }
         });
       }
@@ -568,7 +569,7 @@ const searchUser = async (req, res) => {
         followers: followersCount,
         follower_images: followerImages,
         is_verified: user.is_verified,
-        isFollowed: isFollowed || false,
+        isFollowed: isFollowed || false, // Set to false if undefined
       };
     });
 
