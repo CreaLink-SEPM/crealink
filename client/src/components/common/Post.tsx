@@ -307,7 +307,7 @@ const SocialMediaPost = () => {
                 style={{ background: '#a2383a', color: 'white' }}
                 loading={loadingMore}
                 onClick={enterLoading}
-                className="border-none text-white w-30 h-20 ml-[20%]"
+                className="border-none text-white w-30 h-8 ml-[20%]"
               >
                 Loading more
               </Button>

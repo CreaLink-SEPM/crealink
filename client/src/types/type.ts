@@ -52,8 +52,7 @@ type ShowUserType = {
   user_image: string;
   image: string;
   bio: string;
-  followers: number;
-  follower: Array<FollowerType> | [];
+  followers: Array<FollowerType> | [];
   posts: Array<PostType> | [];
 };
 
