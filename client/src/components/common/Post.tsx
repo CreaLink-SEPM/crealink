@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Popconfirm, message, Button } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Popconfirm, message, Button, Modal } from 'antd';
 import {
   Dialog,
   DialogClose,
@@ -64,6 +65,16 @@ const SocialMediaPost = () => {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [loadingMoreButton, setLoadingMoreButton] = useState<boolean>(false);
   const [modal2Open, setModal2Open] = useState(false);
+  const [isCommentModalOpen, setCommentModalOpen] = useState(false);
+
+  const openCommentModal = () => {
+    setCommentModalOpen(true);
+  };
+
+  const closeCommentModal = () => {
+    setCommentModalOpen(false);
+  };
+
 
   const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
 
@@ -139,71 +150,7 @@ const SocialMediaPost = () => {
     return () => clearTimeout(delayLoadMoreButton);
   }, []);
 
-  // Rest of your component...
-
-  // useEffect(() => {
-  //     const fetchPosts = async () => {
-  //         try {
-  //             const response = await axios.get(`${apiUrl}/posts`);
-  //             setPosts(response.data.posts);
-  //         } catch (err: any) {
-  //             setError(err.message);
-  //         }
-  //     };
-
-  //     fetchPosts();
-  // }, []);
-
-  // const createPost = async (postData: PostData) => {
-  //     try {
-  //         await axios.post(`${apiUrl}/post`, postData);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const updatePost = async (postId: string, updatedData: PostData) => {
-  //     try {
-  //         await axios.put(`${apiUrl}/post/${postId}`, updatedData);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const deletePost = async (postId: string) => {
-  //     try {
-  //         await axios.delete(`${apiUrl}/post/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const toggleLike = async (postId: string) => {
-  //     try {
-  //         await axios.put(`${apiUrl}/like/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const sharePost = async (postId: string) => {
-  //     try {
-  //         const response = await axios.get(`${apiUrl}/share/${postId}`);
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // const reportPost = async (postId: string, reason: string) => {
-  //     try {
-  //         await axios.post(`${apiUrl}/report/${postId}`, { reason });
-  //     } catch (err: any) {
-  //         setError(err.message);
-  //     }
-  // };
-
-  // if (error) return <div>Error: {error}</div>;
-  // if (!posts.length) return <div>Loading...</div>;
+  
 
   const menu = (
     <Popconfirm
@@ -297,11 +244,22 @@ const SocialMediaPost = () => {
                     posts={posts}
                     session={session} // Pass the session prop
                 />
-                    <img
-                      className="w-[36px] h-[36px] object-cover mr-2"
-                      alt="Comment icon"
-                      src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
-                    />
+                <button onClick={() => setModal2Open(true)}>
+                      <img
+                        className="w-[36px] h-[36px] object-cover mr-2 cursor-pointer"
+                        alt="Comment icon"
+                        src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
+                      />
+                    </button>
+                <Modal
+                    title="Vertically centered modal dialog"
+                    centered
+                    open={modal2Open}
+                    onOk={() => setModal2Open(false)}
+                    onCancel={() => setModal2Open(false)}
+                >
+                </Modal>
+
                     <Dialog>
                       <DialogTrigger asChild>
                         <img

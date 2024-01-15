@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { useToast } from "@/src/components/ui/use-toast"
 import { notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-
+import Comment from './Comment';
 
 const SkeletonImage = () => {
   return (
