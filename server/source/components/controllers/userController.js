@@ -631,6 +631,7 @@ const followUser = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "You are already following this user",
+        isFollowed: true,
       });
     }
 
@@ -704,6 +705,7 @@ const unfollowUser = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "You are not following this user",
+        isFollowed: false,
       });
     }
 
