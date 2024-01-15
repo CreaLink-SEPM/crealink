@@ -513,10 +513,18 @@ const searchUser = async (req, res) => {
       });
     }
 
+    // Get the current user to check if they follow other users
+    const currentUser = await User.findById(req.userId); // Assuming userId is available in req
+
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
       const followersCount = user.followers.length;
       const followerImages = [];
+
+      // Check if the current user follows the user in the iteration
+      const isFollowed = currentUser.following.some(
+        (following) => following.id.toString() === user._id.toString()
+      );
 
       // Select up to 3 random followers' images
       if (followersCount > 0) {
@@ -542,6 +550,7 @@ const searchUser = async (req, res) => {
         followers: followersCount,
         follower_images: followerImages,
         is_verified: user.is_verified,
+        isFollowed: isFollowed,
       };
     });
 
