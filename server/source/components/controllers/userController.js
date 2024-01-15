@@ -606,7 +606,7 @@ const profileUser = async (req, res) => {
 const followUser = async (req, res) => {
   try {
     const { user_id } = req.params; // User ID to follow
-    const { userId } = req.body; // User ID of the user initiating the follow action (Assuming this is extracted from the token)
+    const userId = req.userId; // User ID of the user initiating the follow action (Assuming this is extracted from the token)
 
     if (!user_id) {
       return res.status(400).json({
@@ -676,7 +676,7 @@ const followUser = async (req, res) => {
 const unfollowUser = async (req, res) => {
   try {
     const { user_id } = req.params; // User ID to unfollow
-    const { userId } = req.body; // User ID of the user initiating the unfollow action (Assuming this is extracted from the token)
+    const userId = req.userId; // User ID of the user initiating the unfollow action (Assuming this is extracted from the token)
 
     if (!user_id) {
       return res.status(400).json({
