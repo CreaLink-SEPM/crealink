@@ -499,25 +499,6 @@ const searchUser = async (req, res) => {
       });
     }
 
-    // Check if req.userId is available
-    if (!req.userId) {
-      return res.status(401).json({
-        status: "error",
-        message: "User ID not provided",
-      });
-    }
-
-    // Get the current user and populate the 'following' field
-    const currentUser = await User.findById(req.userId).populate("following");
-
-    // Check if currentUser is null or undefined
-    if (!currentUser) {
-      return res.status(404).json({
-        status: "error",
-        message: "Current user not found",
-      });
-    }
-
     const users = await User.find({
       $or: [
         { username: { $regex: searchQuery, $options: "i" } },
@@ -532,53 +513,43 @@ const searchUser = async (req, res) => {
       });
     }
 
-    console.log("Users:", users);
-
     // Map user data to include necessary information including random follower images (up to 3)
     const usersData = users.map((user) => {
-      try {
-        const followersCount = user.followers ? user.followers.length : 0;
+      const followersCount = user.followers.length;
+      const followerImages = [];
 
-        // Check if the current user follows the user in the iteration
-        const isFollowed =
-          currentUser.following &&
-          currentUser.following.some(
-            (following) => following.id.toString() === user._id.toString()
-          );
+      // Select up to 3 random followers' images
+      if (followersCount > 0) {
+        const randomIndexes = Array.from(
+          { length: Math.min(followersCount, 3) },
+          () => Math.floor(Math.random() * followersCount)
+        );
 
-        // Select up to 3 random followers' images
-        const followerImages =
-          followersCount > 0
-            ? (user.followers || [])
-                .filter((follower) => follower.user_image)
-                .slice(0, Math.min(followersCount, 3))
-                .map((follower) => follower.user_image)
-            : [];
-
-        return {
-          _id: user._id,
-          username: user.username,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          followers: followersCount,
-          follower_images: followerImages,
-          is_verified: user.is_verified,
-          isFollowed: isFollowed || false, // Set to false if undefined
-        };
-      } catch (error) {
-        console.error("Error in mapping user data:", error);
-        console.error("User data:", user);
-        return null;
+        randomIndexes.forEach((index) => {
+          const follower = user.followers[index];
+          if (follower && follower.image) {
+            followerImages.push(follower.image);
+          }
+        });
       }
+
+      return {
+        _id: user._id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        followers: followersCount,
+        follower_images: followerImages,
+        is_verified: user.is_verified,
+      };
     });
 
     return res.status(200).json({
       status: "success",
-      data: usersData.filter((user) => user !== null), // Remove null entries
+      data: usersData,
     });
   } catch (err) {
-    console.error("Error in searchUser:", err);
     return res.status(500).json({
       status: "error",
       message: err.message,
