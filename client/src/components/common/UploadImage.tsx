@@ -23,19 +23,7 @@ const App: React.FC = () => {
             name: 'image.png',
             status: 'done',
             url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-        {
-            uid: '-4',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-
-        {
-            uid: '-5',
-            name: 'image.png',
-            status: 'error',
-        },
+        }
     ]);
 
     const handleCancel = () => setPreviewOpen(false);

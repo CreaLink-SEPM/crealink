@@ -32,7 +32,7 @@ function Register() {
 
     // API FOR  REGISTER
     axios
-      .post('http://localhost:5000/api/user/register', authState)
+      .post('http://54.169.199.32:5000/api/user/register', authState)
       .then(res => {
         setLoading(false);
         const response = res.data;            // Options for API***
