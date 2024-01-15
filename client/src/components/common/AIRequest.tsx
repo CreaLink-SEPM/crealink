@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Input, Modal, message } from 'antd';
+import { Button, Input, Modal, message, Form, Space } from 'antd';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { FloatButton } from 'antd';
+import { MessageOutlined } from '@ant-design/icons';
 
 const AIQuestionPrompt: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
@@ -9,6 +12,7 @@ const AIQuestionPrompt: React.FC = () => {
  
   const [aiResponse, setAIResponse] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -18,8 +22,7 @@ const AIQuestionPrompt: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const handleAIRequest = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleAIRequest = async () => {
     if (!session) return;
     const token = session.user?.accessToken;
     if (!prompt.trim()) {
@@ -42,6 +45,7 @@ const AIQuestionPrompt: React.FC = () => {
 
       if (response.data.success) {
         setAIResponse(response.data.message);
+        setCopied(false); // Reset copied state when generating a new response
       } else {
         message.error('Failed to get AI response');
       }
@@ -51,11 +55,20 @@ const AIQuestionPrompt: React.FC = () => {
     }
   };
 
+  const handleCopy = () => {
+    setCopied(true);
+    message.success('Text copied to clipboard');
+  };
+
   return (
     <div>
-      <Button type="primary" onClick={showModal}>
-        Open AI Prompt Modal
-      </Button>
+      <FloatButton
+        shape="circle"
+        type="primary"
+        style={{ position: 'fixed', right: 16, bottom: 16, backgroundColor: 'red'}}
+        icon={<MessageOutlined />}
+        onClick={showModal}
+      />
 
       <Modal
         title="AI Question Prompt"
@@ -63,19 +76,33 @@ const AIQuestionPrompt: React.FC = () => {
         onCancel={handleCancel}
         footer={null}
       >
-        <Input
-          placeholder="Enter your prompt here"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          style={{ marginBottom: 16 }}
-        />
-        <Button type="primary" onClick={handleAIRequest} style={{ marginBottom: 16 }}>
-          Get AI Response
-        </Button>
+        <Form onFinish={handleAIRequest}>
+          <Form.Item>
+            <Input
+              placeholder="Enter your prompt here"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              style={{ marginBottom: 16 }}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ marginBottom: 16 }} className="bg-red-800 hover:bg-red-900">
+              Get AI Response
+            </Button>
+          </Form.Item>
+        </Form>
+
         {aiResponse && (
           <div>
             <h2>AI Response:</h2>
             <p>{aiResponse}</p>
+            <Space>
+              <CopyToClipboard text={aiResponse} onCopy={handleCopy}>
+                <Button type="primary" disabled={copied} className="bg-red-800 hover:bg-red-900">
+                  {copied ? 'Copied!' : 'Copy to Clipboard'}
+                </Button>
+              </CopyToClipboard>
+            </Space>
           </div>
         )}
       </Modal>
