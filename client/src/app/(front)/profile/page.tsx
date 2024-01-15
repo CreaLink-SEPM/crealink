@@ -96,7 +96,7 @@ export default async function ProfilesPage() {
               </TabsContent>
             </Tabs>
           </div>
-        </div>
+        </div>  
       </Suspense>
     </div>
   );
