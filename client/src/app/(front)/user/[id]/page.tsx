@@ -4,10 +4,11 @@ import { Card, CardDescription, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
 import { fetchUsers } from '@/lib/serverMethod';
+import FollowingUser from '@/src/components/common/FollowingUser';
 
 export default async function ProfilesPage({ params }: { params: { id: number } }) {
   const user: ShowUserType | undefined = await fetchUsers(params.id);
-
+  
   return (
     <div className="w-full md:container h-[800px]">
       <Suspense fallback={<Loading />}>
@@ -35,10 +36,11 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                       className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
                     />
                     <div className="justify-center text-neutral-400 text-base leading-5 self-center grow whitespace-nowrap my-auto">
-                      238 followers
+                    {user?.followers} followers
                     </div>
                   </div>
                 </div>
+                <div>
                 <Image
                   loading="lazy"
                   width={100}
@@ -47,6 +49,8 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                   src="/assets/images/profile.jpg"
                   className="aspect-square object-contain object-center w-[150px] justify-center rounded-full items-center overflow-hidden shrink-0 max-w-full"
                 />
+                  <FollowingUser users={user.id} />
+                </div>
               </>
             )}
           </div>
@@ -59,13 +63,26 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
               </TabsList>
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
-                  <CardHeader className="text-center border-0">
-                    <CardDescription>Make changes to your account here. Click save when you're done.</CardDescription>
-                  </CardHeader>
+                  {(user?.posts ?? []).length < 0 ? (
+                    <CardHeader className="text-center border-0">
+                      <CardDescription>No posts</CardDescription>
+                    </CardHeader>
+                  ): (
+                    
+                    <CardHeader className="text-center border-0">
+                      <CardDescription>{user?.posts}</CardDescription>
+                    </CardHeader>
+                  )}
                 </Card>
               </TabsContent>
               <TabsContent value="followers" className="h-[500px] overflow-auto">
-                {user && (
+                {(user?.follower ?? []).length < 0 ?
+                 ( 
+                  <div className='text-center mt-2'>
+                    No followers
+                  </div>
+                  ) : ( 
+                  <> 
                   <Card>
                     <CardHeader className="text-center">
                       <div className="flex items-center justify-items-start">
@@ -74,13 +91,14 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                           alt="followers"
                           width={60}
                           height={50}
-                          src= '/assets/images/avatar.png'
+                          src= {user?.follower?.user_image||'/assets/images/avatar.png'}
                           className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
                         />
-                        <p>{user?.username}</p>
+                        <p>{user?.follower[0].name}</p>
                       </div>
                     </CardHeader>
                   </Card>
+                  </>
                 )}
               </TabsContent>
             </Tabs>

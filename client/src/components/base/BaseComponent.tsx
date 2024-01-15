@@ -44,11 +44,10 @@ function BaseComponent({ children }: { children: React.ReactNode }) {
         <Suspense fallback={<Loading />}>
           <RightSideBar />
         </Suspense>
+        <div className=' relative right-[21%]'>
+          <Footer />
+        </div>
       </div>
-      {/* <div className=''>
-        <Footer />
-      </div> */}
-          <Footer></Footer>
     </div>
   );
 }
