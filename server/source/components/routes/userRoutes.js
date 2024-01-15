@@ -11,7 +11,7 @@ router.post("/refresh-token", UserController.refreshTokenUser);
 router.get("/get-user/:username", UserController.getUser);
 router.get("/get-user-notification/:username", UserController.getUserNotification);
 router.get("/get-all-users", UserController.getAllUsers);
-router.get("/search-user", UserController.searchUser);
+router.get("/search-user", AuthMiddleware.userAuthenToken, UserController.searchUser);
 router.get("/get-followers/:user_id", UserController.getFollowers);
 router.get("/get-following/:user_id", UserController.getFollowing);
 router.post("/follow-user/:user_id", AuthMiddleware.userAuthenToken, UserController.followUser);
