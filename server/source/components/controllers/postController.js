@@ -413,44 +413,62 @@ exports.toggleLike = async (req, res, next) => {
   try {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
+
     if (!post) {
       return res.status(404).json({
         status: "error",
         message: "Could not find post",
       });
     }
+
     const currentUserId = req.userId;
+
     if (!currentUserId) {
       return res.status(401).json({
         message: "User not found, not authorized",
         status: "error",
       });
     }
+
     const user = await User.findById(currentUserId);
+
     if (!user) {
       return res.status(404).json({
         status: "error",
         message: "User not found",
       });
     }
-    if (post.likes.includes(currentUserId)) {
+
+    const isLiked = post.likes.includes(currentUserId);
+
+    if (isLiked) {
+      // User has already liked the post, unlike it
       post.likes = post.likes.filter((id) => id !== currentUserId);
       await post.save();
+
       user.savedPosts = user.savedPosts.filter(
         (savedPostId) => savedPostId.toString() !== postId
       );
-      user.save();
-      io.getIO().emit(
-        ("posts", { action: "unliked", user: currentUserId, post: post })
-      );
+      await user.save();
+
+      io.getIO().emit("posts", {
+        action: "unliked",
+        user: currentUserId,
+        post: post,
+      });
+
       return res.status(200).json({
         message: "Successfully unliked the post",
+        isLiked: false,
       });
     } else {
-      await post.likes.push(currentUserId);
+      // User has not liked the post, like it
+      post.likes.push(currentUserId);
+
       if (!user.savedPosts.includes(postId)) {
         user.savedPosts.push(postId);
       }
+
       await post.save();
       await user.save();
 
@@ -462,8 +480,10 @@ exports.toggleLike = async (req, res, next) => {
         user: currentUserId,
         post: post,
       });
+
       return res.status(200).json({
         message: "Successfully liked the post",
+        isLiked: true,
       });
     }
   } catch (err) {
@@ -474,6 +494,7 @@ exports.toggleLike = async (req, res, next) => {
     });
   }
 };
+
 
 // Function to send a notification when someone likes a post
 const sendLikeNotification = async (likerId, postCreatorId, postId) => {
