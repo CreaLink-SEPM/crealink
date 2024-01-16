@@ -537,7 +537,9 @@ const searchUser = async (req, res) => {
       }
 
       // Check if the current user is followed by the target user
-      const isFollowed = user.followers.some((follower) => follower?.id?.toString() === currentUser);
+      const isFollowed = user.followers.some(
+        (followedUser) => followedUser?._id?.toString() === currentUser
+      );
 
       usersData.push({
         _id: user._id,
