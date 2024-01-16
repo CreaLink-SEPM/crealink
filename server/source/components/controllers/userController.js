@@ -499,6 +499,8 @@ const searchUser = async (req, res) => {
       });
     }
 
+    const currentUser = req.userId; // Assuming req.userId is available
+
     const users = await User.find({
       $or: [
         { username: { $regex: searchQuery, $options: "i" } },
@@ -513,8 +515,9 @@ const searchUser = async (req, res) => {
       });
     }
 
-    // Map user data to include necessary information including random follower images (up to 3)
-    const usersData = users.map((user) => {
+    const usersData = [];
+
+    for (const user of users) {
       const followersCount = user.followers.length;
       const followerImages = [];
 
@@ -525,25 +528,28 @@ const searchUser = async (req, res) => {
           () => Math.floor(Math.random() * followersCount)
         );
 
-        randomIndexes.forEach((index) => {
+        for (const index of randomIndexes) {
           const follower = user.followers[index];
-          if (follower && follower.image) {
-            followerImages.push(follower.image);
+          if (follower && follower.user_image) {
+            followerImages.push(follower.user_image);
           }
-        });
+        }
       }
 
-      return {
+      const isFollowed = user.following.some((followedUser) => followedUser.id.toString() === currentUser);
+
+      usersData.push({
         _id: user._id,
         username: user.username,
         name: user.name,
         email: user.email,
-        image: user.image,
+        image: user.user_image, // Assuming user image is stored in user_image field
         followers: followersCount,
         follower_images: followerImages,
         is_verified: user.is_verified,
-      };
-    });
+        isFollowed: isFollowed,
+      });
+    }
 
     return res.status(200).json({
       status: "success",
