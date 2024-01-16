@@ -67,12 +67,12 @@ const AIQuestionPrompt: React.FC = () => {
       <FloatButton
         shape="circle"
         type="primary"
-        style={{ position: 'fixed', right: 16, bottom: 16, backgroundColor: '#FF5733' }}
-        className="bg-red-800 hover:bg-red-900"
+        style={{position: 'fixed', right: 30, bottom: 30, }}
+        className="animate-bounce"
         icon={<MessageOutlined />}
         onClick={showModal}
       />
-
+      
       <Modal
         title="AI Question Prompt"
         visible={isModalVisible}

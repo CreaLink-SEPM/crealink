@@ -499,6 +499,8 @@ const searchUser = async (req, res) => {
       });
     }
 
+    const currentUser = req.userId; // Assuming req.userId is available
+
     const users = await User.find({
       $or: [
         { username: { $regex: searchQuery, $options: "i" } },
@@ -513,8 +515,9 @@ const searchUser = async (req, res) => {
       });
     }
 
-    // Map user data to include necessary information including random follower images (up to 3)
-    const usersData = users.map((user) => {
+    const usersData = [];
+
+    for (const user of users) {
       const followersCount = user.followers.length;
       const followerImages = [];
 
@@ -525,25 +528,31 @@ const searchUser = async (req, res) => {
           () => Math.floor(Math.random() * followersCount)
         );
 
-        randomIndexes.forEach((index) => {
+        for (const index of randomIndexes) {
           const follower = user.followers[index];
-          if (follower && follower.image) {
-            followerImages.push(follower.image);
+          if (follower && follower.user_image) {
+            followerImages.push(follower.user_image);
           }
-        });
+        }
       }
 
-      return {
+      // Check if the current user is followed by the target user
+      const isFollowed = user.followers.some(
+        (followedUser) => followedUser?._id?.toString() === currentUser
+      );
+
+      usersData.push({
         _id: user._id,
         username: user.username,
         name: user.name,
         email: user.email,
-        image: user.image,
+        image: user.user_image, // Assuming user image is stored in user_image field
         followers: followersCount,
         follower_images: followerImages,
         is_verified: user.is_verified,
-      };
-    });
+        isFollowed: isFollowed,
+      });
+    }
 
     return res.status(200).json({
       status: "success",
@@ -606,7 +615,7 @@ const profileUser = async (req, res) => {
 const followUser = async (req, res) => {
   try {
     const { user_id } = req.params; // User ID to follow
-    const { userId } = req.body; // User ID of the user initiating the follow action (Assuming this is extracted from the token)
+    const userId = req.userId; // User ID of the user initiating the follow action (Assuming this is extracted from the token)
 
     if (!user_id) {
       return res.status(400).json({
@@ -631,6 +640,7 @@ const followUser = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "You are already following this user",
+        isFollowed: true,
       });
     }
 
@@ -663,7 +673,9 @@ const followUser = async (req, res) => {
       message: "Successfully followed user",
       data: {
         userToFollow,
+
         isFollowing: true
+
       },
     });
   } catch (err) {
@@ -677,7 +689,7 @@ const followUser = async (req, res) => {
 const unfollowUser = async (req, res) => {
   try {
     const { user_id } = req.params; // User ID to unfollow
-    const { userId } = req.body; // User ID of the user initiating the unfollow action (Assuming this is extracted from the token)
+    const userId = req.userId; // User ID of the user initiating the unfollow action (Assuming this is extracted from the token)
 
     if (!user_id) {
       return res.status(400).json({
@@ -704,6 +716,7 @@ const unfollowUser = async (req, res) => {
       return res.status(400).json({
         status: "error",
         message: "You are not following this user",
+        isFollowed: false,
       });
     }
 
@@ -732,6 +745,7 @@ const unfollowUser = async (req, res) => {
       data: {
         userToUnfollow,
         isFollowing: false
+
       },
     });
   } catch (err) {

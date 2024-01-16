@@ -227,7 +227,7 @@ const SocialMediaPost = () => {
                     <img
                       src={post.imageUrl || '/assets/images/profile.jpg'}
                       alt="Post content"
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-full h-[400px] object-cover rounded-lg"
                     />
                   </div>
                 </div>
@@ -307,7 +307,7 @@ const SocialMediaPost = () => {
                 style={{ background: '#a2383a', color: 'white' }}
                 loading={loadingMore}
                 onClick={enterLoading}
-                className="border-none text-white w-30 h-20 ml-[20%]"
+                className="border-none text-white w-30 h-8 ml-[20%]"
               >
                 Loading more
               </Button>
