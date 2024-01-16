@@ -673,7 +673,9 @@ const followUser = async (req, res) => {
       message: "Successfully followed user",
       data: {
         userToFollow,
-        isFollowed: true,
+
+        isFollowing: true
+
       },
     });
   } catch (err) {
@@ -722,14 +724,15 @@ const unfollowUser = async (req, res) => {
     userToUnfollow.followers = userToUnfollow.followers.filter(
       (follower) => !follower._id.equals(userId)
     );
-    await userToUnfollow.save();
+ 
+    
 
     // Remove user from following list of the user initiating the unfollow action
     user.following = user.following.filter(
       (followedUser) => !followedUser._id.equals(userToUnfollow._id)
     );
     await user.save();
-
+    
     // Notify the user being unfollowed
     await createNotification(
       userToUnfollow,
@@ -741,7 +744,8 @@ const unfollowUser = async (req, res) => {
       message: "Successfully unfollowed user",
       data: {
         userToUnfollow,
-        isFollowed: false,
+        isFollowing: false
+
       },
     });
   } catch (err) {
