@@ -536,7 +536,10 @@ const searchUser = async (req, res) => {
         }
       }
 
-      const isFollowed = user.following.some((followedUser) => followedUser.id.toString() === currentUser);
+      // Use optional chaining to handle potential undefined values
+      const isFollowed = user.following.some(
+        (followedUser) => followedUser?.id?.toString() === currentUser
+      );
 
       usersData.push({
         _id: user._id,
