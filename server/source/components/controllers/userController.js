@@ -240,9 +240,6 @@ const loginUser = async (req, res) => {
     // Check if the user has any notifications
     const hasNotification = user.notifications.length > 0;
 
-    // Notify the user about the login
-    await createNotification(user, "You have successfully logged in.");
-
     const userPosts = await User.findOne({ _id: user._id }).populate("posts");
 
     return res.status(200).json({
