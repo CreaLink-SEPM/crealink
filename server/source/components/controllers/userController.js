@@ -425,16 +425,16 @@ const getUser = async (req, res, next) => {
 
 const getUserNotification = async (req, res, next) => {
   try {
-    const { username: requestedUserID } = req.params;
+    const userId = req.userId;
 
-    if (!requestedUserID) {
+    if (!userId) {
       return res.status(400).json({
         status: "error",
         message: "User ID is required",
       });
     }
 
-    const user = await User.findOne({ _id: requestedUserID });
+    const user = await User.findOne({ _id: userId });
 
     if (!user) {
       return res.status(404).json({
@@ -471,6 +471,56 @@ const getUserNotification = async (req, res, next) => {
       data: {
         notifications: notifications,
       },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const deleteNotification = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { notificationId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "error",
+        message: "User ID is required",
+      });
+    }
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const notificationIndex = user.notifications.findIndex(
+      (notification) => notification._id.toString() === notificationId
+    );
+
+    if (notificationIndex === -1) {
+      return res.status(404).json({
+        status: "error",
+        message: "Notification not found",
+      });
+    }
+
+    // Remove the notification from the array
+    user.notifications.splice(notificationIndex, 1);
+
+    // Save the updated user document
+    await user.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Notification deleted successfully",
     });
   } catch (err) {
     return res.status(500).json({
@@ -985,6 +1035,7 @@ const clearImageFromS3 = async (avatarUrl) => {
 
 module.exports = {
   getUserNotification,
+  deleteNotification,
   registerUser,
   registerAdmin,
   loginAdmin,
