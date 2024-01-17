@@ -22,7 +22,7 @@ interface UserInfo {
 export default async function ProfilesPage({ params }: { params: { id: number } }) {
   const { data: session } = useSession();
   const [user, setUser] = useState<Array<UserInfo | null>>([]);
-  console.log('USER', user);
+
   React.useEffect(() => {
     const fetchUsers = async () => {
       if (!session) {
