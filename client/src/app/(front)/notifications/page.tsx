@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Metadata } from 'next';
 import Loading from '@/src/components/common/loading';
 import UserAvatar from '@/src/components/common/UserAvatar';
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilesPage() {
+  // const [notifications, setNotifications] = useState<NotificationType>([]);
   return (
     <div className="w-full md:container h-[100vh]">
       <Suspense fallback={<Loading />}>

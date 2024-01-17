@@ -30,9 +30,14 @@ export async function fetchLikedPost() {
 }
 
 // SHOW USER WITH POSTS AND FOLLOWERS
-export async function fetchUsers(id: number) {
+export async function fetchUsers(id: number, authToken: string) {
   const res = await fetch(`${apiBaseUrl}/api/user/get-user/${id}`, {
     cache: 'no-cache',
+    headers: {
+      ...headers(),
+      Authorization: `Bearer ${authToken}`, // Include the bearer token in the headers
+    },
+    method:'GET'
   });
   if (!res.ok) {
     throw new Error('Failed to fecth posts');
@@ -41,11 +46,14 @@ export async function fetchUsers(id: number) {
   return response?.data;
 }
 
-export async function searchUser(query: string) {
+export async function searchUser(query: string, authToken: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/user/search-user?searchQuery=${query}`, {
       cache: 'no-cache',
-      headers: headers(),
+      headers: {
+        ...headers(),
+        Authorization: `Bearer ${authToken}`, // Include the bearer token in the headers
+      },
       method: 'GET',
     });
 
