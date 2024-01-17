@@ -236,7 +236,9 @@ const loginUser = async (req, res) => {
 
     // Include additional user attributes in the response
     const { username, name, isAdmin, user_image, image, is_verified } = user;
-    enqueueNotification("User " + username + " has logged in!");
+    
+    // Check if the user has any notifications
+    const hasNotification = user.notifications.length > 0;
 
     // Notify the user about the login
     await createNotification(user, "You have successfully logged in.");
@@ -260,6 +262,7 @@ const loginUser = async (req, res) => {
       following: user.following,
       posts: user.posts,
       bio: user.bio,
+      hasNotification: hasNotification,
     });
   } catch (err) {
     return res.status(500).json({
@@ -379,7 +382,7 @@ const getUser = async (req, res, next) => {
 
     const currentUser = req.userId; // Assuming req.userId is available
 
-    const user = await User.findOne({ _id: requestedUserID });
+    const user = await User.findOne({ _id: requestedUserID }).populate('posts');
 
     if (!user) {
       return res.status(404).json({
@@ -410,7 +413,7 @@ const getUser = async (req, res, next) => {
         follower: user.followers,
         followings: user.following.length,
         following: user.following,
-        posts: user.posts,
+        posts: user.posts, // Now populated with post documents
         bio: user.bio,
         isFollowed: isFollowed,
       },
