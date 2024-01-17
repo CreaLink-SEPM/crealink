@@ -19,10 +19,9 @@ interface Comment {
 interface CommentProps {
   postId: string,
   token: string,
-  modal20pen: boolean,
 }
 
-const Comment: React.FC<CommentProps> = ({ postId, token, modal20pen }) => {
+const Comment: React.FC<CommentProps> = ({ postId, token}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   console.log('COMMENTS ', comments);
   const [newComment, setNewComment] = useState<string>('');
@@ -30,11 +29,9 @@ const Comment: React.FC<CommentProps> = ({ postId, token, modal20pen }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const [isModalOpen, setIsModalOpen] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  }
+
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -56,8 +53,6 @@ const Comment: React.FC<CommentProps> = ({ postId, token, modal20pen }) => {
       setComments(data);
     } catch (error) {
       console.error('Error fetching comments:', error);
-    } finally {
-      setLoadingInitial(false);
     }
   };
 
@@ -67,17 +62,24 @@ useEffect(() => {
   // Fetch comments when the component mounts
   fetchComments();
 }, [postId, token]);
+
   return (
     <div>
-      {loadingInitial ? (
+      {/* {loadingInitial ? (
         <Skeleton avatar paragraph={{ rows: 1 }} active />
-      ) : (
-        <>
-
+      ) : ( */}
+    
+ <Button onClick={() => setOpenModal(true)}>
+    <img
+      className="w-[36px] h-[36px] object-cover mr-2 cursor-pointer"
+      alt="Comment icon"
+      src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
+    />
+   </Button>
 <Modal
   title="Comments"
   centered
-  open={modal20pen}
+  open={isModalOpen}
   onOk={handleOk}
   onCancel={handleCancel}
 >
@@ -95,30 +97,27 @@ useEffect(() => {
     )}
   /> */}
 </Modal>
-
-    </>
-          )}
     </div>
     )
 } 
 
-          {/* <Form onFinish={handleCreateComment}>
-            <Form.Item name="newComment">
-              <Input.TextArea
-                rows={4}
-                placeholder="Write a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add Comment
-              </Button>
-            </Form.Item>
-          </Form> */}
-        {/* </> */}
-      {/* )} */}
+      //     { <Form onFinish={handleCreateComment}>
+      //       <Form.Item name="newComment">
+      //         <Input.TextArea
+      //           rows={4}
+      //           placeholder="Write a comment..."
+      //           value={newComment}
+      //           onChange={(e) => setNewComment(e.target.value)}
+      //         />
+      //       </Form.Item>
+      //       <Form.Item>
+      //         <Button type="primary" htmlType="submit">
+      //           Add Comment
+      //         </Button>
+      //       </Form.Item>
+      //     </Form> */}
+      //    </> 
+      //  )} 
 //     </div>
 //   );
 // };

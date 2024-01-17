@@ -1,10 +1,10 @@
-    'use client';
+'use client';
 
     import React, { useState, useEffect, useRef } from 'react';
     import moment from 'moment';
     import { Skeleton } from '@/components/ui/skeleton';
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-    import { Popconfirm, message, Button, Modal, List, Avatar } from 'antd';
+    import { Popconfirm, message, Button, Modal, List, Avatar, Form} from 'antd';
     import {
     Dialog,
     DialogClose,
@@ -63,6 +63,7 @@
         };
         commentText: string;
         likesCount: number;
+        createdAt: string;
       }
 
     const SocialMediaPost = () => {
@@ -77,6 +78,10 @@
     const [comments, setComments] = useState<Comment[]>([]);
     const [openModal, setOpenModal] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
+    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const [commentText, setCommentText] = useState('');
+
     const handleOk = () => {
         setIsModalOpen(false);
       };
@@ -187,6 +192,44 @@
         }
       };
     
+    const handleCreateComment = async (postId: string, commentText: string) => {
+        try {
+            if (!session) return;
+            const token = session.user?.accessToken;
+            const response = await axios.post(
+                `http://54.169.199.32:5000/api/comment/${postId}`,
+                {
+                    commentText
+                },
+                 {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                      }
+                 }
+            );
+            const newComment = response.data.comment;
+            console.log('NEW COMMENT: ', newComment);
+            setComments((prevComments) => [newComment, ...prevComments]);
+            message.success('Comment created successfully')
+        } catch (error) {
+            console.log('Error creating comment', error);
+        }
+    }
+
+    const onFinish = async (values: any) => {
+        try {
+          if (!selectedPostId) {
+            throw new Error('No post selected for commenting');
+          }
+    
+          await handleCreateComment(selectedPostId, values.commentText);
+          setCommentText('');
+          form.resetFields();
+        } catch (error) {
+          console.error('Error handling comment creation:', error);
+        }
+      }
 
     const menu = (
         <Popconfirm
@@ -238,7 +281,7 @@
                     {/* Timestamp */}
                     <div className="ml-auto">
                         {post.creator && (
-                        <span className="timestamp ml-2">{moment(post.createdAt).startOf('day').fromNow()}</span>
+                        <span className="timestamp ml-2">{moment(post.createdAt).startOf('hour').fromNow()}</span>
                         )}
                     </div>
 
@@ -280,23 +323,27 @@
                         posts={posts}
                         session={session} // Pass the session prop
                     />
-                <Button onClick={() => {
+                <button onClick={() => {
                     setIsModalOpen(true);
                     fetchComments(post._id);
+                    setSelectedPostId(post._id);
                 }}>
                     <img
                     className="w-[36px] h-[36px] object-cover mr-2 cursor-pointer"
                     alt="Comment icon"
                     src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-3.svg"
                     />
-                </Button>
+                </button>
                 <Modal
                 title="Comments"
                 centered
                 open={isModalOpen}
                 onOk={() => setIsModalOpen(false)}
                 onCancel={() => setIsModalOpen(false)}
-                >
+                okButtonProps={{ style: { background: '#a2383a', color: 'white' } }}  // Style for the OK button
+                cancelButtonProps={{ style: { background: 'lightgray', color: 'black' } }}  // Style for the Cancel button
+>
+                
                 <List
                     bordered
                     dataSource={comments}
@@ -305,11 +352,27 @@
                         <List.Item.Meta
                         avatar={<Avatar src={item.userId.user_image} />}
                         title={item.userId.username}
-                        description={item.commentText}
+                        description={
+                            <>
+                                <p>{item.commentText}</p>
+                                <small>{moment(item.createdAt).startOf('hour').fromNow()}</small>
+                            </>
+                        }
                         />
                     </List.Item>
                     )}
                 />
+                <br />
+                <Form form={form} onFinish={onFinish}>
+                    <Form.Item name="commentText" rules={[{ required: true, message: 'Please enter your comment!' }]}>
+                    <Input placeholder="Add a comment..." rows={2} onChange={(e) => setCommentText(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item>
+                    <Button  htmlType="submit" >
+                        Add Comment
+                    </Button>
+                </Form.Item>
+          </Form>
                 </Modal>
 
                         <Dialog>
