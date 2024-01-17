@@ -236,12 +236,14 @@ const loginUser = async (req, res) => {
 
     // Include additional user attributes in the response
     const { username, name, isAdmin, user_image, image, is_verified } = user;
-    
+
     // Check if the user has any notifications
     const hasNotification = user.notifications.length > 0;
 
     // Notify the user about the login
     await createNotification(user, "You have successfully logged in.");
+
+    const userPosts = await User.findOne({ _id: user._id }).populate("posts");
 
     return res.status(200).json({
       id: user._id,
@@ -262,6 +264,7 @@ const loginUser = async (req, res) => {
       following: user.following,
       posts: user.posts,
       bio: user.bio,
+      posts: userPosts.posts,
       hasNotification: hasNotification,
     });
   } catch (err) {
@@ -382,7 +385,7 @@ const getUser = async (req, res, next) => {
 
     const currentUser = req.userId; // Assuming req.userId is available
 
-    const user = await User.findOne({ _id: requestedUserID }).populate('posts');
+    const user = await User.findOne({ _id: requestedUserID }).populate("posts");
 
     if (!user) {
       return res.status(404).json({
