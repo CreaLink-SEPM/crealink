@@ -92,7 +92,7 @@ export default async function ProfilesPage() {
                 <Card>
                   <CardHeader className="text-center">
                     {/* <CardDescription>{session?.user?.follower[0].username}</CardDescription> */}
-                    <div className="flex items-center justify-items-start">
+                    <div className="flex items-center justify-evenly">
                       <Image
                         loading="lazy"
                         alt="followers"

@@ -1,14 +1,61 @@
-import React, { Suspense } from 'react';
+'use client';
+import React, { Suspense, useState } from 'react';
 import Loading from '@/src/components/common/loading';
 import { Card, CardDescription, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
 import { fetchUsers } from '@/lib/serverMethod';
 import FollowingUser from '@/src/components/common/FollowingUser';
+import { useSession } from 'next-auth/react';
 
+interface UserInfo {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  bio: string;
+  followers: { name: string; username: string; user_image: string; _id: string }[];
+  posts: { _id: string }[];
+  following: { name: string; username: string; user_image: string; _id: string }[];
+  user_image: string;
+}
 export default async function ProfilesPage({ params }: { params: { id: number } }) {
-  const user: ShowUserType | undefined = await fetchUsers(params.id);
-  
+  const { data: session } = useSession();
+  const [user, setUser] = useState<Array<UserInfo | null>>([]);
+  console.log('USER', user);
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      if (!session) {
+        return;
+      }
+      const token = session?.user?.accessToken;
+
+      try {
+        const response = await fetch(`http://54.169.199.32:5000/api/user/get-user/${params.id}`, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Error fetching users. Server response:', response);
+          return;
+        }
+
+        const responseData = await response.json();
+        const fetchedUsers = responseData.data;
+        console.log(fetchedUsers);
+        setUser(fetchedUsers);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, [session]);
+
   return (
     <div className="w-full md:container h-[800px]">
       <Suspense fallback={<Loading />}>
@@ -36,20 +83,20 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                       className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
                     />
                     <div className="justify-center text-neutral-400 text-base leading-5 self-center grow whitespace-nowrap my-auto">
-                    {user?.followers} followers
+                      {user?.followers} followers
                     </div>
                   </div>
                 </div>
                 <div>
-                <Image
-                  loading="lazy"
-                  width={100}
-                  height={90}
-                  alt="avatar"
-                  src="/assets/images/profile.jpg"
-                  className="aspect-square object-contain object-center w-[150px] justify-center rounded-full items-center overflow-hidden shrink-0 max-w-full"
-                />
-                  <FollowingUser users={user.id} />
+                  <Image
+                    loading="lazy"
+                    width={100}
+                    height={90}
+                    alt="avatar"
+                    src="/assets/images/profile.jpg"
+                    className="aspect-square object-contain object-center w-[150px] justify-center rounded-full items-center overflow-hidden shrink-0 max-w-full"
+                  />
+                  <FollowingUser users={user?.id} isFollowed={user?.isFollowed} />
                 </div>
               </>
             )}
@@ -63,42 +110,39 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
               </TabsList>
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
-                  {(user?.posts ?? []).length < 0 ? (
+                  {user?.posts && user.posts.length > 0 ? (
+                    user.posts.map(post => (
+                      <CardHeader className="text-center border-0">
+                      <CardDescription>{user?.posts}</CardDescription>
+                    </CardHeader>
+                    ))) : (
                     <CardHeader className="text-center border-0">
                       <CardDescription>No posts</CardDescription>
-                    </CardHeader>
-                  ): (
-                    
-                    <CardHeader className="text-center border-0">
-                      <CardDescription>{user?.posts}</CardDescription>
                     </CardHeader>
                   )}
                 </Card>
               </TabsContent>
               <TabsContent value="followers" className="h-[500px] overflow-auto">
-                {(user?.follower ?? []).length < 0 ?
-                 ( 
-                  <div className='text-center mt-2'>
-                    No followers
-                  </div>
-                  ) : ( 
-                  <> 
-                  <Card>
-                    <CardHeader className="text-center">
-                      <div className="flex items-center justify-items-start">
-                        <Image
-                          loading="lazy"
-                          alt="followers"
-                          width={60}
-                          height={50}
-                          src= {user?.follower?.user_image||'/assets/images/avatar.png'}
-                          className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
-                        />
-                        <p>{user?.followers[0]?.name}</p>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                  </>
+                {user?.follower && user.follower.length > 0 ? (
+                  user.follower.map(follower => (
+                    <Card key={follower._id}>
+                      <CardHeader className="text-center">
+                        <div className="flex items-center justify-evenly">
+                          <Image
+                            loading="lazy"
+                            alt="follower"
+                            width={80}
+                            height={70}
+                            src={follower.user_image || '/assets/images/avatar.png'}
+                            className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
+                          />
+                          <p>{follower.username}</p>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="text-center mt-2">No followers</div>
                 )}
               </TabsContent>
             </Tabs>

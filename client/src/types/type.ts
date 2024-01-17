@@ -36,7 +36,7 @@ type PostType = {
 
 
 type FollowerType = {
-  id: number;
+  _id: number;
   username: string;
   name: string;
   user_image: string;
@@ -52,8 +52,10 @@ type ShowUserType = {
   user_image: string;
   image: string;
   bio: string;
-  followers: Array<FollowerType> | [];
-  posts: Array<PostType> | [];
+  followers: number;
+  isFollowed: string;
+  follower: Array<FollowerType> | [];
+  posts:  [];
 };
 
 
