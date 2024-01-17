@@ -8,7 +8,7 @@ router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
 router.post("/logout", UserController.logoutUser);
 router.post("/refresh-token", UserController.refreshTokenUser);
-router.get("/get-user/:username", UserController.getUser);
+router.get("/get-user/:username", AuthMiddleware.userAuthenToken, UserController.getUser);
 router.get("/get-user-notification/:username", UserController.getUserNotification);
 router.get("/get-all-users", UserController.getAllUsers);
 router.get("/search-user", AuthMiddleware.userAuthenToken, UserController.searchUser);
