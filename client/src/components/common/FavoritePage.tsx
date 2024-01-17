@@ -59,12 +59,33 @@ export default function FavoritePage() {
           <div className="mt-10">
             {loading ? (
               <>
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
+                <div className="flex items-center justify-between gap-5 w-[120%]">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <Skeleton className="h-4 w-12 " />
+                  </div>
+                  <div className='flex items-center float-right ml-[20%] gap-2'>
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                  </div>
+                </div>
+                <div>
+                  <Skeleton className="h-[350px] w-[550px] mt-4" />
+                </div>
+                <div className="mt-2 flex items-center justify-center float-left gap-2">
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                </div>
+                <div className="mt-10">
+                  <Skeleton className="h-[5px] w-[40px]" />
                 </div>
               </>
+            ) : posts.length === 0 ? (
+              <div className="text-center mt-10 ml-[10%]">
+                <p className="text-2xl font-bold">No Saved Post</p>
+              </div>
             ) : (
               <>
                 {posts &&

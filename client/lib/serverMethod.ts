@@ -74,3 +74,21 @@ export async function searchUser(query: string, authToken: string) {
     throw new Error('Internal Server Error');
   }
 }
+
+
+// GET NOTIFICATIONS
+export async function fetchNotification (authToken: string) {
+  const res = await fetch(`${apiBaseUrl}/api/user/get-user-notification/`, {
+    cache: 'no-cache',
+    headers: {
+      ...headers(),
+      Authorization: `Bearer ${authToken}`,
+    },
+    method:'GET'
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fecth posts');
+  }
+  const response = await res.json();
+  return response?.data;
+}

@@ -15,7 +15,7 @@ function SearchUserResult({ searchParams }: { searchParams: { [key: string]: str
 
   React.useEffect(() => {
     const fetchUsers = async () => {
-      if (!session) {
+      if (!session || !searchParams?.query) {
         return;
       }
       const token = session?.user?.accessToken;
