@@ -15,7 +15,7 @@ interface UserInfo {
   email: string;
   bio: string;
   followers: { name: string; username: string; user_image: string; _id: string }[];
-  posts: { _id: string }[];
+  posts: { _id: string, title: string, imageUrl: string, content: string, creator: string, likes: string[], createdAt: string, updatedAt: string }[];
   following: { name: string; username: string; user_image: string; _id: string }[];
   user_image: string;
 }
@@ -110,10 +110,10 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
               </TabsList>
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
-                  {user?.posts && user.posts.length > 0 ? (
-                    user.posts.map(post => (
+                  {user?.posts && user?.posts.length > 0 ? (
+                    user?.posts.map(post => (
                       <CardHeader className="text-center border-0">
-                      <CardDescription>{user?.posts}</CardDescription>
+                      <CardDescription>{post?.title}</CardDescription>
                     </CardHeader>
                     
                     ))) : (
@@ -124,8 +124,8 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                 </Card>
               </TabsContent>
               <TabsContent value="followers" className="h-[500px] overflow-auto">
-                {user?.follower && user.follower.length > 0 ? (
-                  user.follower.map(follower => (
+                {user?.follower && user?.follower.length > 0 ? (
+                  user?.follower.map(follower => (
                     <Card key={follower._id}>
                       <CardHeader className="text-center">
                         <div className="flex items-center justify-evenly">
@@ -135,7 +135,8 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                             width={80}
                             height={70}
                             src={follower.user_image || '/assets/images/avatar.png'}
-                            className="aspect-[1] object-contain mr-2 object-center w-8 items-center overflow-hidden shrink-0 max-w-full"
+                            style={{ width: '70px', height: '65px' }}
+                            className="aspect-[1]  object-contain mr-2 rounded-md object-center h-9 items-center overflow-hidden shrink-0 max-w-full"
                           />
                           <p>{follower.username}</p>
                         </div>
