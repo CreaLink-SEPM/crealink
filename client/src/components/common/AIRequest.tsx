@@ -4,14 +4,14 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FloatButton } from 'antd';
-import { MessageOutlined } from '@ant-design/icons';
+import { MessageOutlined, MessageFilled } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
 const AIQuestionPrompt: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
   const { data: session } = useSession();
- 
+  const [isHovered, setIsHovered] = useState(false);
   const [aiResponse, setAIResponse] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -64,14 +64,24 @@ const AIQuestionPrompt: React.FC = () => {
 
   return (
     <div>
-      <FloatButton
-        shape="circle"
-        type="primary"
-        style={{position: 'fixed', right: 30, bottom: 30, }}
-        className="animate-bounce"
-        icon={<MessageOutlined />}
+     <button
+        style={{
+          position: 'fixed',
+          right: 30,
+          bottom: 30,
+          background: isHovered ? '#801c1c' : '#a2383a', // Darker red on hover
+          border: 'none',
+          color: 'white',
+          padding: '10px',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          transition: 'background 0.3s ease-out', // Smooth transition on hover
+          width: isHovered ? '60px' : '50px',
+        }}
         onClick={showModal}
-      />
+      >
+        <MessageFilled />
+      </button>
       
       <Modal
         title="AI Question Prompt"
