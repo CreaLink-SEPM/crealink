@@ -54,7 +54,6 @@ function Notifications() {
 
       const responseData = await response.json();
       const fetchNotifi = responseData.data.notifications;
-      console.log('NOTIFICATION', fetchNotifi);
       setNotifications(fetchNotifi);
     } catch (error) {
       console.error('Error fetching users:', error);
