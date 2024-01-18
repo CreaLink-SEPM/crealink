@@ -151,10 +151,10 @@ function Notifications() {
                 </div>
               </div>
               <Separator className="w-[80%] ml-[15%] mt-5" />
-             <span className="relative flex h-3 w-3 bottom-44 left-[27rem]">
+             {/* <span className="relative flex h-3 w-3 bottom-44 left-[27rem]">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-700 opacity-75"></span>
               <span className="absolute inline-flex rounded-full h-3 w-3 bg-red-800"></span>
-            </span>
+            </span> */}
             </div>
          
           ))}

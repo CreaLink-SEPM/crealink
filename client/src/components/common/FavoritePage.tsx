@@ -5,6 +5,8 @@ import { Dropdown, Menu } from 'antd';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 export default function FavoritePage() {
   const { data: session } = useSession();
@@ -155,11 +157,7 @@ export default function FavoritePage() {
                               </div>
                             </div>
                             <div className="absolute w-[531px] h-[36px] top-[441px] left-[-7px]">
-                              <img
-                                className="absolute w-[36px] h-[36px] top-0 left-0 object-cover"
-                                alt="Div"
-                                src="https://c.animaapp.com/n1QiTcNd/img/div-x6s0dn4-4.svg"
-                              />
+                               <FontAwesomeIcon icon={faHeart} className="fa-lg text-red-800" />
                             </div>
                           </div>
                         </div>

@@ -68,3 +68,44 @@ type savedPostType = {
   comment_count: number;
   likesCount: number;
 }
+
+interface Follower {
+  name: string;
+  username: string;
+  user_image: string;
+  _id: string;
+}
+
+interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  creator: string;
+  likes: string[]; // Assuming it's an array of user IDs
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface UserData {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+  user_image: string;
+  is_verified: boolean;
+  followers: number;
+  follower: Follower[];
+  followings: number;
+  following: any[]; // You can define a proper interface if needed
+  posts: Post[];
+  bio: string;
+  isFollowed: boolean;
+}
+
+interface ApiResponse {
+  status: string;
+  data: UserData;
+}
