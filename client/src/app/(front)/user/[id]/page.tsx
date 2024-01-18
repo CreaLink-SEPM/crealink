@@ -131,7 +131,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                         <div className="flex items-center justify-evenly">
                           <Image
                             loading="lazy"
-                            alt="follower"
+                            alt="follower" 
                             width={80}
                             height={70}
                             src={follower.user_image || '/assets/images/avatar.png'}
