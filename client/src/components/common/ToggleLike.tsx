@@ -7,25 +7,32 @@ import { toast } from 'react-toastify';
 
 interface ToggleLikeProps {
   postId: string;
+  isLiked: boolean;
   onToggle: () => void;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   posts: Post[];
   session: any;
 }
 
-const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, posts, session }) => {
-  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, isLiked, onToggle, setPosts, posts, session }) => {
+  const [localIsLiked, setLocalIsLiked] = useState<boolean | null>(isLiked);
 
-  // Load isLiked status from localStorage on component mount
+  // Load isLiked status from sessionStorage on component mount
   useEffect(() => {
-    const storedIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
+    const storedIsLikedStatus = sessionStorage.getItem(`isLiked_${postId}`);
     if (storedIsLikedStatus !== null) {
-      setIsLiked(storedIsLikedStatus === 'true');
+      setLocalIsLiked(storedIsLikedStatus === 'true');
     } else {
-      // If no stored status, set initial state based on server data
-      const post = posts.find((post) => post._id === postId);
-      if (post) {
-        setIsLiked(post.isLiked || false);
+      // If no stored status in sessionStorage, check localStorage
+      const localStorageIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
+      if (localStorageIsLikedStatus !== null) {
+        setLocalIsLiked(localStorageIsLikedStatus === 'true');
+      } else {
+        // If no stored status, set initial state based on server data
+        const post = posts.find((post) => post._id === postId);
+        if (post) {
+          setLocalIsLiked(post.isLiked || false);
+        }
       }
     }
   }, [postId, posts]);
@@ -50,7 +57,8 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
       if (response.status === 200) {
         // Update local state based on the server response
         const newIsLikedStatus = response.data.isLiked || false;
-        setIsLiked(newIsLikedStatus);
+        setLocalIsLiked(newIsLikedStatus);
+        console.log('isLiked status:', newIsLikedStatus);
 
         // Update posts state and trigger any necessary actions
         setPosts((prevPosts) =>
@@ -72,10 +80,11 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
         onToggle();
         toast.success(`Post ${newIsLikedStatus ? 'liked' : 'unliked'} successfully!`);
 
-        // Save isLiked status to local storage
+        // Save isLiked status to both sessionStorage and localStorage
         const storageKey = `isLiked_${postId}`;
+        sessionStorage.setItem(storageKey, newIsLikedStatus.toString());
         localStorage.setItem(storageKey, newIsLikedStatus.toString());
-        console.log(`isLiked status saved to local storage: ${storageKey} = ${newIsLikedStatus}`);
+        console.log(`isLiked status saved to storage: ${storageKey} = ${newIsLikedStatus}`);
       } else {
         console.error('Failed to toggle like:', response.data);
         toast.error('Failed to toggle like.');
@@ -91,7 +100,7 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
       className={`w-[36px] h-[36px] object-cover mr-2 cursor-pointer`}
       onClick={handleLikeToggle}
     >
-      <FontAwesomeIcon icon={faHeart} className={`fa-lg ${isLiked ? 'text-red-500' : ''}`} />
+      <FontAwesomeIcon icon={faHeart} className={`fa-lg ${localIsLiked ? 'text-red-500' : ''}`} />
     </button>
   );
 };

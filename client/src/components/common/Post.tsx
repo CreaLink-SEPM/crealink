@@ -68,7 +68,7 @@
 
     const SocialMediaPost = () => {
     const { data: session } = useSession();
-    const [posts, setPosts] = useState('');
+    const [posts, setPosts] = useState<Post[]>([]);
     console.log('POSTS ', posts);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
@@ -81,6 +81,12 @@
     const [form] = Form.useForm();
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
     const [commentText, setCommentText] = useState('');
+    const [likeToggle, setLikeToggle] = useState<boolean>(false);
+    const [isLikedStatus, setIsLikedStatus] = useState<{ [postId: string]: boolean }>({});
+
+    const onToggle = () => {
+  setLikeToggle(!likeToggle);
+};  
 
     const handleOk = () => {
         setIsModalOpen(false);
@@ -316,13 +322,7 @@
                     {/* Interaction Icons */}
                     <div className="post-interactions flex items-center">
                         {/* Icons for like and comment */}
-                        <ToggleLike
-                        postId={post._id}
-                        onToggle={() => handleLikeToggle(post._id, () => {})}
-                        setPosts={setPosts}
-                        posts={posts}
-                        session={session} // Pass the session prop
-                    />
+                        <ToggleLike postId={post._id} isLiked={post.isLiked} setPosts={setPosts} posts={posts} session={session} />
                 <button onClick={() => {
                     setIsModalOpen(true);
                     fetchComments(post._id);
