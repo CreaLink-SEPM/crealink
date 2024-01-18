@@ -18,24 +18,29 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, isLiked, onToggle, setP
   const [localIsLiked, setLocalIsLiked] = useState<boolean | null>(isLiked);
 
   // Load isLiked status from sessionStorage on component mount
-  useEffect(() => {
-    const storedIsLikedStatus = sessionStorage.getItem(`isLiked_${postId}`);
-    if (storedIsLikedStatus !== null) {
-      setLocalIsLiked(storedIsLikedStatus === 'true');
+  // Load isLiked status from sessionStorage on component mount
+useEffect(() => {
+  const storedIsLikedStatus = sessionStorage.getItem(`isLiked_${postId}`);
+  if (storedIsLikedStatus !== null) {
+    setLocalIsLiked(storedIsLikedStatus === 'true');
+  } else {
+    // If no stored status in sessionStorage, check localStorage
+    const localStorageIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
+    if (localStorageIsLikedStatus !== null) {
+      setLocalIsLiked(localStorageIsLikedStatus === 'true');
     } else {
-      // If no stored status in sessionStorage, check localStorage
-      const localStorageIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
-      if (localStorageIsLikedStatus !== null) {
-        setLocalIsLiked(localStorageIsLikedStatus === 'true');
+      // If no stored status, set initial state based on server data
+      const post = posts.find((post) => post._id === postId);
+      if (post) {
+        setLocalIsLiked(post.isLiked || false);
       } else {
-        // If no stored status, set initial state based on server data
-        const post = posts.find((post) => post._id === postId);
-        if (post) {
-          setLocalIsLiked(post.isLiked || false);
-        }
+        // Set the initial state to the value from the server
+        setLocalIsLiked(isLiked);
       }
     }
-  }, [postId, posts]);
+  }
+}, [postId, posts, isLiked]);
+
 
   // Function to handle like toggle
   const handleLikeToggle = async () => {
