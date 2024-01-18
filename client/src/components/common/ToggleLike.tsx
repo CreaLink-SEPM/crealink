@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { HeartFilled } from '@ant-design/icons';
 
 interface ToggleLikeProps {
   postId: string;
@@ -19,27 +20,28 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, isLiked, onToggle, setP
 
   // Load isLiked status from sessionStorage on component mount
   // Load isLiked status from sessionStorage on component mount
-useEffect(() => {
-  const storedIsLikedStatus = sessionStorage.getItem(`isLiked_${postId}`);
-  if (storedIsLikedStatus !== null) {
-    setLocalIsLiked(storedIsLikedStatus === 'true');
-  } else {
-    // If no stored status in sessionStorage, check localStorage
-    const localStorageIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
-    if (localStorageIsLikedStatus !== null) {
-      setLocalIsLiked(localStorageIsLikedStatus === 'true');
+  useEffect(() => {
+    const storedIsLikedStatus = sessionStorage.getItem(`isLiked_${postId}`);
+    if (storedIsLikedStatus !== null) {
+      setLocalIsLiked(storedIsLikedStatus === 'true');
     } else {
-      // If no stored status, set initial state based on server data
-      const post = posts.find((post) => post._id === postId);
-      if (post) {
-        setLocalIsLiked(post.isLiked || false);
+      const localStorageIsLikedStatus = localStorage.getItem(`isLiked_${postId}`);
+      if (localStorageIsLikedStatus !== null) {
+        setLocalIsLiked(localStorageIsLikedStatus === 'true');
       } else {
-        // Set the initial state to the value from the server
-        setLocalIsLiked(isLiked);
+        // If no stored status, set initial state based on server data
+        const post = posts.find((post) => post._id === postId);
+        if (post) {
+          // Set the initial state to the value from the server
+          setLocalIsLiked(post.isLiked || false);
+        } else {
+          // If post is not found, you can set it to false or true based on your requirement
+          setLocalIsLiked(false);
+        }
       }
     }
-  }
-}, [postId, posts, isLiked]);
+  }, [postId, posts]);
+  
 
 
   // Function to handle like toggle
@@ -105,7 +107,7 @@ useEffect(() => {
       className={`w-[36px] h-[36px] object-cover mr-2 cursor-pointer`}
       onClick={handleLikeToggle}
     >
-      <FontAwesomeIcon icon={faHeart} className={`fa-lg ${localIsLiked ? 'text-red-500' : ''}`} />
+      <HeartFilled style={{ fontSize: '1.5em', color: localIsLiked ? '#ff4d4f' : '' }} />
     </button>
   );
 };
