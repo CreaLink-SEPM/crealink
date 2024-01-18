@@ -39,14 +39,14 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 - Trending Topic to view the most popular posts, as well as a search tool.
 - View, Create, Delete, Update, and Interact with posts.
 - Responsive design for desktop UI.
-- Language selection (English and Vietnamese) and light/dark themes.
+- Set light/dark themes.
 - Notification events.
 - Saved the posts page that the user liked.
 - Integration of AI tools for post suggestions.
 
 ## Technologies
 
-- Front-end : ReactJS, NextJS, NextAuth, Typescript, i18, SocketIO Client, Figma, TailwindCSS, Ant Design, Shadcn/ui, Postman.
+- Front-end : ReactJS, NextJS, NextAuth, Typescript, Figma, TailwindCSS, Ant Design, Shadcn/ui, Postman.
   
 - Back-end: NodeJS, ExpressJS, MongoDB, SocketIO Server, AWS (S3,EC2,..) ,Github Action CI/CD, RESTful API, Docker.
 
