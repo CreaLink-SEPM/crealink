@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 
 
+
 export const metadata: Metadata = {
   title: 'CreaLink | Profile',
   description: 'Search users here and show there profile...',
@@ -75,7 +76,7 @@ export default async function ProfilesPage() {
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
                   <CardHeader className="text-center border-0"></CardHeader>
-                  <div className="flex justify-around">
+                  {/* <div className="flex justify-around">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="space-y-2">
                       <Skeleton className="h-4 w-[250px]" />
@@ -85,13 +86,22 @@ export default async function ProfilesPage() {
                   <Skeleton className="h-4 w-[400px] ml-[18%] mt-5" />
                   <Skeleton className="h-4 w-[400px] ml-[18%] mt-5" />
                   <Skeleton className="h-4 w-[400px] ml-[18%] mt-5" />
-                  <Skeleton className="h-4 w-[400px] ml-[18%] mt-5" />
+                  <Skeleton className="h-4 w-[400px] ml-[18%] mt-5" /> */}
+                  {session?.user?.posts && session?.user.posts.length > 0 ? (
+                    session?.user.posts.map(post => (
+                     <>
+                     <div>{post.post}</div>
+                     </>
+                    ))) : (
+                    <CardHeader className="text-center border-0">
+                      <CardDescription>No posts</CardDescription>
+                    </CardHeader>
+                  )}
                 </Card>
               </TabsContent>
               <TabsContent value="followers" className="h-[500px] overflow-auto">
                 <Card>
                   <CardHeader className="text-center">
-                    {/* <CardDescription>{session?.user?.follower[0].username}</CardDescription> */}
                     <div className="flex items-center justify-evenly">
                       <Image
                         loading="lazy"

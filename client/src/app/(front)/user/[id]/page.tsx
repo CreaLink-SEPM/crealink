@@ -115,6 +115,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                       <CardHeader className="text-center border-0">
                       <CardDescription>{user?.posts}</CardDescription>
                     </CardHeader>
+                    
                     ))) : (
                     <CardHeader className="text-center border-0">
                       <CardDescription>No posts</CardDescription>
