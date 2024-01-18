@@ -145,13 +145,15 @@ Endpoint: `http://localhost:[port]/api/comment/like/{commentId}`
 ### Success Respone 
 ```json
 {
-    "message": "Successfully liked the comment"
+    "message": "Successfully liked the comment",
+    "isLiked": true
 }
 ```
 
 ```json
 {
-    "message": "Successfully unliked the comment"
+    "message": "Successfully unliked the comment",
+    "isLiked": false
 }
 ```
 ### Error Response
