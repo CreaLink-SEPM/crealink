@@ -112,17 +112,30 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                 <Card>
                   {user?.posts && user?.posts.length > 0 ? (
                     user?.posts.map(post => (
-                      <CardHeader className="text-center border-0">
-                      <CardDescription>{post?.title}</CardDescription>
-                    </CardHeader>
-                    
-                    ))) : (
+                      <div key={post._id} className="mb-4">
+                        <CardHeader className="text-center border-0">
+                          <CardDescription className="text-base font-bold mb-2">{post.title}</CardDescription>
+                        </CardHeader>
+                        <div className="main-post-image overflow-hidden">
+                          {post.imageUrl && (
+                            <img
+                              src={post.imageUrl}
+                              alt=""
+                              className="w-full h-[400px] object-cover rounded-lg"
+                            />
+                          )}
+                        </div>
+                        <CardDescription className="text-base mb-4">{post.content}</CardDescription>
+                      </div>
+                    ))
+                  ) : (
                     <CardHeader className="text-center border-0">
                       <CardDescription>No posts</CardDescription>
                     </CardHeader>
                   )}
                 </Card>
               </TabsContent>
+
               <TabsContent value="followers" className="h-[500px] overflow-auto">
                 {user?.follower && user?.follower.length > 0 ? (
                   user?.follower.map(follower => (
