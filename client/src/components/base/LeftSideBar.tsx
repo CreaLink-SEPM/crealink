@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 
 function LeftSideBar() {
   const { data: session } = useSession();
-  console.log("session", session?.user)
+  console.log("session", session)
   return (
     <Link href="/terms" className="w-[20%] text-center bottom-0 h-[100%]">
       <div className="w-35 h-14 justify-center items-center inline-flex fixed">

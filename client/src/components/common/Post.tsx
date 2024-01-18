@@ -253,11 +253,51 @@
         <div className="relative">
         {loadingInitial ? (
             <>
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-            </div>
+                <div className="flex items-center justify-between gap-5 w-[120%]">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <Skeleton className="h-4 w-12 " />
+                  </div>
+                  <div className='flex items-center float-right ml-[20%] gap-2'>
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                  </div>
+                </div>
+                <div>
+                  <Skeleton className="h-[350px] w-[550px] mt-4" />
+                </div>
+                <div className="mt-2 flex items-center justify-center float-left gap-2">
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                </div>
+                <div className="mt-10">
+                  <Skeleton className="h-[5px] w-[40px]" />
+                </div>
+
+                <div className="flex items-center justify-between mt-4 gap-5 w-[120%]">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <Skeleton className="h-4 w-12 " />
+                  </div>
+                  <div className='flex items-center float-right ml-[20%] gap-2'>
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                    <Skeleton className="h-1 w-2 " />
+                  </div>
+                </div>
+                <div>
+                  <Skeleton className="h-[350px] w-[550px] mt-4" />
+                </div>
+                <div className="mt-2 flex items-center justify-center float-left gap-2">
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                  <Skeleton className="h-4 w-[20px]" />
+                </div>
+                <div className="mt-10">
+                  <Skeleton className="h-[5px] w-[40px]" />
+                </div>
             </>
         ) : (
             <>
@@ -322,7 +362,7 @@
                     {/* Interaction Icons */}
                     <div className="post-interactions flex items-center">
                         {/* Icons for like and comment */}
-                        <ToggleLike postId={post._id} isLiked={post.isLiked} setPosts={setPosts} posts={posts} session={session} />
+                        <ToggleLike postId={post._id}  setPosts={setPosts} posts={posts} session={session} />
                 <button onClick={() => {
                     setIsModalOpen(true);
                     fetchComments(post._id);
