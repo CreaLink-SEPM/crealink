@@ -135,7 +135,7 @@ function Notifications() {
                   <div className=" w-[90%]">
                     <div className="flex justify-between w-full items-center">
                       <span className="text-sm float-right">
-                        {moment(notification?.post?.createdAt).startOf('hour').fromNow()}
+                        {moment(notification?.post?.createdAt).format('HH:mm a, DD MMM')}
                       </span>
                     </div>
                     <p className="text-[15px]">{notification?.content}</p>
