@@ -1,12 +1,10 @@
 'use client';
 import Image from 'next/image';
 import React, { Suspense } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import LeftSideBar from './LeftSideBar';
 import Loading from '../common/loading';
 import SideBarLinks from '../common/SidebarLinks';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 function HelpCenterComponent({ children }: { children: React.ReactNode }) {
   return (
@@ -29,15 +27,9 @@ function HelpCenterComponent({ children }: { children: React.ReactNode }) {
             <p className="w-[124px] h-5 mt-3 text-xl font-semibold text-left text-neutral-800">Help Center</p>
           </div>
           <div className="">
-            <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Language" />
-              </SelectTrigger>
-              <SelectContent className="text-blue-500">
-                <SelectItem value="light">English (US)</SelectItem>
-                <SelectItem value="dark">Vietnam (VN)</SelectItem>
-              </SelectContent>
-            </Select>
+           <Button variant="link" asChild>
+              <Link href="/home"> Back</Link>
+            </Button>
           </div>
         </div>
         <hr className="w-full border-collapse border-gray-300 h-[3px] mt-5" />

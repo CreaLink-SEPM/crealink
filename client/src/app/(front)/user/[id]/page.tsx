@@ -116,8 +116,10 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
               </TabsList>
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
+
                   {userPosts && userPosts.length > 0 ? (
                     userPosts.map(post => (
+
                       <div key={post._id} className="relative w-[572px] h-[533.99px] border-t border-solid border-lightgrey mb-33">
                         {/* Post Header */}
                         <div className="post-header flex items-center mt-3">
@@ -125,6 +127,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                             {/* Dynamic user image URL */}
                             <Image
                               src={user?.user_image|| '/default-profile-image.jpg'} // Provide a default image URL or use a placeholder
+
                               alt="User Profile Picture"
                               width={36}
                               height={36}

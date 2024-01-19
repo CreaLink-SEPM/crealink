@@ -12,6 +12,9 @@ import Image from 'next/image';
 const { Dropdown, Menu, Flex } = require('antd');
 import { Label } from '@radix-ui/react-dropdown-menu';
 
+import { Empty } from 'antd';
+
+
 export const metadata: Metadata = {
   title: 'CreaLink | Profile',
   description: 'Search users here and show there profile...',
@@ -143,7 +146,7 @@ export default async function ProfilesPage() {
                       </div>
                     ))) : (
                     <CardHeader className="text-center border-0">
-                      <CardDescription>No posts</CardDescription>
+                      <Empty className='w-25 h-25' description="No posts yet" image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     </CardHeader>
                   )}
                 </Card>
