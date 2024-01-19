@@ -82,6 +82,8 @@
     const [commentText, setCommentText] = useState('');
     const [likeToggle, setLikeToggle] = useState<boolean>(false);
     const [isLikedStatus, setIsLikedStatus] = useState<{ [postId: string]: boolean }>({});
+    const [shareableUrl, setShareableUrl] = useState<string | null>(null);
+
 
     const onToggle = () => {
   setLikeToggle(!likeToggle);
@@ -220,6 +222,38 @@
         }
     }
 
+    const sharePost = async (postId: string) => {
+      if (!session) {
+        // Handle the case when the user is not logged in
+        message.error('You must be logged in to share a post.');
+        return;
+      }
+    
+      try {
+        const token = session.user?.accessToken;
+        const response = await axios.get(`http://54.169.199.32:5000/api/feed/share/${postId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        if (response.status === 200) {
+          const shareableUrl = response.data.shareableUrl;
+          console.log('URL ',shareableUrl)
+          setShareableUrl(shareableUrl); // Update the shareableUrl state
+          // Display the shareable URL or use it as needed
+          message.success(`Post shared successfully. URL: ${shareableUrl}`);
+        } else {
+          message.error('Failed to share post. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error sharing post:', error);
+        message.error('An error occurred while sharing the post. Please try again.');
+      } 
+    };
+    
+    
     const onFinish = async (values: any) => {
         try {
           if (!selectedPostId) {
@@ -413,12 +447,12 @@
                 </Modal>
 
                         <Dialog>
-                        <DialogTrigger asChild>
-                            <img
+                        <DialogTrigger asChild onClick={() => sharePost(post._id)}>
+                          <img
                             className="w-[20px] h-[20px] top-[8px] left-[8px]"
                             alt="Reshare icon"
                             src="https://c.animaapp.com/n1QiTcNd/img/reshare-icon.svg"
-                            />
+                          />
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-md">
                             <DialogHeader>
@@ -428,12 +462,13 @@
                             <div className="flex items-center space-x-2">
                             <div className="grid flex-1 gap-2">
                                 <Label className="sr-only">Link</Label>
-                                <Input id="link" defaultValue="https://ui.shadcn.com/docs/installation" readOnly />
+                                <Input id="link" defaultValue={shareableUrl || ''} readOnly />
+
                             </div>
-                            <Button style={{ background: '#a2383a', color: 'white' }} className="p-5">
+                            {/* <Button style={{ background: '#a2383a', color: 'white' }} className="p-5">
                                 <span className="sr-only">Copy</span>
                                 <CopyIcon className="h-4 w-4" />
-                            </Button>
+                            </Button> */}
                             </div>
                             <DialogFooter className="sm:justify-start">
                             <DialogClose asChild>

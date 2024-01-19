@@ -10,6 +10,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import { Empty } from 'antd';
 
+
 export default function FavoritePage() {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
