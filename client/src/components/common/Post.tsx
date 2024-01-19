@@ -336,7 +336,7 @@
                 posts?.map(post => (
                 <div
                     key={post._id}
-                    className="relative w-[572px] h-[533.99px]"
+                    className="relative w-[572px] h-auto"
                     style={{ borderTop: '0.5px solid lightgrey', marginBottom: '33px' }}
                 >
                     {/* Post Header */}
@@ -379,13 +379,18 @@
                     {/* Main Post Image or Text */}
                     <h1>{post.title}</h1>
                     <p>{post.content}</p>
-                    <div className="main-post-image overflow-hidden">
+                    {post.imageUrl ? (
+                    <div className={`main-post-image overflow-hidden ${post.imageUrl ? 'h-[400px]' : 'h-0'}`}>
+                    {post.imageUrl && (
                         <img
-                        src={post.imageUrl || null}
-                        alt=""
-                        className="w-full h-[400px] object-cover rounded-lg"
+                            src={post.imageUrl}
+                            alt=""
+                            className="w-full h-full object-cover rounded-lg"
                         />
-                    </div>
+                    )}
+                </div>
+                
+                ) : null}
                     </div>
 
                     {/* Post Interaction and Footer Container */}
