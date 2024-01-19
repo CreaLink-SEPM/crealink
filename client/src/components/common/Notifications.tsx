@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import moment from 'moment';
 import { notification } from 'antd';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Empty } from 'antd';
 
 interface Notification {
   content: string;
@@ -120,6 +121,7 @@ function Notifications() {
       ) : notifications.length === 0 ? (
         <div className="text-center mt-10 ml-[10%]">
           <p className="text-2xl font-bold">No notifications found.</p>
+          <Empty className='w-30 h-30 mx-10 my-20' description="No data" image={Empty.PRESENTED_IMAGE_SIMPLE} />
         </div>
       ) : (
         <>
@@ -150,10 +152,6 @@ function Notifications() {
                 </div>
               </div>
               <Separator className="w-[80%] ml-[15%] mt-5" />
-             {/* <span className="relative flex h-3 w-3 bottom-44 left-[27rem]">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-700 opacity-75"></span>
-              <span className="absolute inline-flex rounded-full h-3 w-3 bg-red-800"></span>
-            </span> */}
             </div>
          
           ))}

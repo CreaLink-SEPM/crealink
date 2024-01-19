@@ -88,8 +88,8 @@ export default function FavoritePage() {
               </>
             ) : posts.length === 0 ? (
               <div className="text-center mt-10 ml-[10%]">
-                <Empty className='w-30 h-30 mx-10 my-20 ' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              </div>
+                <Empty className='w-30 h-30 mx-10 my-20' description="No Posts" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </div>  
             ) : (
               <>
                 {posts &&
