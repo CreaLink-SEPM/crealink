@@ -24,6 +24,8 @@ interface UserInfo {
 export default async function ProfilesPage({ params }: { params: { id: number } }) {
   const { data: session } = useSession();
   const [user, setUser] = useState<Array<UserInfo | null>>([]);
+  const [userPosts, setUserPosts] = useState<Array<UserInfo['posts'] | null>>([]);
+
 
   React.useEffect(() => {
     const fetchUsersData = async () => {
@@ -50,6 +52,8 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
         const fetchedUsers = responseData.data;
         console.log(fetchedUsers);
         setUser(fetchedUsers);
+        setUserPosts(fetchedUsers.posts);
+        console.log('FETCHED POSTS: ', fetchedUsers.posts);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -112,15 +116,15 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
               </TabsList>
               <TabsContent value="posts" className="h-[500px] overflow-auto">
                 <Card>
-                  {user?.posts && user?.posts.length > 0 ? (
-                    user?.posts.map(post => (
+                  {userPosts && userPosts.length > 0 ? (
+                    userPosts.map(post => (
                       <div key={post._id} className="relative w-[572px] h-[533.99px] border-t border-solid border-lightgrey mb-33">
                         {/* Post Header */}
                         <div className="post-header flex items-center mt-3">
                           <div className="user-profile-picture mr-2">
                             {/* Dynamic user image URL */}
                             <Image
-                              src={session?.user?.user_image|| '/default-profile-image.jpg'} // Provide a default image URL or use a placeholder
+                              src={user?.user_image|| '/default-profile-image.jpg'} // Provide a default image URL or use a placeholder
                               alt="User Profile Picture"
                               width={36}
                               height={36}
@@ -132,7 +136,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                           <div className="user-info flex items-center">
                             {post.creator && (
                               <>
-                                <span className="user-name font-bold mr-2">{session?.user?.username}</span>
+                                <span className="user-name font-bold mr-2">{user?.username}</span>
                               </>
                             )}
                           </div>
@@ -171,7 +175,6 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                   )}
                 </Card>
               </TabsContent>
-
               <TabsContent value="followers" className="h-[500px] overflow-auto">
                 {user?.follower && user?.follower.length > 0 ? (
                   user?.follower.map(follower => (

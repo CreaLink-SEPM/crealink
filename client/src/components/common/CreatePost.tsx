@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Modal, Input, Upload, Space } from 'antd';
+import { Button, Modal, Input, Upload, Space, Mentions, Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import AutoInput from '@/src/components/common/AutoInput';
 import UploadImage from '@/src/components/common/UploadImage';
@@ -14,6 +14,7 @@ import { useToast } from '@/src/components/ui/use-toast';
 import { notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import Comment from './Comment';
+const { getMentions } = Mentions;
 
 const SkeletonImage = () => {
   return (
@@ -39,9 +40,19 @@ const CreatePost: React.FC = () => {
 
   const [showAutoInput, setShowAutoInput] = useState(false);
   const [loading, setLoading] = useState(false);
-  const inputRef = useRef(null);
-  const [modal1Open, setModal1Open] = useState(false);
-  const [modal2Open, setModal2Open] = useState(false);
+  const [form] = Form.useForm();
+
+  const HASH_TAGS = {
+    '#': ['travel', 'tourist', 'review']
+  }
+  const onFinish = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log('Submit:', values);
+    } catch (errInfo) {
+      console.log('Error:', errInfo);
+    }
+  };
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -94,14 +105,19 @@ const CreatePost: React.FC = () => {
   };
   const handlePost = async (event: React.FormEvent) => {
     event.preventDefault(); 
-    if (!postState.content.includes('#')) {
+    if (!session) return;
+    const content = postState.content.toLowerCase();
+    const requiredHashtags = ['#tourist', '#travel', '#review'];
+
+    const hasValidHashtag = requiredHashtags.some((tag) => content.includes(tag));
+
+    if (!hasValidHashtag) {
       notification.error({
         message: 'Post creation failed',
-        description: 'Please include at least one hashtag in your post.',
+        description: 'Please include at least one of the hashtags: #tourist, #travel, #review.',
       });
       return;
     }
-    if (!session) return;
     const token = session.user?.accessToken;
     try {
       setLoading(false);
@@ -204,21 +220,44 @@ const CreatePost: React.FC = () => {
       >
         {/* Your form content */}
         {/* Title input */}
-        <Input
-          placeholder="Title"
-          value={postState.title}
-          onChange={e => setPostState({ ...postState, title: e.target.value })}
+        <Form form={form} onFinish={onFinish}>
+        <Form.Item
+          name="title"
+          label="Title"
+          rules={[{ required: true, message: 'Please enter the title' }]}
           style={{ marginBottom: 16 }}
-        />
+        >
+          <Input
+            placeholder="Title"
+            onChange={(e) => {
+              setPostState({ ...postState, title: e.target.value });
+              form.setFieldsValue({ title: e.target.value });
+            }}
+          />
+        </Form.Item>
 
-        {/* Content input */}
-        <Input.TextArea
-          placeholder="Content"
-          rows={10}
-          value={postState.content}
-          onChange={e => setPostState({ ...postState, content: e.target.value })}
+        <Form.Item
+          name="content"
+          label="Content"
           style={{ marginBottom: 16 }}
-        />
+        >
+        <Mentions
+            rows={10}
+            placeholder="input # to mention tag"
+            prefix={['#']}
+            onChange={(content) => {
+              setPostState({ ...postState, content });
+              form.setFieldsValue({ content });
+            }}
+            options={(HASH_TAGS['#'] || []).map((value) => ({
+              value,
+              label: value,
+            }))}
+          />
+        </Form.Item>
+      </Form>
+
+       
 
         {/* Image upload section */}
         <label htmlFor="picture" style={{ display: 'block', marginBottom: '8px' }}>
