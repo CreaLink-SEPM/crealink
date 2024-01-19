@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import moment from 'moment';
 
 export default function FavoritePage() {
   const { data: session } = useSession();
@@ -128,7 +129,7 @@ export default function FavoritePage() {
                             <div className="absolute w-[54px] h-[22px] top-0 left-[470px]">
                               <div className="absolute w-[24px] h-[14px] top-[4px] left-0">
                                 <div className="w-[24px] text-[14.4px] absolute h-[21px] top-[-4px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-center tracking-[0] leading-[21px] whitespace-nowrap">
-                                  12h
+                                {moment(post.createdAt).startOf('hour').fromNow()}
                                 </div>
                               </div>
                             </div>
@@ -145,7 +146,7 @@ export default function FavoritePage() {
                                       <div className="relative w-[500px] h-[430px] rounded-[7px]">
                                         <div className="main-post-image overflow-hidden">
                                           <img
-                                            src={post.image || '/assets/images/profile.jpg'}
+                                            src={post.imageUrl || '/assets/images/profile.jpg'}
                                             alt="Post content"
                                             className="w-full h-[420px] object-cover rounded-lg"
                                           />
@@ -189,21 +190,15 @@ export default function FavoritePage() {
                                 </div>
                               </div>
                             </div>
-                            <div className="absolute w-[16px] h-[21px] top-[4px] left-[114px]">
-                              <div className="absolute w-[12px] h-[18px] top-0 left-[2px] [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                {' '}
-                                ·
-                              </div>
-                            </div>
                             <div className="absolute w-[66px] h-[14px] top-[7px] left-[48px]">
                               <div className="absolute w-[66px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                16 replies
+                                {post.commentsCount} replies
                               </div>
                             </div>
                             <button className="absolute w-[72px] h-[14px] top-[7px] left-[130px] all-[unset] box-border">
                               <div className="relative h-[14px]">
                                 <div className="absolute w-[72px] h-[18px] top-[-2px] left-0 [font-family:'Roboto',Helvetica] font-normal text-[#999999] text-[15px] tracking-[0] leading-[21px] whitespace-nowrap">
-                                  3,510 likes
+                                  {post.likesCount} likes
                                 </div>
                               </div>
                             </button>

@@ -347,13 +347,15 @@ This endpoint allows users to toggle their like or unlike status on a specific p
 ### Sucess Respone
 ```json
 {
-    "message": "Successfully liked the post"
+    "message": "Successfully liked the post",
+    "isLiked": "true"
 }
 ```
 
 ```json
 {
-    "message": "Successfully unliked the post"
+    "message": "Successfully unliked the post",
+    "isLiked": "false"
 }
 ```
 

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { fetchUsers } from '@/lib/serverMethod';
 import FollowingUser from '@/src/components/common/FollowingUser';
 import { useSession } from 'next-auth/react';
+import moment from 'moment';
 
 interface UserInfo {
   id: string;
@@ -19,12 +20,13 @@ interface UserInfo {
   following: { name: string; username: string; user_image: string; _id: string }[];
   user_image: string;
 }
+
 export default async function ProfilesPage({ params }: { params: { id: number } }) {
   const { data: session } = useSession();
   const [user, setUser] = useState<Array<UserInfo | null>>([]);
 
   React.useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersData = async () => {
       if (!session) {
         return;
       }
@@ -53,7 +55,7 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
       }
     };
 
-    fetchUsers();
+    fetchUsersData();
   }, [session]);
 
   return (
@@ -112,20 +114,54 @@ export default async function ProfilesPage({ params }: { params: { id: number } 
                 <Card>
                   {user?.posts && user?.posts.length > 0 ? (
                     user?.posts.map(post => (
-                      <div key={post._id} className="mb-4">
-                        <CardHeader className="text-center border-0">
-                          <CardDescription className="text-base font-bold mb-2">{post.title}</CardDescription>
-                        </CardHeader>
-                        <div className="main-post-image overflow-hidden">
-                          {post.imageUrl && (
-                            <img
-                              src={post.imageUrl}
-                              alt=""
-                              className="w-full h-[400px] object-cover rounded-lg"
+                      <div key={post._id} className="relative w-[572px] h-[533.99px] border-t border-solid border-lightgrey mb-33">
+                        {/* Post Header */}
+                        <div className="post-header flex items-center mt-3">
+                          <div className="user-profile-picture mr-2">
+                            {/* Dynamic user image URL */}
+                            <Image
+                              src={session?.user?.user_image|| '/default-profile-image.jpg'} // Provide a default image URL or use a placeholder
+                              alt="User Profile Picture"
+                              width={36}
+                              height={36}
+                              className="w-[36px] h-[36px] rounded-[18px] object-cover"
                             />
+                          </div>
+  
+                          {/* User Name */}
+                          <div className="user-info flex items-center">
+                            {post.creator && (
+                              <>
+                                <span className="user-name font-bold mr-2">{session?.user?.username}</span>
+                              </>
+                            )}
+                          </div>
+  
+                          {/* Timestamp */}
+                          <div className="ml-auto">
+                            {post.creator && (
+                              <span className="timestamp ml-2">{moment(post.createdAt).startOf('hour').fromNow()}</span>
+                            )}
+                          </div>
+                        </div>
+  
+                        {/* Post Content */}
+                        <div className="post-content">
+                          {/* Main Post Image or Text */}
+                          <h1 className="text-base font-bold mb-2">{post.title}</h1>
+                          <p className="text-base mb-4">{post.content}</p>
+  
+                          {/* Conditionally render the image if post.imageUrl exists */}
+                          {post.imageUrl && (
+                            <div className="main-post-image overflow-hidden">
+                              <img
+                                src={post.imageUrl}
+                                alt=""
+                                className="w-full h-[400px] object-cover rounded-lg"
+                              />
+                            </div>
                           )}
                         </div>
-                        <CardDescription className="text-base mb-4">{post.content}</CardDescription>
                       </div>
                     ))
                   ) : (

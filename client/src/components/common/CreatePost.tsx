@@ -93,7 +93,14 @@ const CreatePost: React.FC = () => {
     }
   };
   const handlePost = async (event: React.FormEvent) => {
-    event.preventDefault(); // Prevent
+    event.preventDefault(); 
+    if (!postState.content.includes('#')) {
+      notification.error({
+        message: 'Post creation failed',
+        description: 'Please include at least one hashtag in your post.',
+      });
+      return;
+    }
     if (!session) return;
     const token = session.user?.accessToken;
     try {

@@ -69,7 +69,6 @@
     const SocialMediaPost = () => {
     const { data: session } = useSession();
     const [posts, setPosts] = useState<Post[]>([]);
-    console.log('POSTS ', posts);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
     const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
@@ -113,7 +112,6 @@
         const fetchData = async () => {
         if (!session) return;
         const token = session.user?.accessToken;
-        console.log('Access token: ', token);
         try {
             const response = await axios.get(apiUrl, {
             headers: {
@@ -121,9 +119,8 @@
                 'Content-Type': 'application/json',
             },
             });
-            console.log(response);
             const data = response.data;
-            console.log('RESPONE DATA ', data);
+  
             if (response.status !== 200) {
             throw new Error(`Failed to fetch data. Status: ${response.status}`);
             }

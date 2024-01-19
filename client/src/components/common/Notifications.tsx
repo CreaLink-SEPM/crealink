@@ -54,7 +54,6 @@ function Notifications() {
 
       const responseData = await response.json();
       const fetchNotifi = responseData.data.notifications;
-      console.log('NOTIFICATION', fetchNotifi);
       setNotifications(fetchNotifi);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -135,7 +134,7 @@ function Notifications() {
                   <div className=" w-[90%]">
                     <div className="flex justify-between w-full items-center">
                       <span className="text-sm float-right">
-                        {moment(notification?.post?.createdAt).startOf('hour').fromNow()}
+                        {moment(notification?.post?.createdAt).format('HH:mm a, DD MMM')}
                       </span>
                     </div>
                     <p className="text-[15px]">{notification?.content}</p>

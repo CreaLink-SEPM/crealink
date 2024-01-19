@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import homeIcon from '@/public/assets/icons/Home Icon.svg';
 import searchIcon from '@/public/assets/icons/Search Icon.svg';
 import heartIcon from '@/public/assets/icons/Heart Icon.svg';
@@ -15,7 +15,49 @@ function Navbar() {
   const icons = [homeIcon, searchIcon, heartIcon, notificationIcon, userIcon];
   const hrefs = ['/home', '/search', '/favorites', '/notifications', '/profile'];
 
-  const hasNotifications = session?.user?.hasNotification;
+  // const hasNotifications = session?.user?.hasNotification;
+  const [hasNotifications, setHasNotifications] = useState(false);
+  console.log("HAS NOTIFICATION: ", hasNotifications);
+  const fetchNotifications = async () => {
+    if (!session) {
+      return;
+    }
+
+    const token = session?.user?.accessToken;
+
+    try {
+      const response = await fetch(`http://54.169.199.32:5000/api/user/get-user-notification`, {
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Error fetching notifications. Server response:', response);
+        return;
+      }
+
+      const responseData = await response.json();
+      const fetchNotifi = responseData.data.notifications;
+      setHasNotifications(fetchNotifi.length > 0);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+
+    const pollingInterval = setInterval(() => {
+      fetchNotifications();
+    }, 5000);
+  
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollingInterval);
+  }, [session]);
+  
 
   
   return (
