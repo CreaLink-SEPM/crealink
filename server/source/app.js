@@ -1,4 +1,6 @@
 const express = require("express");
+const https = require('https'); // Import HTTPS module
+const fs = require('fs'); // Import FS module for reading files
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
@@ -71,9 +73,19 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 routes(app);
 
-const server = app.listen(port, () =>
-  console.log(`Server started on port ${port}`)
-);
+// const server = app.listen(port, () =>
+//   console.log(`Server started on port ${port}`)
+// );
+
+const sslOptions = {
+  key: fs.readFileSync(process.env.SSL_PRIVATE_KEY_PATH),
+  cert: fs.readFileSync(process.env.SSL_CERTIFICATE_PATH)
+};
+
+// Create HTTPS server
+const server = https.createServer(sslOptions, app).listen(port, () => {
+  console.log(`HTTPS Server started on port ${port}`);
+});
 
 const io = initSocket(server);
 io.on("connection", (socket) => {
