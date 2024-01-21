@@ -31,7 +31,7 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        const res = await axios.post('http://54.169.199.32:5000/api/user/login', {
+        const res = await axios.post('https://crealink.khangtgr.com/api/user/login', {
           email: credentials?.email,
           password: credentials?.password,
         });

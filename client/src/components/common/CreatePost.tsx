@@ -132,7 +132,7 @@ const CreatePost: React.FC = () => {
       formData.append('content', postState.content);
 
       // Send POST request with form data
-      const response = await axios.post('http://54.169.199.32:5000/api/feed/post', formData, {
+      const response = await axios.post('https://crealink.khangtgr.com/api/feed/post', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

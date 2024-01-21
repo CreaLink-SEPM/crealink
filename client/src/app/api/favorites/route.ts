@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch('http://54.169.199.32:5000/api/feed/savedPosts', {
+    const response = await fetch('https://crealink.khangtgr.com/api/feed/savedPosts', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -62,7 +62,7 @@ function EditProfile({ children }: { children: React.ReactNode }) {
 
 
     axios
-      .post(`http://54.169.199.32:5000/api/user/avatar/${session?.user?.id}`, formData, {
+      .post(`https://crealink.khangtgr.com/api/user/avatar/${session?.user?.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${session?.user?.accessToken}`,

@@ -33,7 +33,7 @@ const AIQuestionPrompt: React.FC = () => {
     }
     try {
       const response = await axios.post(
-        'http://54.169.199.32:5000/api/feed/generativeAI',
+        'https://crealink.khangtgr.com/api/feed/generativeAI',
         {
           prompt: prompt.trim(),
         },

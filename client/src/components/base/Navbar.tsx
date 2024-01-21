@@ -26,7 +26,7 @@ function Navbar() {
     const token = session?.user?.accessToken;
 
     try {
-      const response = await fetch(`http://54.169.199.32:5000/api/user/get-user-notification`, {
+      const response = await fetch(`https://crealink.khangtgr.com/api/user/get-user-notification`, {
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',

@@ -32,7 +32,7 @@ function Register() {
 
     // API FOR  REGISTER
     axios
-      .post('http://54.169.199.32:5000/api/user/register', authState)
+      .post('https://crealink.khangtgr.com/api/user/register', authState)
       .then(res => {
         setLoading(false);
         const response = res.data;            // Options for API***

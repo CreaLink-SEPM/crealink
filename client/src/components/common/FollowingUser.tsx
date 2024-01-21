@@ -20,7 +20,7 @@ function FollowingUser({ users, isFollowed }: { users: string, isFollowed: boole
 
     try {
       const response = await axios.post(
-        `http://54.169.199.32:5000/api/user/${isFollowing ? 'unfollow' : 'follow'}-user/${users}`,
+        `https://crealink.khangtgr.com/api/user/${isFollowing ? 'unfollow' : 'follow'}-user/${users}`,
         {},
         {
           headers: {

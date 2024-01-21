@@ -22,7 +22,7 @@ export default function FavoritePage() {
 
       const token = session?.user?.accessToken;
       try {
-        const response = await axios.get('http://54.169.199.32:5000/api/feed/savedPosts', {
+        const response = await axios.get('https://crealink.khangtgr.com/api/feed/savedPosts', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bear ${token}`,

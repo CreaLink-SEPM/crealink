@@ -83,6 +83,8 @@
     const [likeToggle, setLikeToggle] = useState<boolean>(false);
     const [isLikedStatus, setIsLikedStatus] = useState<{ [postId: string]: boolean }>({});
     const [shareableUrl, setShareableUrl] = useState<string | null>(null);
+    const [selectedPostDetails, setSelectedPostDetails] = useState<Post | null>(null);
+
 
 
     const onToggle = () => {
@@ -108,7 +110,7 @@
     // };
 
 
-    const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
+    const apiUrl = `https://crealink.khangtgr.com/api/feed/posts?page=${page}`;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -148,6 +150,25 @@
         fetchData();
     }, [session]);
 
+    const fetchSpecificPost = async (postId: string) => {
+      if (!session) return;
+      const token = session.user?.accessToken;
+      try {
+        const response = await axios.get(`https://crealink.khangtgr.com/api/feed/post/${postId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        if (response.status === 200) {
+          const postDetails = response.data.post;
+          setSelectedPostDetails(postDetails);
+        }
+      } catch (error) {
+        console.log('Error fetching post details: ' + error)
+      }
+    }
+
     // LOAD MORE PAGE
     const enterLoading = async () => {
         try {
@@ -184,7 +205,7 @@
         try {
             if (!session) return;
             const token  = session.user?.accessToken;
-          const response = await axios.get(`http://54.169.199.32:5000/api/comment/${postId}`, {}, {
+          const response = await axios.get(`https://crealink.khangtgr.com/api/comment/${postId}`, {}, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -202,7 +223,7 @@
             if (!session) return;
             const token = session.user?.accessToken;
             const response = await axios.post(
-                `http://54.169.199.32:5000/api/comment/${postId}`,
+                `https://crealink.khangtgr.com/api/comment/${postId}`,
                 {
                     commentText
                 },
@@ -231,7 +252,7 @@
     
       try {
         const token = session.user?.accessToken;
-        const response = await axios.get(`http://54.169.199.32:5000/api/feed/share/${postId}`, {
+        const response = await axios.get(`https://crealink.khangtgr.com/api/feed/share/${postId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -280,6 +301,17 @@
         <Button style={{ color: 'red', border: '1px solid red' }}>Report</Button>
         </Popconfirm>
     );
+    const openPostDetails = (postId) => {
+      fetchSpecificPost(postId);
+      setIsModalOpen(true);
+    }
+
+    const openCommentsModal = (postId) => {
+      fetchComments(postId);
+      setSelectedPostId(postId);
+      setIsModalOpen(true);
+    }
+    
     return (
         <div className="relative">
         {loadingInitial ? (
@@ -335,10 +367,24 @@
             {posts &&
                 posts?.map(post => (
                 <div
-                    key={post._id}
+                    key={post._id} 
                     className="relative w-[572px] h-auto"
                     style={{ borderTop: '0.5px solid lightgrey', marginBottom: '33px' }}
                 >
+                  <Modal
+                    title={selectedPostDetails?.title || 'Post Details'}
+                    centered
+                    visible={!!selectedPostDetails}
+                    onOk={() => setSelectedPostDetails(null)}
+                    onCancel={() => setSelectedPostDetails(null)}
+                    okButtonProps={{ style: { background: '#a2383a', color: 'white' } }}
+                    cancelButtonProps={{ style: { background: 'lightgray', color: 'black' } }}
+                  >
+                    <p>{selectedPostDetails?.content}</p>
+                    {selectedPostDetails?.imageUrl && (
+                      <img src={selectedPostDetails.imageUrl} alt="Post" style={{ width: '100%', height: 'auto' }} />
+                    )}
+                  </Modal>
                     {/* Post Header */}
                     <div className="post-header flex items-center mt-3">
                     {/* User Profile Picture */}
@@ -372,7 +418,9 @@
                             src="https:c.animaapp.com/n1QiTcNd/img/div-x146dn1l-margin-1.svg"
                         />
                         </Dropdown>
+                        
                     </div>
+
                     </div>
                     {/* Post Content */}
                     <div className="post-content">
@@ -386,6 +434,7 @@
                             src={post.imageUrl}
                             alt=""
                             className="w-full h-full object-cover rounded-lg"
+                            onClick={() => openPostDetails(post._id)}
                         />
                     )}
                 </div>
@@ -400,9 +449,7 @@
                         {/* Icons for like and comment */}
                         <ToggleLike postId={post._id}  setPosts={setPosts} posts={posts} session={session} />
                 <button onClick={() => {
-                    setIsModalOpen(true);
-                    fetchComments(post._id);
-                    setSelectedPostId(post._id);
+                    openCommentsModal(post._id);
                 }}>
                     <img
                     className="w-[36px] h-[36px] object-cover mr-2 cursor-pointer"
