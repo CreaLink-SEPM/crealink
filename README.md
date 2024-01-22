@@ -28,6 +28,8 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 
 - Front-End (Production): [CreaLink on Vercel](https://crea-link-social-media.vercel.app/login)
 
+- Video demo project: [Youtube](https://youtu.be/DbbT8RIFtvs?si=7Q6R9DFsYQI2KIXv)
+
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
