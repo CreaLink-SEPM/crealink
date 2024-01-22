@@ -26,7 +26,7 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 ### Website run on server :
 
 
-- Front-End (Production): [CreaLink on Vercel](https://client-crealink.vercel.app/)
+- Front-End (Production): [CreaLink on Vercel](https://crea-link-social-media.vercel.app/login)
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -37,7 +37,7 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 - User Profile, edit account, change password.
 - Follow friends and view details of others' accounts.
 - Trending Topic to view the most popular posts, as well as a search tool.
-- View, Create, Delete, Update, and Interact with posts.
+- View, Create, Delete and Interact with posts.
 - Responsive design for desktop UI.
 - Set light/dark themes.
 - Notification events.
@@ -62,10 +62,10 @@ In the domain of digital tourism, the absence of comprehensive online platforms 
 ## Contributions: 
 
 
-- Pham Ngoc Huy (%)
-- Nguyen Trong Khang (%)
-- Nguyen Huynh Quang (%)
-- Dinh Le Hong Tin (%).
+- Pham Ngoc Huy (25%)
+- Nguyen Trong Khang (26%)
+- Nguyen Huynh Quang (27%)
+- Dinh Le Hong Tin (22%).
 
  
 + <i>Next JS: "^13.5.6" </i>
