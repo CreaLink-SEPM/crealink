@@ -108,7 +108,7 @@
     // };
 
 
-    const apiUrl = `http://54.169.199.32:5000/api/feed/posts?page=${page}`;
+    const apiUrl = `https://crealink.khangtgr.com/api/feed/posts?page=${page}`;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -184,7 +184,7 @@
         try {
             if (!session) return;
             const token  = session.user?.accessToken;
-          const response = await axios.get(`http://54.169.199.32:5000/api/comment/${postId}`, {}, {
+          const response = await axios.get(`https://crealink.khangtgr.com/api/comment/${postId}`, {}, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -202,7 +202,7 @@
             if (!session) return;
             const token = session.user?.accessToken;
             const response = await axios.post(
-                `http://54.169.199.32:5000/api/comment/${postId}`,
+                `https://crealink.khangtgr.com/api/comment/${postId}`,
                 {
                     commentText
                 },
@@ -231,7 +231,7 @@
     
       try {
         const token = session.user?.accessToken;
-        const response = await axios.get(`http://54.169.199.32:5000/api/feed/share/${postId}`, {
+        const response = await axios.get(`https://crealink.khangtgr.com/api/feed/share/${postId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

@@ -37,7 +37,7 @@ const ToggleLike: React.FC<ToggleLikeProps> = ({ postId, onToggle, setPosts, pos
     const token = session.user?.accessToken;
 
     try {
-      const response = await axios.put(`http://54.169.199.32:5000/api/feed/like/${postId}`, null, {
+      const response = await axios.put(`https://crealink.khangtgr.com/api/feed/like/${postId}`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

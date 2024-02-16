@@ -43,7 +43,7 @@ const Comment: React.FC<CommentProps> = ({ postId, token}) => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://54.169.199.32:5000/api/comment/${postId}`, {}, {
+      const response = await axios.get(`https://crealink.khangtgr.com/api/comment/${postId}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

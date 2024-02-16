@@ -21,7 +21,7 @@ function SearchUserResult({ searchParams }: { searchParams: { [key: string]: str
       const token = session?.user?.accessToken;
 
       try {
-        const response = await fetch(`http://54.169.199.32:5000/api/user/search-user?searchQuery=${searchParams?.query}`, {
+        const response = await fetch(`https://crealink.khangtgr.com/api/user/search-user?searchQuery=${searchParams?.query}`, {
             method: 'GET',
             headers: new Headers({
                 'Content-Type': 'application/json',

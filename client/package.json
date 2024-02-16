@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--max-http-header-size=12800000' next dev",
     "build": "next build && next export",
-    "start": "NEXT_PUBLIC_BASE_PATH='/home' next start",
+    "start": "NEXT_PUBLIC_BASE_PATH='/home' NODE_OPTIONS='--max-http-header-size=12800000' next start",
     "lint": "next lint",
     "check": "tsc --noEmit",
     "type": "module"

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   }
   const query = request.nextUrl.searchParams.get('query');
   try {
-    const response = await fetch(`http://54.169.199.32:5000/api/user/search-user?searchQuery=${query}`, {
+    const response = await fetch(`https://crealink.khangtgr.com/api/user/search-user?searchQuery=${query}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
